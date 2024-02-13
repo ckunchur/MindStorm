@@ -34,7 +34,10 @@ export default function ChatScreen() {
   };
 
   return (
-    <View style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : null}>
+    // <View style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : null}>
+      <ImageBackground source={require('../assets/background-beach.png')} style={styles.landingImage} behavior={Platform.OS === 'ios' ? 'padding' : null}>
+
+
       <View>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Text style={styles.backButtonText}>Exit Chat</Text>
@@ -64,13 +67,19 @@ export default function ChatScreen() {
           </TouchableOpacity>
         )}
       </View>
-    </View>
+      </ImageBackground>
+    // </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+
+  landingImage: {
     flex: 1,
+    width: windowWidth,
+    height: windowHeight * 0.9,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
