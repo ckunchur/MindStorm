@@ -15,11 +15,14 @@ export default function ChooseYourBuddy() {
         {
 
             image: require("../assets/lyra.png"),
+            background: require('../assets/background-beach.png'),
+            backgroundColor: '#4A9BB4',
             text: "Word vomit, rant - Lyra has you covered. I can work through your chaos and give you a gentle actionable plan to help you feel better ASAP!",
         },
         {
             image: require("../assets/nimbus.png"),
-
+            background: require('../assets/background-desert.png'),
+            backgroundColor: '#E190C0',
             text: "Stuck in a rut? Need help breaking your tasks into bit-size chunks? Nimbus is here to help!",
         },
         // ... add more buddies as needed
@@ -33,7 +36,10 @@ export default function ChooseYourBuddy() {
                 <TouchableOpacity style={styles.chooseButton}>
                     <Text style={styles.freeWriteButtonText}>Choose</Text>
                 </TouchableOpacity>
-                <View style={styles.descriptionBox}>
+                <View style={[
+                    styles.descriptionBox,
+                    { backgroundColor: carouselItems[activeSlide].backgroundColor }
+                ]}>                    
                     <Text style={styles.descriptionText}>{carouselItems[activeSlide].text}</Text>
                 </View>
             </View>
@@ -43,7 +49,7 @@ export default function ChooseYourBuddy() {
     return (
         <View style={styles.container}>
             <ImageBackground
-                source={require('../assets/background-beach.png')}
+                source={carouselItems[activeSlide].background}
                 style={styles.bgImage}
             // resizeMode="cover"
             >
@@ -131,7 +137,6 @@ const styles = StyleSheet.create({
         // Styles for inactive pagination dot
     },
     descriptionBox: {
-        backgroundColor: '#4A9BB4',
         borderRadius: 5,
         padding: 20,
         margin: 16

@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useState, useEffect } from "react";
 import LandingScreen from './components/LandingScreen';
+import JournalScreen from './components/JournalScreen';
 import { Ionicons } from '@expo/vector-icons';
 import ChooseYourBuddy from './components/ChooseBuddy';
 
@@ -25,16 +26,21 @@ export default function App() {
           tabBarIcon: ({ focused }) => {
             let iconName;
 
-            if (route.name === 'Journal') {
-              iconName = focused ? 'pencil' : 'pencil-outline';
+            if (route.name === 'Chat') {
+              iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
             } else if (route.name === 'Insights') {
               iconName = focused ? 'analytics' : 'analytics-outline';
+            } 
+            else if (route.name === 'Journal') {
+              iconName = focused ? 'pencil' : 'pencil-outline';
             } 
             return <Ionicons name={iconName} size={24} color="black" />;
           }
         })}>
-        <Tab.Screen name="Journal" options={{headerShown: false}}  component={ChooseYourBuddy} />
+        <Tab.Screen name="Chat" options={{headerShown: false}}  component={ChooseYourBuddy} />
+        <Tab.Screen name="Journal" options={{headerShown: false}} component={JournalScreen} />
         <Tab.Screen name="Insights" options={{headerShown: false}} component={ChooseYourBuddy} />
+
       </Tab.Navigator>
      
   </NavigationContainer>
