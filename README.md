@@ -1,5 +1,5 @@
 # MindStorm-mobile
 
-# Run app
+## How to run app
 - `cd mindstorm-app` 
 - run `npx expo start`
