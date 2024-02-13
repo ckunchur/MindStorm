@@ -41,7 +41,7 @@ export default function ChooseYourBuddy() {
         <TouchableOpacity onPress={() => navigation.navigate('ChatScreen')}>
           <Image source={item.image} style={styles.buddyImage}></Image>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.chooseButton}>
+        <TouchableOpacity style={styles.chooseButton}  onPress={() => navigation.navigate('ChatScreen')}>
           <Text style={styles.freeWriteButtonText}>Choose</Text>
         </TouchableOpacity>
         <View style={[
