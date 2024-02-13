@@ -22,7 +22,7 @@ export default function ChooseYourBuddy() {
         {
             image: require("../assets/nimbus.png"),
             background: require('../assets/background-desert.png'),
-            backgroundColor: '#E190C0',
+            backgroundColor: '#FF8D94',
             text: "Stuck in a rut? Need help breaking your tasks into bit-size chunks? Nimbus is here to help!",
         },
         // ... add more buddies as needed
