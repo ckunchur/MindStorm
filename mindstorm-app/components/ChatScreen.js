@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, ImageBackground, Dimensions, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { apiCall } from './OpenAi'; // Ensure this path is correct for your project setup
+import { apiCall } from './OpenAi';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -9,13 +9,21 @@ const windowHeight = Dimensions.get('window').height;
 export default function ChatScreen() {
   const navigation = useNavigation();
   const [userInput, setUserInput] = useState('');
-  const [chatHistory, setChatHistory] = useState([]);
 
+
+  // Initialize chatHistory as an empty array 
+  const [chatHistory, setChatHistory] = useState([]);
   const handleSend = async () => {
-    const messages = chatHistory.map((msg) => ({ role: msg.role, content: msg.content }));
-    const response = await apiCall(userInput, messages);
-    if (response.success) {
-      setChatHistory(response.data);
+    if (!userInput.trim()) return; // Prevent sending empty messages
+    // Temporary array to hold the new message and response for appending
+    let newChatHistory = [...chatHistory, { role: 'user', content: userInput }];
+    const response = await apiCall(userInput, newChatHistory);
+    if (response.success && response.data.length > 0) {
+      // Append AI's response to the newChatHistory
+      const aiResponse = response.data[response.data.length - 1]; // Assuming the last response is from AI
+      newChatHistory.push(aiResponse);
+      // Update the state to include the new messages
+      setChatHistory(newChatHistory);
       setUserInput(''); // Clear input after sending
     } else {
       console.error(response.msg);
@@ -25,18 +33,23 @@ export default function ChatScreen() {
   return (
     <View style={styles.container}>
       <ImageBackground source={require('../assets/background-beach.png')} style={styles.bgImage}>
+
+        {/* Back button */}
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Text>Back</Text>
         </TouchableOpacity>
 
+        {/* Chat bubbles - only the last message from chathistory adds to the bubbles */}
         <ScrollView style={styles.chatContainer}>
+          {/* Render each message in chatHistory as a bubble */}
           {chatHistory.map((msg, index) => (
             <View key={index} style={[styles.bubble, msg.role === 'user' ? styles.userBubble : styles.aiBubble]}>
-              <Text>{msg.content}</Text>
+              <Text style={{ color: msg.role === 'user' ? '#ffffff' : '#000000' }}>{msg.content}</Text>
             </View>
           ))}
         </ScrollView>
 
+        {/* Input keyboard (has voice) and send button */}
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
@@ -44,11 +57,11 @@ export default function ChatScreen() {
             value={userInput}
             placeholder="Type your message..."
           />
-          {/* Replacing Button with TouchableOpacity for the Send action */}
           <TouchableOpacity onPress={handleSend} style={styles.sendButton}>
             <Text style={styles.sendButtonText}>Send</Text>
           </TouchableOpacity>
         </View>
+
       </ImageBackground>
     </View>
   );
@@ -87,35 +100,35 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginRight: 10,
     paddingHorizontal: 10,
-    marginBottom: 40,
-    backgroundColor: "#DDD",
+    backgroundColor: "#FFF", // Set input background to white
+    marginBottom: 40
   },
   sendButton: {
-    backgroundColor: '#007bff', // A nice shade of blue
+    backgroundColor: '#007bff',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 5,
     marginBottom: 40
   },
   sendButtonText: {
-    color: '#ffffff', // White color for the text
+    color: '#ffffff',
   },
   chatContainer: {
     flex: 1,
-    marginTop: 120,
-    padding: 10
+    marginTop: 100,
   },
   bubble: {
     padding: 10,
     borderRadius: 20,
     marginBottom: 10,
+    maxWidth: '80%',
   },
   userBubble: {
     alignSelf: 'flex-end',
-    backgroundColor: '#daf8cb',
+    backgroundColor: '#007bff',
   },
   aiBubble: {
     alignSelf: 'flex-start',
-    backgroundColor: '#f1f0f0',
-  }
+    backgroundColor: '#ffffff',
+  },
 });
