@@ -7,6 +7,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LandingScreen from './components/LandingScreen';
 import JournalScreen from './components/JournalScreen';
 import ChatScreen from './components/ChatScreen';
+import CustomizeScreen from './components/CustomizeScreen';
 import ChooseYourBuddy from './components/ChooseBuddy';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -18,7 +19,9 @@ function ChatStackNavigator() {
   return (
     <ChatStack.Navigator initialRouteName="ChooseYourBuddy" screenOptions={{ headerShown: false }}>
       <ChatStack.Screen name="ChooseYourBuddy" component={ChooseYourBuddy} />
+      <ChatStack.Screen name="CustomizeScreen" component={CustomizeScreen} />
       <ChatStack.Screen name="ChatScreen" component={ChatScreen} />
+
     </ChatStack.Navigator>
   );
 }
