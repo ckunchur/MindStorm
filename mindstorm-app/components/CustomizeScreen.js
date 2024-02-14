@@ -72,10 +72,10 @@ export default function CustomizeScreen() {
                 <SwitchSelector
                     options={memoryOptions}
                     initial={0}
-                    buttonColor={'#4A9BB4'}
+                    buttonColor={buddies[activeSlide].lightColor}
                     textColor={'#DAE2EB'}
                     selectedColor={'white'} // the text color of the selected option
-                    backgroundColor={'#1F7D9B'}
+                    backgroundColor={buddies[activeSlide].darkColor}
                     onPress={value => console.log(`Call function associated with ${value}`)}
                     style={styles.switchSelector}
                 />
@@ -83,10 +83,10 @@ export default function CustomizeScreen() {
                 <SwitchSelector
                     options={toneOptions}
                     initial={0}
-                    buttonColor={'#4A9BB4'}
+                    buttonColor={buddies[activeSlide].lightColor}
                     textColor={'#DAE2EB'}
                     selectedColor={'white'} // the text color of the selected option
-                    backgroundColor={'#1F7D9B'}
+                    backgroundColor={buddies[activeSlide].darkColor}
                     onPress={value => console.log(`Call function associated with ${value}`)}
                     style={styles.switchSelector}
                 />
@@ -95,9 +95,9 @@ export default function CustomizeScreen() {
                         options={genderOptions}
                         initial={0}
                         textColor={'#DAE2EB'}
-                        buttonColor={'#4A9BB4'}
+                        buttonColor={buddies[activeSlide].lightColor}
                         selectedColor={'white'} // the text color of the selected option
-                        backgroundColor={'#1F7D9B'}
+                        backgroundColor={buddies[activeSlide].darkColor}
                         onPress={value => console.log(`Call function associated with ${value}`)}
                         style={styles.switchSelector}
                     />
@@ -105,10 +105,10 @@ export default function CustomizeScreen() {
                     <SwitchSelector
                         options={ageOptions}
                         initial={0}
-                        buttonColor={'#4A9BB4'}
+                        buttonColor={buddies[activeSlide].lightColor}
                         textColor={'#DAE2EB'}
                         selectedColor={'white'} // the text color of the selected option
-                        backgroundColor={'#1F7D9B'}
+                        backgroundColor={buddies[activeSlide].darkColor}
                         onPress={value => console.log(`Call function associated with ${value}`)}
                         style={styles.switchSelector}
                     />

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, ImageBackground, Dimensions, 
-  TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  StyleSheet, View, Text, ImageBackground, Dimensions,
+  TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { apiCall } from './OpenAi';
 import { Ionicons } from '@expo/vector-icons'; // Import Ionicons
@@ -35,13 +37,13 @@ export default function ChatScreen() {
 
   return (
     // <View style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : null}>
-      <ImageBackground source={require('../assets/background-beach.png')} style={styles.landingImage} behavior={Platform.OS === 'ios' ? 'padding' : null}>
-
+    <ImageBackground source={require('../assets/background-beach.png')} style={styles.landingImage} behavior={Platform.OS === 'ios' ? 'padding' : null}>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <Ionicons name="arrow-back-circle-outline" color="white" size={48} />
+      </TouchableOpacity>
 
       <View>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Text style={styles.backButtonText}>Exit Chat</Text>
-        </TouchableOpacity>
+
 
         <ScrollView style={styles.chatContainer}>
           {chatHistory.map((msg, index) => (
@@ -53,21 +55,21 @@ export default function ChatScreen() {
 
         {showPreview && (
           <TypingPreviewBox
-          text={userInput}
-          onChangeText={setUserInput}
-          onClose={() => setShowPreview(false)}
-          onSend={handleSend}
-        />
+            text={userInput}
+            onChangeText={setUserInput}
+            onClose={() => setShowPreview(false)}
+            onSend={handleSend}
+          />
         )}
 
         {!showPreview && ( // Only show the Send Message button if the preview box is not visible
           <TouchableOpacity onPress={() => setShowPreview(true)} style={styles.sendMessageButton}>
             <Ionicons name="send" size={24} color="white" />
-            <Text style={{color: 'white'}}> Send Message</Text>
+            <Text style={{ color: 'white' }}> Send Message</Text>
           </TouchableOpacity>
         )}
       </View>
-      </ImageBackground>
+    </ImageBackground>
     // </View>
   );
 }
@@ -85,17 +87,9 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 60, // Adjusted to be below status bar
-    right: 90,
-    backgroundColor: "#DDD",
-    paddingHorizontal: 15,
-    borderColor: 'black',
-    borderWidth: 2,
-    paddingVertical: 10,
-    borderRadius: 5,
+    top: 80, // Adjusted to be below status bar
+    left: 20,
     zIndex: 10, // Ensure the back button is above the chat bubbles
-    backgroundColor: 'white',
-    borderRadius: 99999,
   },
   backButtonText: {
     fontWeight: 'bold',

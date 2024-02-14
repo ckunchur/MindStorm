@@ -38,7 +38,7 @@ export default function ChooseYourBuddy() {
                 </View>
                 <View style={[
                     styles.descriptionBox,
-                    { backgroundColor: buddies[activeSlide].backgroundColor }
+                    { backgroundColor: buddies[activeSlide].lightColor }
                 ]}>
                     <Text style={styles.descriptionText}>{buddies[activeSlide].text}</Text>
                 </View>
@@ -54,7 +54,7 @@ export default function ChooseYourBuddy() {
                 style={styles.bgImage}
             >
                 <Text style={styles.heading}>What's troubling you today?</Text>
-                <Text style={styles.subheading}>Stress/Anxiety</Text>
+                <Text style={styles.subheading}>{buddies[activeSlide].speciality}</Text>
                 <Carousel
                     data={buddies}
                     renderItem={renderCarouselItem}

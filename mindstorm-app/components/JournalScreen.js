@@ -2,20 +2,21 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Image, ImageBackground, Dimensions } from 'react-native';
 import SwitchSelector from "react-native-switch-selector";
 import { Ionicons } from '@expo/vector-icons';
-
+import { useNavigation } from '@react-navigation/native';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const options = [
-    { label:  <Ionicons name="text-outline" size={24} color="white" />, value: "keyboard" },  // use 'keyboard' icon here
-    { label:  <Ionicons name="mic-outline" size={24} color="white" />, value: "microphone" }  // use 'microphone' icon here
+    { label: <Ionicons name="text-outline" size={24} color="white" />, value: "keyboard" },  // use 'keyboard' icon here
+    { label: <Ionicons name="mic-outline" size={24} color="white" />, value: "microphone" }  // use 'microphone' icon here
 ];
 
 
 export default function JournalScreen() {
- 
-   
+
+
+    const navigation = useNavigation();
 
     return (
         <View style={styles.container}>
@@ -24,37 +25,35 @@ export default function JournalScreen() {
                 style={styles.bgImage}
             >
                 <View style={styles.controls}
->
+                >
 
-        
-                <Text style={styles.heading}>What's troubling you today?</Text>
-                <Text style={styles.subheading}>Speak or type to get your thoughts down!</Text>
-                <SwitchSelector
-                    options={options}
-                    initial={0}
-                    buttonColor={'#4A9BB4'}
-                    selectedColor={'white'} // the text color of the selected option
-                    backgroundColor={'#1F7D9B'}
-                    onPress={value => console.log(`Call function associated with ${value}`)}
-                    style={styles.switchSelector}
-                />
+
+                    <Text style={styles.heading}>What's troubling you today?</Text>
+                    <Text style={styles.subheading}>Speak or type to get your thoughts down!</Text>
+                    <SwitchSelector
+                        options={options}
+                        initial={0}
+                        buttonColor={'#4A9BB4'}
+                        selectedColor={'white'} // the text color of the selected option
+                        backgroundColor={'#1F7D9B'}
+                        onPress={value => console.log(`Call function associated with ${value}`)}
+                        style={styles.switchSelector}
+                    />
+                    <Text style={styles.subheading}>February 14, 2024 2:04 PM</Text>
+
                 </View>
 
-                <TextInput
-                    style={styles.inputTitleText}
-                    placeholder="Title"
-                    placeholderTextColor="grey"
-                />
+
                 <TextInput
                     style={styles.inputBodyText}
                     placeholder="Type here..."
                     placeholderTextColor="grey"
                     multiline
                 />
-                <TouchableOpacity style={styles.continueButton}>
+                <TouchableOpacity style={styles.continueButton} onPress={() => navigation.navigate('JournalSummary')}>
                     <Text style={styles.continueButtonText}>Continue</Text>
                 </TouchableOpacity>
-            
+
 
             </ImageBackground>
         </View>
@@ -95,15 +94,15 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 16,
     },
-   inputTitleText: {
-    fontSize: 24,
-    bottom: 0.12 * windowHeight,
-   },
-   inputBodyText: {
-    fontSize: 18,
-   }
+    inputTitleText: {
+        fontSize: 24,
+        bottom: 0.12 * windowHeight,
+    },
+    inputBodyText: {
+        fontSize: 18,
+    }
 
-   ,
+    ,
     continueButton: {
         backgroundColor: 'white',
         borderWidth: 1,
@@ -119,7 +118,7 @@ const styles = StyleSheet.create({
         bottom: 0.12 * windowHeight,
 
     },
-  continueButtonText: {
+    continueButtonText: {
         fontWeight: 'bold',
         color: '#4A9BB4',
         textAlign: 'center',

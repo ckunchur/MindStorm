@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import LandingScreen from './components/LandingScreen';
 import JournalScreen from './components/JournalScreen';
+import JournalSummary from './components/JournalSummary';
 import ChatScreen from './components/ChatScreen';
 import CustomizeScreen from './components/CustomizeScreen';
 import ChooseYourBuddy from './components/ChooseBuddy';
@@ -13,6 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 const ChatStack = createStackNavigator();
+const JournalStack = createStackNavigator();
 
 // Stack Navigator for the Chat tab
 function ChatStackNavigator() {
@@ -23,6 +25,15 @@ function ChatStackNavigator() {
       <ChatStack.Screen name="ChatScreen" component={ChatScreen} />
 
     </ChatStack.Navigator>
+  );
+}
+
+function JournalStackNavigator() {
+  return (
+    <JournalStack.Navigator initialRouteName="JournalScreen" screenOptions={{ headerShown: false }}>
+      <JournalStack.Screen name="JournalScreen" component={JournalScreen} />
+      <JournalStack.Screen name="JournalSummary" component={JournalSummary} />
+    </JournalStack.Navigator>
   );
 }
 
@@ -49,7 +60,7 @@ export default function App() {
           })}
         >
           <Tab.Screen name="Chat" component={ChatStackNavigator} options={{ headerShown: false }} />
-          <Tab.Screen name="Journal" component={JournalScreen} options={{ headerShown: false }} />
+          <Tab.Screen name="Journal" component={JournalStackNavigator} options={{ headerShown: false }} />
           <Tab.Screen name="Insights" component={ChooseYourBuddy} options={{ headerShown: false }} />
         </Tab.Navigator>
       </NavigationContainer>
