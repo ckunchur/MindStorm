@@ -67,7 +67,7 @@ export default function CustomizeScreen() {
                     </View>
                 </View>
                 <View style={styles.switchGroup}>
-                <Text style={styles.heading}>Conversation Memory</Text>
+                <Text style={styles.switchHeading}>Conversation Memory</Text>
        
                 <SwitchSelector
                     options={memoryOptions}
@@ -79,7 +79,7 @@ export default function CustomizeScreen() {
                     onPress={value => console.log(`Call function associated with ${value}`)}
                     style={styles.switchSelector}
                 />
-                 <Text style={styles.heading}>Adjust Tone</Text>
+                 <Text style={styles.switchHeading}>Adjust Tone</Text>
                 <SwitchSelector
                     options={toneOptions}
                     initial={0}
@@ -90,7 +90,7 @@ export default function CustomizeScreen() {
                     onPress={value => console.log(`Call function associated with ${value}`)}
                     style={styles.switchSelector}
                 />
-                <Text style={styles.heading}>Adjust Gender</Text>
+                <Text style={styles.switchHeading}>Adjust Gender</Text>
                     <SwitchSelector
                         options={genderOptions}
                         initial={0}
@@ -101,7 +101,7 @@ export default function CustomizeScreen() {
                         onPress={value => console.log(`Call function associated with ${value}`)}
                         style={styles.switchSelector}
                     />
-                    <Text style={styles.heading}>Adjust Age</Text>
+                    <Text style={styles.switchHeading}>Adjust Age</Text>
                     <SwitchSelector
                         options={ageOptions}
                         initial={0}
@@ -172,10 +172,19 @@ const styles = StyleSheet.create({
 
     },
     heading: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 4,
+        marginTop: 6,
+        color: 'white',
+        textAlign: 'center',
+        
+    },
+    switchHeading: {
         fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 4,
-        marginTop: 12,
+        marginTop: 6,
         color: 'white',
         textAlign: 'center',
         

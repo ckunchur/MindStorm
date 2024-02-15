@@ -47,11 +47,11 @@ export default function JournalScreen() {
                 <TextInput
                     style={styles.inputBodyText}
                     placeholder="Type here..."
-                    placeholderTextColor="grey"
+                    placeholderTextColor="white"
                     multiline
                 />
                 <TouchableOpacity style={styles.continueButton} onPress={() => navigation.navigate('JournalSummary')}>
-                    <Text style={styles.continueButtonText}>Continue</Text>
+                    <Text style={styles.continueButtonText}>Submit</Text>
                 </TouchableOpacity>
 
 
@@ -99,7 +99,12 @@ const styles = StyleSheet.create({
         bottom: 0.12 * windowHeight,
     },
     inputBodyText: {
+        padding: 16,
         fontSize: 18,
+        color: 'white',
+        // backgroundColor: '#4A9BB4',
+        // opacity: 0.6,
+        textAlign: 'center'
     }
 
     ,
@@ -122,6 +127,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#4A9BB4',
         textAlign: 'center',
+        fontSize: 16,
     },
 
     switchSelector: {

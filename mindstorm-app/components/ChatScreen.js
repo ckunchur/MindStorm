@@ -64,8 +64,8 @@ export default function ChatScreen() {
 
         {!showPreview && ( // Only show the Send Message button if the preview box is not visible
           <TouchableOpacity onPress={() => setShowPreview(true)} style={styles.sendMessageButton}>
-            <Ionicons name="send" size={24} color="white" />
-            <Text style={{ color: 'white' }}> Send Message</Text>
+            <Ionicons name="send" size={24} color="#4A9BB4" />
+            <Text style={{ color: '#4A9BB4', fontWeight: 'bold', marginLeft: 2 }}> Send Message</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -116,10 +116,10 @@ const styles = StyleSheet.create({
   },
   sendMessageButton: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 32,
     left: 30,
-    backgroundColor: '#007bff',
-    paddingHorizontal: 15,
+    backgroundColor: 'white',
+    paddingHorizontal: 16,
     paddingVertical: 15,
     borderRadius: 50,
     flexDirection: 'row',

@@ -11,7 +11,7 @@ import {
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation
 import { Ionicons } from '@expo/vector-icons';
-import {buddies} from '../data/buddies';
+import { buddies } from '../data/buddies';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -25,17 +25,11 @@ export default function ChooseYourBuddy() {
         return (
             <View style={styles.slide}>
                 <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-                    <TouchableOpacity onPress={() => navigation.navigate('ChatScreen')}>
+                    <TouchableOpacity>
                         <Image source={item.image} style={styles.buddyImage}></Image>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.customizeButton} 
-                    onPress={() => navigation.navigate('CustomizeScreen', { activeSlide: activeSlide })}
-
-                    >
-                        <Ionicons name="hammer-outline" size={24} />
-                        <Text style={[styles.customizeButtonText]}>Customize {buddies[activeSlide].name}</Text>
-                    </TouchableOpacity>
                 </View>
+                
                 <View style={[
                     styles.descriptionBox,
                     { backgroundColor: buddies[activeSlide].lightColor }
@@ -53,7 +47,7 @@ export default function ChooseYourBuddy() {
                 source={buddies[activeSlide].background}
                 style={styles.bgImage}
             >
-                <Text style={styles.heading}>What's troubling you today?</Text>
+                <Text style={styles.heading}>Choose Your Chat Buddy</Text>
                 <Text style={styles.subheading}>{buddies[activeSlide].speciality}</Text>
                 <Carousel
                     data={buddies}
@@ -63,6 +57,24 @@ export default function ChooseYourBuddy() {
                     itemWidth={300}
                     style={styles.carousel}
                 />
+                <View style={styles.buttonRow}>
+
+
+<TouchableOpacity style={styles.customizeButton}
+    onPress={() => navigation.navigate('ChatScreen')}
+>
+    <Ionicons name="chatbubbles-outline" size={24} />
+    <Text style={[styles.customizeButtonText]}>Chat</Text>
+</TouchableOpacity>
+<TouchableOpacity style={styles.customizeButton}
+    onPress={() => navigation.navigate('CustomizeScreen', { activeSlide: activeSlide })}
+
+>
+    <Ionicons name="hammer-outline" size={24} />
+    <Text style={[styles.customizeButtonText]}>Customize</Text>
+</TouchableOpacity>
+
+</View>
             </ImageBackground>
         </View>
     );
@@ -97,6 +109,7 @@ const styles = StyleSheet.create({
         color: 'white',
         textAlign: 'center',
         marginBottom: 16,
+        fontWeight: 'bold'
     },
     slide: {},
     carousel: {},
@@ -104,6 +117,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 20,
         margin: 16,
+        opacity: 0.9,
     },
     descriptionText: {
         color: 'white',
@@ -114,7 +128,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#4A9BB4',
         textAlign: 'center',
-        marginLeft: 8 
+        marginLeft: 8
     },
     customizeButton: {
         backgroundColor: 'white',
@@ -125,6 +139,15 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: 'center',
         justifyContent: 'center',
-        width: windowWidth * 0.5
+        width: windowWidth * 0.4
     },
+    buttonRow: {
+        flexDirection: 'row',
+        position: 'absolute',
+        bottom: 100, // Adjusted to be below status bar
+        flexDirection: "row",
+        alignItems: 'center',
+        justifyContent: 'center',
+
+    }
 });

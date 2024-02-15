@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   landingButtonText: {
     fontSize: windowWidth * 0.04,
     fontWeight: "bold",
-    color: 'black',
+    color: '#4A9BB4',
     marginLeft: 20,
    alignContent: 'center',
    alignItems: 'center',
