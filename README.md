@@ -4,7 +4,9 @@ MindStorm is an app designed to "help you find the calm in your storm" with the 
 See old web app repo [here](https://github.com/ckunchur/MindStorm-web).
 
 ## How to run app locally
-- `cd mindstorm-app` 
+MindStorm currently uses ReactNative, Firebase, and OpenAI's GPT 3.5 model. 
+- `cd mindstorm-app`
+- create `.env` file with `EXPO_PUBLIC_OPENAI_API_KEY` and paste your OpenAI key. 
 - run `npx expo start`
 ## Sprint 2
 
