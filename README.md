@@ -1,5 +1,7 @@
 # MindStorm-mobile
 
+See old web app repo [here](https://github.com/ckunchur/MindStorm-web).
+
 ## How to run app locally
 - `cd mindstorm-app` 
 - run `npx expo start`
