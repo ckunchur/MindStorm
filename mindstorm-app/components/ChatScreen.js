@@ -7,9 +7,10 @@ import { useNavigation } from '@react-navigation/native';
 import { apiCall } from './OpenAi';
 import { Ionicons } from '@expo/vector-icons'; // Import Ionicons
 import TypingPreviewBox from './TypingPreview';
-
+import { writeChatHistoryToFirebase } from '../firebase/functions';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+const userId = "2Plv4ZA1wvY4pdkQyicn";
 
 export default function ChatScreen() {
   const navigation = useNavigation();
@@ -17,6 +18,11 @@ export default function ChatScreen() {
   const [showPreview, setShowPreview] = useState(false); // State to manage showing/hiding the typing preview
   const [chatHistory, setChatHistory] = useState([]);
 
+
+  async function chatHistoryHandler() {
+    await writeChatHistoryToFirebase(userId, chatHistory);
+    navigation.goBack();
+  }
   const handleSend = async () => {
     if (!userInput.trim()) return; // Prevent sending empty messages
     // Temporary array to hold the new message and response for appending
@@ -28,6 +34,7 @@ export default function ChatScreen() {
       newChatHistory.push(aiResponse);
       // Update the state to include the new messages
       setChatHistory(newChatHistory);
+      console.log(newChatHistory);
       setUserInput(''); // Clear input after sending
       setShowPreview(false); // Hide the typing preview box when message is sent
     } else {
@@ -38,7 +45,7 @@ export default function ChatScreen() {
   return (
     // <View style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : null}>
     <ImageBackground source={require('../assets/background-beach.png')} style={styles.landingImage} behavior={Platform.OS === 'ios' ? 'padding' : null}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+      <TouchableOpacity onPress={chatHistoryHandler} style={styles.backButton}>
         <Ionicons name="arrow-back-circle-outline" color="white" size={48} />
       </TouchableOpacity>
 
@@ -79,9 +86,10 @@ const styles = StyleSheet.create({
   landingImage: {
     flex: 1,
     width: windowWidth,
-    height: windowHeight * 0.9,
+    height: windowHeight * 1.02,
     justifyContent: 'space-between',
     flexDirection: 'row',
+    bottom: 32,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -116,7 +124,7 @@ const styles = StyleSheet.create({
   },
   sendMessageButton: {
     position: 'absolute',
-    bottom: 32,
+    bottom: 4,
     left: 30,
     backgroundColor: 'white',
     paddingHorizontal: 16,

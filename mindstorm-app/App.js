@@ -14,6 +14,10 @@ import DataScreen from './components/DataScreen';
 
 import ChooseYourBuddy from './components/ChooseBuddy';
 import { Ionicons } from '@expo/vector-icons';
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
+
 
 const Tab = createBottomTabNavigator();
 const ChatStack = createStackNavigator();
@@ -62,25 +66,6 @@ export default function App() {
   if (pressed) {
     contentDisplayed = (
       <NavigationContainer>
-        {/* <Tab.Navigator
-          screenOptions={({ route }) => ({
-            tabBarIcon: ({ focused, color, size }) => {
-              let iconName;
-              if (route.name === 'Chat') {
-                iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
-              } else if (route.name === 'Journal') {
-                iconName = focused ? 'pencil' : 'pencil-outline';
-              } else if (route.name === 'Insights') {
-                iconName = focused ? 'analytics' : 'analytics-outline';
-              }
-              return <Ionicons name={iconName} size={size} color={color} />;
-            },
-          })}
-        >
-          <Tab.Screen name="Chat" component={ChatStackNavigator} options={{ headerShown: false }} />
-          <Tab.Screen name="Journal" component={JournalStackNavigator} options={{ headerShown: false }} />
-          <Tab.Screen name="Insights" component={ChooseYourBuddy} options={{ headerShown: false }} />
-        </Tab.Navigator> */}
         <Tab.Navigator
           screenOptions={({ route }) => ({
             tabBarIcon: ({ focused, size }) => {
@@ -92,16 +77,15 @@ export default function App() {
               } else if (route.name === 'Insights') {
                 iconName = focused ? 'bar-chart' : 'bar-chart-outline';
               }
-              // Adjust the size and positioning of the Home icon
               if (route.name === 'Chat') {
                 return <View style={{
                   width: 80,
                   height: 80,
                   borderRadius: 35,
-                  backgroundColor: 'white', // Adjust the color accordingly
+                  backgroundColor: 'white', 
                   justifyContent: 'center',
                   alignItems: 'center',
-                  marginBottom: 30, // Lift the icon up
+                  marginBottom: 30, 
                 }}>
                   <Ionicons name={iconName} size={44} color="#4A9BB4" />
                 </View>
@@ -117,11 +101,10 @@ export default function App() {
               left: 0,
               right: 0,
               elevation: 0,
-              backgroundColor: '#ffffff', // or your preferred tab bar color
-              borderTopLeftRadius: 20, // Adjust the radius to match your design
-              borderTopRightRadius: 20, // Adjust the radius to match your design
-              height: 60, // or your preferred tab bar height
-              // Other styling options...
+              backgroundColor: '#ffffff', 
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20, 
+              height: 60, 
               shadowOpacity: 0.05,
               shadowRadius: 10,
               shadowColor: '#000',
@@ -129,9 +112,7 @@ export default function App() {
             },
           }}
         >
-          {/* Include the new Home tab */}
           <Tab.Screen name="Journal" component={JournalStackNavigator} options={{ headerShown: false }} />
-
           <Tab.Screen name="Chat" component={ChatStackNavigator} options={{ headerShown: false,  tabBarVisible: false,}} />
           <Tab.Screen name="Insights" component={DataScreen} options={{ headerShown: false }} />
         </Tab.Navigator>

@@ -9,44 +9,31 @@ import {
     Dimensions,
 } from 'react-native';
 import SwitchSelector from "react-native-switch-selector";
-import { RadioButton } from 'react-native-paper'; // Assuming you're using react-native-paper for Radio Buttons
-
-import Carousel, { Pagination } from 'react-native-snap-carousel';
-import { useNavigation, useRoute } from '@react-navigation/native'; // Import useNavigation
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { buddies } from '../data/buddies';
-import { ScrollView } from 'react-native-gesture-handler';
-
+import { buddies, toneOptions, genderOptions, ageOptions, memoryOptions } from '../data/chatSettings';
+import { writeBotSettingsToFirebase } from '../firebase/functions';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
+const userId = "2Plv4ZA1wvY4pdkQyicn";
+
+
 
 export default function CustomizeScreen() {
-    const navigation = useNavigation(); // Use the useNavigation hook
-    const route = useRoute(); // Import useRoute from '@react-navigation/native'
+    const navigation = useNavigation();
+    const route = useRoute();
     const [activeSlide, setActiveSlide] = useState(route.params?.activeSlide || 0);
-    const [memoryOption, setMemoryOption] = useState('forget'); // State for radio button selection
-    
-    const toneOptions = [
-        { label: "Therapist", value: "strict" },
-        { label: "Best Friend", value: "comforting" },
-        { label: "Mentor", value: "logical" }
-    ];
-    const genderOptions = [
-        { label: "Male", value: "male" },
-        { label: "Female", value: "female" },
-    ];
-    const ageOptions = [
-        { label: "Teenager", value: "teen" },
-        { label: "Young Adult", value: "young" },
-        { label: "Adult", value: "young" },
-    ];
-    const memoryOptions = [
-        { label: "Forget", value: "forget" },
-        { label: "Remember", value: "remember" },
-    ];
+    const [memoryOption, setMemoryOption] = useState('forget');
+    const [toneOption, setToneOption] = useState('therapist');
+    const [ageOption, setAgeOption] = useState('adult');
+    const [genderOption, setGenderOption] = useState('female');
 
-    console.log(activeSlide);
+    const handleSaveSettings = async () => {
+        const bot = buddies[activeSlide].id;
+        await writeBotSettingsToFirebase(userId, bot, memoryOption, toneOption, ageOption, genderOption);
+        console.log("Settings saved successfully.");
+    };
 
 
 
@@ -67,30 +54,30 @@ export default function CustomizeScreen() {
                     </View>
                 </View>
                 <View style={styles.switchGroup}>
-                <Text style={styles.switchHeading}>Conversation Memory</Text>
-       
-                <SwitchSelector
-                    options={memoryOptions}
-                    initial={0}
-                    buttonColor={buddies[activeSlide].lightColor}
-                    textColor={'#DAE2EB'}
-                    selectedColor={'white'} // the text color of the selected option
-                    backgroundColor={buddies[activeSlide].darkColor}
-                    onPress={value => console.log(`Call function associated with ${value}`)}
-                    style={styles.switchSelector}
-                />
-                 <Text style={styles.switchHeading}>Adjust Tone</Text>
-                <SwitchSelector
-                    options={toneOptions}
-                    initial={0}
-                    buttonColor={buddies[activeSlide].lightColor}
-                    textColor={'#DAE2EB'}
-                    selectedColor={'white'} // the text color of the selected option
-                    backgroundColor={buddies[activeSlide].darkColor}
-                    onPress={value => console.log(`Call function associated with ${value}`)}
-                    style={styles.switchSelector}
-                />
-                <Text style={styles.switchHeading}>Adjust Gender</Text>
+                    <Text style={styles.switchHeading}>Conversation Memory</Text>
+
+                    <SwitchSelector
+                        options={memoryOptions}
+                        initial={0}
+                        buttonColor={buddies[activeSlide].lightColor}
+                        textColor={'#DAE2EB'}
+                        selectedColor={'white'} // the text color of the selected option
+                        backgroundColor={buddies[activeSlide].darkColor}
+                        onPress={value => setMemoryOption(value)}
+                        style={styles.switchSelector}
+                    />
+                    <Text style={styles.switchHeading}>Adjust Tone</Text>
+                    <SwitchSelector
+                        options={toneOptions}
+                        initial={0}
+                        buttonColor={buddies[activeSlide].lightColor}
+                        textColor={'#DAE2EB'}
+                        selectedColor={'white'} // the text color of the selected option
+                        backgroundColor={buddies[activeSlide].darkColor}
+                        onPress={value => setToneOption(value)}
+                        style={styles.switchSelector}
+                    />
+                    <Text style={styles.switchHeading}>Adjust Gender</Text>
                     <SwitchSelector
                         options={genderOptions}
                         initial={0}
@@ -98,7 +85,7 @@ export default function CustomizeScreen() {
                         buttonColor={buddies[activeSlide].lightColor}
                         selectedColor={'white'} // the text color of the selected option
                         backgroundColor={buddies[activeSlide].darkColor}
-                        onPress={value => console.log(`Call function associated with ${value}`)}
+                        onPress={value => setGenderOption(value)}
                         style={styles.switchSelector}
                     />
                     <Text style={styles.switchHeading}>Adjust Age</Text>
@@ -109,13 +96,12 @@ export default function CustomizeScreen() {
                         textColor={'#DAE2EB'}
                         selectedColor={'white'} // the text color of the selected option
                         backgroundColor={buddies[activeSlide].darkColor}
-                        onPress={value => console.log(`Call function associated with ${value}`)}
+                        onPress={value => setAgeOption(value)}
                         style={styles.switchSelector}
                     />
                 </View>
                 <TouchableOpacity style={styles.customizeButton}
-                    onPress={() => navigation.navigate('CustomizeScreen', { activeSlide: activeSlide })}
-
+                    onPress={handleSaveSettings}
                 >
                     <Ionicons name="save-outline" size={24} />
                     <Text style={[styles.customizeButtonText]}>Save</Text>
@@ -144,15 +130,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     switchButtonText: {
-        // Style for the text inside each switch button
         color: 'white',
         textAlign: 'center',
     },
     backButton: {
         position: 'absolute',
-        top: 100, // Adjusted to be below status bar
+        top: 100, 
         left: 20,
-        zIndex: 10, // Ensure the back button is above the chat bubbles
+        zIndex: 10, 
     },
     backButtonText: {
         fontWeight: 'bold',
@@ -178,7 +163,7 @@ const styles = StyleSheet.create({
         marginTop: 6,
         color: 'white',
         textAlign: 'center',
-        
+
     },
     switchHeading: {
         fontSize: 18,
@@ -187,7 +172,7 @@ const styles = StyleSheet.create({
         marginTop: 6,
         color: 'white',
         textAlign: 'center',
-        
+
     },
     subheading: {
         fontSize: 18,
