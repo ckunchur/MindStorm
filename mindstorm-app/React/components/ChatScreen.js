@@ -3,9 +3,11 @@ import { StyleSheet, View, Text, ImageBackground, Dimensions, TouchableOpacity, 
 import { useNavigation } from '@react-navigation/native';
 import { apiCall } from './OpenAi';
 import axios from 'axios';
+import { Alert } from 'react-native';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+// Seemed like I needed this for Expo GO, but using ios simulator on laptop instead now
 const IP_ADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
 export default function ChatScreen() {
@@ -17,7 +19,7 @@ export default function ChatScreen() {
   const [chatHistory, setChatHistory] = useState([]);
   async function fetchHelloWorld() {
     try {
-      const response = await axios.get(IP_ADDRESS);
+      const response = await axios.get("http://localhost:8000");
       console.log(response.data);
       Alert.alert('API Response', response.data.message); // Assuming the response has a message field
     } catch (error) {
