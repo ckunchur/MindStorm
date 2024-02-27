@@ -18,7 +18,8 @@ export default function ChatScreen() {
   const [chatHistory, setChatHistory] = useState([]);
   async function fetchHelloWorld() {
     try {
-      const response = await axios.get("http://localhost:8000");
+      // const response = await axios.get("http://localhost:8000");
+      const response = await axios.post("http://localhost:8000/fetch_context/", { input_text: userInput });
       console.log(response.data);
       Alert.alert('API Response', response.data.message); // Assuming the response has a message field
     } catch (error) {
@@ -56,12 +57,6 @@ export default function ChatScreen() {
     }
   };
 
-  // const fetchTodos = async () => {
-  //   const response = await fetch("http://localhost:8000/todo")
-  //   const todos = await response.json()
-  //   console.log(todos.data)
-  // }
-  
   return (
     <View style={styles.container}>
       <ImageBackground source={require('../assets/background-beach.png')} style={styles.bgImage}>
