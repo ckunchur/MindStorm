@@ -16,17 +16,8 @@ export default function ChatScreen() {
 
   // Initialize chatHistory as an empty array 
   const [chatHistory, setChatHistory] = useState([]);
-  async function fetchHelloWorld() {
-    try {
-      // const response = await axios.get("http://localhost:8000");
-      const response = await axios.post("http://localhost:8000/fetch_context/", { input_text: userInput });
-      console.log(response.data);
-      Alert.alert('API Response', response.data.message); // Assuming the response has a message field
-    } catch (error) {
-      console.error('There was an error with the API call', error);
-      Alert.alert('Error', 'Failed to fetch hello world message');
-    }
-}
+
+  // THIS CODE IS THE IN CONVO CHAT HISTORY, see apiCall in OpenAI.js
   // const handleSend = async () => {
   //   if (!userInput.trim()) return; // Prevent sending empty messages
   //   // Temporary array to hold the new message and response for appending
@@ -44,19 +35,47 @@ export default function ChatScreen() {
   //   }
   // };
 
-
+  // THIS CODE JUST CONNECTS TO FASTAPI FETCH CONTEXT, BUT DOESNT PRINT IT
+  // const handleSend = async () => {
+  //   try {
+  //     const response = await axios.post("http://localhost:8000/fetch_context/", { input_text: userInput });
+  //     console.log(response.data);
+  //     Alert.alert('Success', 'User input sent successfully');
+  //   } catch (error) {
+  //     console.error('There was an error with the API call', error);
+  //     Alert.alert('Error', 'Failed to send user input');
+  //   }
+  // };
 
   const handleSend = async () => {
+    if (!userInput.trim()) {
+      // Prevent sending empty messages
+      Alert.alert('Empty Input', 'Please type something to get advice.');
+      return;
+    }
+  
     try {
-      const response = await axios.post("http://localhost:8000/user_input/", { input_text: userInput });
-      console.log(response.data);
-      Alert.alert('Success', 'User input sent successfully');
+      // Send user input to the FastAPI backend
+      const response = await axios.post("http://localhost:8000/fetch_context/", { input_text: userInput });
+  
+      if (response.data && response.data.advice) {
+        // Print the advice received from the backend
+        console.log("Advice:", response.data.advice);
+        // Assuming you want to add both the user's question and the AI's advice to the chat history
+        let newChatHistory = [...chatHistory, { role: 'user', content: userInput }, { role: 'ai', content: response.data.advice }];
+        // Update the state to include the new messages
+        setChatHistory(newChatHistory);
+        // Clear input after sending
+        setUserInput('');
+      } else {
+        console.error('No advice received');
+        Alert.alert('Error', 'No advice received from the server');
+      }
     } catch (error) {
       console.error('There was an error with the API call', error);
-      Alert.alert('Error', 'Failed to send user input');
+      Alert.alert('Error', `Failed to get advice: ${error.message}`);
     }
   };
-
   return (
     <View style={styles.container}>
       <ImageBackground source={require('../assets/background-beach.png')} style={styles.bgImage}>
@@ -64,14 +83,6 @@ export default function ChatScreen() {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Text>Back</Text>
         </TouchableOpacity>
-
-        {/* Test Hello World Button */}
-        <TouchableOpacity onPress={fetchHelloWorld} style={styles.testButton}>
-          <Text style={styles.testButtonText}>Test Hello World</Text>
-        </TouchableOpacity>
-        {/* <TouchableOpacity onPress={fetchTodos} style={styles.testButton}>
-          <Text style={styles.testButtonText}>Test Fetch</Text>
-        </TouchableOpacity> */}
 
         <ScrollView style={styles.chatContainer}>
           {chatHistory.map((msg, index) => (
