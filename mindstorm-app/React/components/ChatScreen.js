@@ -8,12 +8,11 @@ import { Alert } from 'react-native';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 // Seemed like I needed this for Expo GO, but using ios simulator on laptop instead now
-const IP_ADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
+// const IP_ADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
 export default function ChatScreen() {
   const navigation = useNavigation();
   const [userInput, setUserInput] = useState('');
-  console.log(IP_ADDRESS)
 
   // Initialize chatHistory as an empty array 
   const [chatHistory, setChatHistory] = useState([]);
@@ -27,23 +26,42 @@ export default function ChatScreen() {
       Alert.alert('Error', 'Failed to fetch hello world message');
     }
 }
+  // const handleSend = async () => {
+  //   if (!userInput.trim()) return; // Prevent sending empty messages
+  //   // Temporary array to hold the new message and response for appending
+  //   let newChatHistory = [...chatHistory, { role: 'user', content: userInput }];
+  //   const response = await apiCall(userInput, newChatHistory);
+  //   if (response.success && response.data.length > 0) {
+  //     // Append AI's response to the newChatHistory
+  //     const aiResponse = response.data[response.data.length - 1]; // Assuming the last response is from AI
+  //     newChatHistory.push(aiResponse);
+  //     // Update the state to include the new messages
+  //     setChatHistory(newChatHistory);
+  //     setUserInput(''); // Clear input after sending
+  //   } else {
+  //     console.error(response.msg);
+  //   }
+  // };
+
+
+
   const handleSend = async () => {
-    if (!userInput.trim()) return; // Prevent sending empty messages
-    // Temporary array to hold the new message and response for appending
-    let newChatHistory = [...chatHistory, { role: 'user', content: userInput }];
-    const response = await apiCall(userInput, newChatHistory);
-    if (response.success && response.data.length > 0) {
-      // Append AI's response to the newChatHistory
-      const aiResponse = response.data[response.data.length - 1]; // Assuming the last response is from AI
-      newChatHistory.push(aiResponse);
-      // Update the state to include the new messages
-      setChatHistory(newChatHistory);
-      setUserInput(''); // Clear input after sending
-    } else {
-      console.error(response.msg);
+    try {
+      const response = await axios.post("http://localhost:8000/user_input/", { input_text: userInput });
+      console.log(response.data);
+      Alert.alert('Success', 'User input sent successfully');
+    } catch (error) {
+      console.error('There was an error with the API call', error);
+      Alert.alert('Error', 'Failed to send user input');
     }
   };
 
+  // const fetchTodos = async () => {
+  //   const response = await fetch("http://localhost:8000/todo")
+  //   const todos = await response.json()
+  //   console.log(todos.data)
+  // }
+  
   return (
     <View style={styles.container}>
       <ImageBackground source={require('../assets/background-beach.png')} style={styles.bgImage}>
@@ -56,6 +74,9 @@ export default function ChatScreen() {
         <TouchableOpacity onPress={fetchHelloWorld} style={styles.testButton}>
           <Text style={styles.testButtonText}>Test Hello World</Text>
         </TouchableOpacity>
+        {/* <TouchableOpacity onPress={fetchTodos} style={styles.testButton}>
+          <Text style={styles.testButtonText}>Test Fetch</Text>
+        </TouchableOpacity> */}
 
         <ScrollView style={styles.chatContainer}>
           {chatHistory.map((msg, index) => (
