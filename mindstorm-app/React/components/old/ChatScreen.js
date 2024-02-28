@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { apiCall } from './OpenAi';
 import { Ionicons } from '@expo/vector-icons'; // Import Ionicons
 import TypingPreviewBox from './TypingPreview';
-import { writeChatHistoryToFirebase } from '../firebase/functions';
+import { writeChatHistoryToFirebase } from '../../firebase/functions';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const userId = "2Plv4ZA1wvY4pdkQyicn";
