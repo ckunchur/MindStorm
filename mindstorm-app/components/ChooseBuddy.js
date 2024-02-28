@@ -11,7 +11,7 @@ import {
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation
 import { Ionicons } from '@expo/vector-icons';
-import { buddies } from '../data/buddies';
+import { buddies } from '../data/chatSettings';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;

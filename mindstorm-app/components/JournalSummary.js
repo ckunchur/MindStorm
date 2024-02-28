@@ -25,22 +25,23 @@ const ChipsRow = ({ title, items, onAddItem }) => {
                             <Text style={styles.chipText}>{item}</Text>
                         </TouchableOpacity>
                     ))}
-                    <TouchableOpacity onPress={onAddItem} style={[styles.chip, styles.addButton]}>
+                    {/* <TouchableOpacity onPress={onAddItem} style={[styles.chip, styles.addButton]}>
                         <Text style={styles.chipText}>+ Item</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
             </ScrollView>
         </View>
     );
 };
 
-const moods = ['Anxious', 'Overwhelmed'];
-const topics = ['Eating', 'Work'];
+const moods = ['Anxious', 'Overwhelmed', 'Stressed'];
+const topics = ['Eating', 'Work', 'Relationships'];
 
-// Dummy function for demonstration
 const handleAddItem = () => console.log('Add item');
 
 
+const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style]}>{title}</Text>;
+const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText, style]}>{message}</Text>;
 
 
 export default function JournalSummary() {
@@ -49,49 +50,51 @@ export default function JournalSummary() {
     const navigation = useNavigation();
 
     return (
-        <View style={styles.container}>
+        <View style={styles.fullScreenContainer}>
+
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                <Ionicons name="arrow-back-circle-outline" color="#4A9BB4" size={48} />
+            </TouchableOpacity>
             <ImageBackground
-                source={require('../assets/background-beach.png')}
-                style={styles.bgImage}
+                resizeMode="cover"
+                source={require('../assets/journal-background.png')}
+                style={styles.fullScreen}
             >
-                <View style={styles.controls}
-                >
-
-
-                    <Text style={styles.heading}>{journalEntries[0].timeStamp}</Text>
-                    <Text style={styles.bodyText}>{journalEntries[0].entryText}</Text>
+                <WelcomeTitle title="Your Mood Forecast" style={styles.title} />
+                <WelcomeMessage message="A summary of the key feelings and topics on your mind now. " style={styles.subheaderText} />
+                <View style={styles.controls}>
                     <View style={styles.chipsContainer}>
                         <ChipsRow title="Detected Moods" items={moods} onAddItem={handleAddItem} />
                         <ChipsRow title="Detected Topics" items={topics} onAddItem={handleAddItem} />
                     </View>
+                    <View style={styles.predictedTextContainer}>
                     <Text style={styles.predictedText}> Based on your entry, we think {journalEntries[0].suggestedBuddy} would be a good buddy to talk to!
                     </Text>
+                    <Image  source={require('../assets/lyra-avatar.png')}></Image>
+                    <TouchableOpacity style={styles.chatButton}
+                        onPress={() => navigation.navigate('ChatScreen')}
+                    >
+                        <Text style={[styles.chatButtonText]}>Chat with {journalEntries[0].suggestedBuddy}</Text>
+                    </TouchableOpacity>
 
+                    </View>
+                    
                 </View>
-                <View style={styles.buttonRow}>
-
-                
-                <TouchableOpacity style={styles.customizeButton}
-                   onPress={() => navigation.navigate('ChatScreen')}
-                >
-                    <Text style={[styles.customizeButtonText]}>Chat with {journalEntries[0].suggestedBuddy}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.customizeButton}
-                    onPress={() => navigation.navigate('JournalScreen')}
-                >
-                    <Text style={[styles.customizeButtonText]}>Exit</Text>
-                </TouchableOpacity>
-                </View>
-
-
-
-
+             
             </ImageBackground>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
+    fullScreenContainer: {
+        flex: 1, // Make the container fill the whole screen
+    },
+    fullScreen: {
+        flex: 1, // Make the background image fill the whole screen
+        justifyContent: 'center', // Center the children vertically
+        alignItems: 'center', // Center the children horizontally
+    },
     container: {
         flex: 1,
         alignItems: 'center',
@@ -99,19 +102,43 @@ const styles = StyleSheet.create({
         padding: 24,
         backgroundColor: 'blue'
     },
-    controls: {
+    backButton: {
         position: 'absolute',
-        top: 0.2 * windowHeight,
+        top: 80, // Adjusted to be below status bar
+        left: 20,
+        zIndex: 10, // Ensure the back button is above the chat bubbles
+       
+    },
+    title: {
+        position: 'absolute',
+        top: 120,
+        color: "#4A9BB4",
+        fontSize: 32,
+        marginBottom: 16,
+        fontWeight: "700",
+        fontFamily: "Inter, sans-serif",
+    },
+    subheaderText: {
+        position: 'absolute',
+        top: 160,
+       textAlign: 'center',
+        width: '80%',
+        color: "#4A9BB4",
+        fontSize: 16,
+        fontFamily: "Inter, sans-serif",
+        marginBottom: 120, // Adjust the value as needed
+    },
+    controls: {
         alignItems: 'center',
         justifyContent: 'center',
-
+        marginTop: 136
     },
     bgImage: {
         width: windowWidth,
         height: windowHeight * 1.02,
         alignItems: 'center',
         justifyContent: 'center',
-        
+
     },
     heading: {
         fontSize: 24,
@@ -127,21 +154,22 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
 
-    bodyText: {
-        fontSize: 18,
+    predictedTextContainer: {
+        width: '80%', // Adjust the width as needed
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 24,
+        backgroundColor: "rgba(255, 255, 255, 0.6)",
         padding: 16,
-        color: 'white',
-        backgroundColor: '#4A9BB4',
-        opacity: '0.6',
-    },
-    predictedText: {
-        fontSize: 18,
-        padding: 16,
-        color: 'white',
-        backgroundColor: '#4A9BB4',
-        opacity: '0.6',
+        textAlign: "center",
+        fontFamily: "Inter, sans-serif",
+      },
+      predictedText: {
+        fontFamily: "Inter, sans-serif",
         textAlign: 'center',
-    },
+        color: '#7887DA',
+        fontSize: 16,
+      },
     continueButton: {
         backgroundColor: 'white',
         borderWidth: 1,
@@ -181,13 +209,13 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         marginLeft: 20,
         color: 'white',
-        
+
     },
     chipsContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
         paddingHorizontal: 20,
-        
+
     },
     chip: {
         backgroundColor: '#1F7D9B',
@@ -205,15 +233,15 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
 
-    customizeButtonText: {
+    chatButtonText: {
         fontWeight: 'bold',
         fontSize: 16,
-        color: '#4A9BB4',
+        color: '#7887DA',
         textAlign: 'center',
         marginLeft: 8
     },
-    customizeButton: {
-       
+   chatButton: {
+
         zIndex: 10,
         backgroundColor: 'white',
         margin: 8,

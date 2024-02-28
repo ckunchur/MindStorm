@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Image, ImageBackground, Dimensions } from 'react-native';
 import SwitchSelector from "react-native-switch-selector";
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -14,10 +13,7 @@ const options = [
 
 
 export default function JournalScreen() {
-
-
     const navigation = useNavigation();
-
     return (
         <View style={styles.container}>
             <ImageBackground
@@ -53,7 +49,6 @@ export default function JournalScreen() {
                 <TouchableOpacity style={styles.continueButton} onPress={() => navigation.navigate('JournalSummary')}>
                     <Text style={styles.continueButtonText}>Submit</Text>
                 </TouchableOpacity>
-
 
             </ImageBackground>
         </View>
