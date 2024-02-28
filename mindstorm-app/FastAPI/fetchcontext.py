@@ -6,6 +6,10 @@ from dotenv import load_dotenv
 from pinecone import Pinecone, ServerlessSpec, PodSpec
 from openai import OpenAI
 
+SYSTEM_PROMPT = """Ella is designed to offer highly personalized support by remembering users' preferences and responses to suggested stress reduction techniques over time. When users set specific goals for stress management, Ella takes note of what strategies work and what doesn't, tailoring future suggestions based on these preferences. This approach ensures each conversation is personalized, making suggestions more relevant and effective. Make the tone conversational, like an empathetic and gentle best-friend that relates to you.
+
+For instance, if a user mentions that journaling was not helpful but enjoyed morning walks, Ella will adapt by suggesting activities aligned with what has been effective. A suggestion for a quick stress-relieving activity might be, \"Since journaling didn't work out for you last week, let's try something different! You seemed to like the walk in the morning, so let's try moving your body. How about a quick HIIT session? I can design a routine for you, all you need is a timer.\" This personalized feedback loop enriches the conversation, making each interaction feel more personal and supportive, enhancing the user's journey towards better managing their stress and anxiety."""
+
 # Load environment variables from .env
 load_dotenv()
 pinecone_api_key = os.getenv("PINECONE_API_KEY")
@@ -92,17 +96,17 @@ for i, entry in enumerate(sample_entries):
     ])
 
 def generate_advice(query):
-    print(f"Original Query: {query}")
+    print(f"original query: {query}")
     query_vector = embed_text(query)
-    print(f"Query Vector: {query_vector[:10]}")  # Print first 10 elements for brevity
+    print(f"query vector: {query_vector[:10]}")  # print first 10 elements for brevity
     try:
-        top_matches = index.query(vector=[query_vector], top_k=3, include_metadata=True)
-    except Exception as e:
-        print(f"Querying Error: {e}")
+        top_matches = index.query(vector=[query_vector], top_k=3, include_metadata=true)
+    except exception as e:
+        print(f"querying error: {e}")
         raise
     print(top_matches)
     context = format_context(top_matches)
-    prompt = f"Based on the following contexts: {context}, how can the user address their issue?"
+    prompt = f"{SYSTEM_PROMPT}\n\nPreviously: {context}\n\nUser: {query}\nElla:"
     response = client.chat.completions.create(
         messages=[
             {"role": "user", "content": prompt},
