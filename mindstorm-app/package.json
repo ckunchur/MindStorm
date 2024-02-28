@@ -28,8 +28,10 @@
     "react-native-paper": "^5.12.3",
     "react-native-reanimated": "~3.6.2",
     "react-native-snap-carousel": "^3.9.1",
+    "react-native-svg": "^15.0.0",
     "react-native-switch-selector": "^2.3.0",
-    "react-native-web": "~0.19.6"
+    "react-native-web": "~0.19.6",
+    "victory-native": "^40.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

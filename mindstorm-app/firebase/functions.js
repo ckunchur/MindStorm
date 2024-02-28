@@ -13,6 +13,23 @@ import {
   updatePassword,
 } from 'firebase/auth';
 
+export const updatePersonalInfo = async (uid, selectedGender, selectedAge, selectedOccupation) => {
+
+
+  try {
+    // Create a reference to the user's personal info document
+    const personalInfoRef = collection(db, `users/${uid}/personalInfo`);
+    await addDoc(personalInfoRef, {
+      gender: selectedGender,
+      age: selectedAge,
+      occupation: selectedOccupation 
+    },{ merge: true });
+    
+    console.log("Personal info updated successfully.");
+  } catch (error) {
+    console.error("Error updating personal info: ", error);
+  }
+};
 
 
 export const signInUser = async (email, password) => {
