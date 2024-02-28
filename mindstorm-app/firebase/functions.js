@@ -1,8 +1,58 @@
 import { useState, useEffect } from 'react';
-import { doc, getDoc, addDoc, getDocs, collection, setDoc } from 'firebase/firestore';
-import { db } from '../firebaseConfig';
+import { doc, getDoc, addDoc, getDocs, collection, setDoc, serverTimestamp } from 'firebase/firestore';
+import { db, auth } from '../firebaseConfig';
+import { Alert } from 'react-native';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  sendPasswordResetEmail,
+  updateProfile,
+  User,
+  updateEmail,
+  updatePassword,
+} from 'firebase/auth';
 
 
+
+export const signInUser = async (email, password) => {
+  const auth = getAuth();
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    console.log("User signed in: ", user.uid);
+
+    return true; // Indicate success
+  } catch (error) {
+    console.error("Error signing in: ", error.message);
+    
+    throw error; // Re-throw the error for handling by the caller
+  }
+};
+
+export const signUpUser = async (name, email, password) => {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    await updateProfile(user, {
+      displayName: name,
+    });
+
+    await setDoc(doc(db, "users", user.uid), {
+      uid: user.uid,
+      name: name,
+    });
+
+    console.log("User created with name: ", user.displayName);
+    return true; // Indicate success
+  } catch (error) {
+    console.error("Error signing up: ", error.message);
+    
+    throw error;
+  }
+};
 export const writeBotSettingsToFirebase = async (userId, bot, memory, tone, age, gender) => {
     try {
         // Construct the document path
