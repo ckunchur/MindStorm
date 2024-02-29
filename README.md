@@ -17,7 +17,7 @@ FastAPI backend is currently being used solely for RAG and chat. We will move th
 If testing both frontend and backend at same time, run each in separate terminals. 
 
 ## Notes:
-- Login is currently not working. Will be resolved ASAP!
+- Login is currently not working (Sign up is!). Will be resolved ASAP!
 - We are currently not working on VoiceAssistant code (will not look updated from sprint 2)
   
 ## Sprint 3
