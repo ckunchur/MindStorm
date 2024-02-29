@@ -34,8 +34,8 @@ const ChipsRow = ({ title, items, onAddItem }) => {
     );
 };
 
-const moods = ['Anxious', 'Overwhelmed', 'Stressed'];
-const topics = ['Eating', 'Work', 'Relationships'];
+const moods = ['Anxious', 'Overwhelmed', 'Stressed', 'Tired'];
+const topics = ['Procrastination', 'Work'];
 
 const handleAddItem = () => console.log('Add item');
 

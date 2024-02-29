@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import { top_moods_topics_prompt, mood_weather_classification_prompt, chatbot_recommendation_prompt } from './prompts';
 const OPENAI_API_KEY = process.env.EXPO_PUBLIC_OPENAI_API_KEY;
 const client = axios.create({
   baseURL: 'https://api.openai.com/v1',
@@ -30,6 +30,85 @@ const chatgptApiCall = async (prompt, messages) => {
         // Assuming you want to append the new response to the existing messages
         const updatedMessages = [...messages, {role: 'assistant', content: answer}];
         return Promise.resolve({success: true, data: updatedMessages});
+    } catch (err) {
+        console.log('error: ', err);
+        return Promise.resolve({success: false, msg: err.message});
+    }
+}
+
+
+const topMoodsAndTopicsWithChatGPT= async (text) => {
+    let prompt = top_moods_topics_prompt;
+    try {
+        const res = await client.post(chatgptUrl, {
+            model: "gpt-3.5-turbo",
+            messages: [
+                {
+                    role: 'system',
+                    content: prompt
+                },
+                {
+                    role: 'user',
+                    content: text
+                }
+            ] 
+        });
+
+        let answerString = res.data.choices[0].message.content.trim();
+        const topMoodsAndTopics = JSON.parse(answerString);
+        return Promise.resolve({success: true, data: topMoodsAndTopics});
+    } catch (err) {
+        console.log('error: ', err);
+        return Promise.resolve({success: false, msg: err.message});
+    }
+}
+
+
+const moodWeatherClassificationWithChatGPT= async (text) => {
+    let prompt = mood_weather_classification_prompt;
+    try {
+        const res = await client.post(chatgptUrl, {
+            model: "gpt-3.5-turbo",
+            messages: [
+                {
+                    role: 'system',
+                    content: prompt
+                },
+                {
+                    role: 'user',
+                    content: text
+                }
+            ] 
+        });
+
+        let answerString = res.data.choices[0].message.content.trim();
+        return Promise.resolve({success: true, data:  parseInt(answerString, 10)});
+    } catch (err) {
+        console.log('error: ', err);
+        return Promise.resolve({success: false, msg: err.message});
+    }
+}
+
+
+const recommendTherapyChatbotWithChatGPT= async (text) => {
+    let prompt = chatbot_recommendation_prompt;
+    try {
+        const res = await client.post(chatgptUrl, {
+            model: "gpt-3.5-turbo",
+            messages: [
+                {
+                    role: 'system',
+                    content: prompt
+                },
+                {
+                    role: 'user',
+                    content: text
+                }
+            ] 
+        });
+
+        let answerString = res.data.choices[0].message.content.trim();
+        return Promise.resolve({success: true, data: answerString});
     } catch (err) {
         console.log('error: ', err);
         return Promise.resolve({success: false, msg: err.message});
