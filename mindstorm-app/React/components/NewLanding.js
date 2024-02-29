@@ -23,10 +23,9 @@ return (
     </TouchableOpacity>
     <View style={styles.loginOption}>
       <Text style={styles.loginText}>Have an account? 
-      <TouchableOpacity onPress={() => navigation.navigate('LogInScreen')}><Text style={styles.loginLinkText}>Log in</Text>
-      </TouchableOpacity>
-
       </Text>
+      <TouchableOpacity onPress={() => navigation.navigate('LogInScreen')}><Text style={styles.loginLinkText}> Log in</Text>
+      </TouchableOpacity>
     </View>
   </View>
 );
@@ -84,6 +83,9 @@ const styles = StyleSheet.create({
   },
   loginOption: {
     marginTop: 23,
+    display: 'flex',
+    flexDirection: 'row'
+
     
   },
   loginText: {
