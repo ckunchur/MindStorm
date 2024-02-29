@@ -24,7 +24,7 @@ Caitlin: I set up our new mobile app; redesigned (Figma)and coded (React Native/
 Janet: I took the code that Sonya wrote for the voice chatbot https://github.com/ckunchur/MindStorm-web and cleaned up parts of it / did some front-end for this chat screen in the new React App that Caitlin set-up. I investigated chatbot history - distinguished that there are two parts to it, the in-convo history and the past entries database. I began demos on streamlit using RAG with langchain on a generated txt file of past entries, and could successfully query this larger context. I reached out to the Mental Health Tech Hub and Stanford Brainstorm but got ghosted. I made a custom therapy iphone background generator using DALL-E, which enhances user prompts for meditative scenes https://chat.openai.com/g/g-dCisq5Z6U-soothing-scene-creator-iphone-aspect-ratio which may not be included if it doesn't fit with the designs
 
 ## Sprint 4
-Sonya: I plan on helping out with the front-end, the GPT prompting, as well as data storage. My focus will be on trying to make the GPT produce the intended output and implementing trigger safeguards for sensitive information such as trauma. I will work on creating different custom GPTs for the respective "buddies" in the app for each need.
+Sonya: 
 
 Caitlin: I plan to continue working on frontend/backend, will help tailor our existing bot buddies and configure a DIY bot for users to define their own speciifc needs. I also plan to help with RAG integration for analysis based on both journal entries and chat history. I will help with integrating/improving our previously created API calls for content and emotional analysis into the app. 
 
