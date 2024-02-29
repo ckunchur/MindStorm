@@ -4,21 +4,15 @@ import { useNavigation } from '@react-navigation/native';
 // import { useOnboardingContext } from "../contexts/onboardingContext";
 // const { setOnboardingComplete } = useOnboardingContext();
 import { Ionicons } from '@expo/vector-icons'; // Import Ionicons
-
+import { updatePersonalInfo } from "../firebase/functions";
 
 
 const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style]}>{title}</Text>;
 const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText, style]}>{message}</Text>;
+uid = "imIQfhTxJteweMhIh88zvRxq5NH2"
 
 export default function PersonalInfoScreen({ setOnboardingComplete }) {
   const navigation = useNavigation();
-  const [gender, setGender] = useState();
-  const [age, setAge] = useState();
-  const [occupation, setOccupation] = useState();
-  const [openGender, setOpenGender] = useState(false);
-  const [openAge, setOpenAge] = useState(false);
-  const [openOccupation, setOpenOccupation] = useState(false);
-
 
   const Chip = ({ label, selected, onSelect }) => (
     <TouchableOpacity
@@ -41,15 +35,13 @@ export default function PersonalInfoScreen({ setOnboardingComplete }) {
     '45-64',
     '65+'
   ];
-  // const ageGroups = [
-  //   'Young Adult (18-23)',
-  //   'Early Adulthood (24-34)',
-  //   'Early Middle Age (35-44)',
-  //   'Late Middle Age (45-64)',
-  //   'Late Adult (65+)'
-  // ];
-  const occupations = ['Student', 'Teacher', 'Retail', 'Technology', 'Law'];
+ 
+  const occupations = ['Student', 'Business', 'Creative', 'Medical', 'Service', 'Technology', 'Education'];
 
+  const handleContinue = async (uid) => {
+    await updatePersonalInfo(uid, selectedGender, selectedAge, selectedOccupation);
+    setOnboardingComplete(true); 
+  };
   return (
     <View style={styles.fullScreenContainer}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
@@ -120,7 +112,7 @@ export default function PersonalInfoScreen({ setOnboardingComplete }) {
           <View style={styles.paginationInactive} />
         </View>
 
-        <TouchableOpacity style={styles.continueButton} onPress={() => setOnboardingComplete(true)}>
+        <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
           <Text style={styles.continueButtonText}>Continue</Text>
         </TouchableOpacity>
       </ImageBackground>

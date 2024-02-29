@@ -4,7 +4,7 @@ import SwitchSelector from "react-native-switch-selector";
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { journalEntries } from '../data/fakeEntries';
-
+import MoodPieChart from './MoodPieChart';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -62,6 +62,7 @@ export default function JournalSummary() {
             >
                 <WelcomeTitle title="Your Mood Forecast" style={styles.title} />
                 <WelcomeMessage message="A summary of the key feelings and topics on your mind now. " style={styles.subheaderText} />
+               {/* <MoodPieChart></MoodPieChart> */}
                 <View style={styles.controls}>
                     <View style={styles.chipsContainer}>
                         <ChipsRow title="Detected Moods" items={moods} onAddItem={handleAddItem} />

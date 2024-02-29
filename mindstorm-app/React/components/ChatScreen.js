@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, ImageBackground, Dimensions, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { apiCall } from './OpenAi';
+import { apiCall } from '../OpenAI/OpenAI';
 import axios from 'axios';
 import { Alert } from 'react-native';
 

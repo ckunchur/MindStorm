@@ -53,6 +53,7 @@ function JournalStackNavigator() {
     <JournalStack.Navigator initialRouteName="JournalScreen" screenOptions={{ headerShown: false }}>
       <JournalStack.Screen name="JournalScreen" component={JournalScreen} />
       <JournalStack.Screen name="JournalSummary" component={JournalSummary} />
+      <JournalStack.Screen name="ChatScreen" component={ChatScreen} />
     </JournalStack.Navigator>
   );
 }
