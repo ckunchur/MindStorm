@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.6)',
     borderRadius: 5,
     paddingHorizontal: 10,
-    color: 'black',
+    color: 'grey',
 
   },
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Image, ImageBackground, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { journalEntries } from '../data/fakeEntries';
 import MoodPieChart from './MoodPieChart';
 const windowWidth = Dimensions.get('window').width;
@@ -26,37 +26,18 @@ const ChipsRow = ({ title, items}) => {
     );
 };
 
-const MoodImage = ({source}) => {
-    return (
-    <Image
-        source={source}
-        style={styles.moodImage}
-        resizeMode="contain"
-    ></Image>
-    )
-}
-const SelectedMoodImage = ({source}) => {
-    return (
-    <Image
-        source={source}
-        style={styles.selectedMoodImage}
-        resizeMode="contain"
-    ></Image>
-    )
-}
+
 
 const weather_moods = {
-    "Stormy": "../assets/stormy-mood.png", 
-"Rainy": "../assets/rainy-mood.png", 
-"Cloudy": "../assets/cloudy-mood.png",
-"Partially Cloudy": "../assets/partial-cloudy-mood.png",
-"Cloudy": "../assets/cloudy-mood.png",
-"Sunny": "../assets/sunny-mood.png",
+    "Stormy": require("../assets/stormy-mood.png"), 
+"Rainy": require("../assets/rainy-mood.png"), 
+"Cloudy": require("../assets/cloudy-mood.png"),
+"Partly Cloudy": require("../assets/partial-cloudy-mood.png"),
+"Cloudy": require("../assets/cloudy-mood.png"),
+"Sunny": require("../assets/sunny-mood.png"),
  }
-const moods = ['Anxious', 'Overwhelmed', 'Stressed', 'Tired'];
-const topics = ['Procrastination', 'Work'];
 
-const handleAddItem = () => console.log('Add item');
+
 
 
 const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style]}>{title}</Text>;
@@ -64,11 +45,19 @@ const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText,
 
 
 export default function JournalSummary() {
-
-    // const { topTopics, topMoods, weatherMood, botRecommendation } = route.params;
-
+    const route = useRoute();
+    const { topTopics, topMoods, weatherMood, botRecommendation } = route.params;
     const navigation = useNavigation();
 
+    const MoodImage = ({mood}) => {
+        return (
+        <Image
+            source={weather_moods[mood]}
+            style={mood === weatherMood ? styles.selectedMoodImage : styles.moodImage  }
+            resizeMode="contain"
+        ></Image>
+        )
+    }
     return (
         <View style={styles.fullScreenContainer}>
 
@@ -82,17 +71,15 @@ export default function JournalSummary() {
             >
                 <WelcomeTitle title="Mood Forecast" style={styles.title} />
                 <WelcomeMessage message="A summary of the key feelings and topics on your mind now. " style={styles.subheaderText} />
-                {/* <MoodImage source={require("../assets/stormy-mood.png")}></MoodImage> */}
-
-                {/* <MoodPieChart></MoodPieChart> */}
+        
                 <View style={styles.forecastView}>
-                <Text style={styles.forecasttitle}>Feeling: Slightly Cloudy</Text>
+                <Text style={styles.forecasttitle}>Feeling: {weatherMood}</Text>
                 <View style={styles.moodRow}>
-                    <MoodImage source={require("../assets/stormy-mood.png")}></MoodImage>
-                    <MoodImage source={require("../assets/rainy-mood.png")}></MoodImage>
-                    <MoodImage source={require("../assets/cloudy-mood.png")}></MoodImage>
-                    <SelectedMoodImage source={require("../assets/partial-cloudy-mood.png")}></SelectedMoodImage>
-                    <MoodImage source={require("../assets/sunny-mood.png")}></MoodImage>
+                    <MoodImage mood="Stormy"></MoodImage>
+                    <MoodImage  mood="Rainy"></MoodImage>
+                    <MoodImage  mood="Cloudy"></MoodImage>
+                    <MoodImage  mood="Partly Cloudy"></MoodImage>
+                    <MoodImage  mood="Sunny"></MoodImage>
 
                 </View>
                 </View>
@@ -100,17 +87,17 @@ export default function JournalSummary() {
 
                 <View style={styles.controls}>
                     <View style={styles.chipsContainer}>
-                        <ChipsRow title="Detected Moods" items={moods} onAddItem={handleAddItem} />
-                        <ChipsRow title="Detected Topics" items={topics} onAddItem={handleAddItem} />
+                        <ChipsRow title="Detected Moods" items={topMoods} />
+                        <ChipsRow title="Detected Topics" items={topTopics} />
                     </View>
                     <View style={styles.predictedTextContainer}>
-                        <Text style={styles.predictedText}> Based on your entry, we think {journalEntries[0].suggestedBuddy} would be a good buddy to talk to!
+                        <Text style={styles.predictedText}> Based on your entry, we think {botRecommendation} would be a good buddy to talk to!
                         </Text>
                         <Image source={require('../assets/lyra-avatar.png')}></Image>
                         <TouchableOpacity style={styles.chatButton}
                             onPress={() => navigation.navigate('ChatScreen')}
                         >
-                            <Text style={[styles.chatButtonText]}>Chat with {journalEntries[0].suggestedBuddy}</Text>
+                            <Text style={[styles.chatButtonText]}>Chat with {botRecommendation}</Text>
                         </TouchableOpacity>
 
                     </View>
@@ -147,18 +134,17 @@ const styles = StyleSheet.create({
     },
     moodImage:{
         width: 35,
-        marginRight: 4,
-        opacity: '0.5'
+        marginRight: 8,
+        opacity: 0.5
     },
     selectedMoodImage:{
         width: 48,
+        marginRight: 8,
         },
     moodRow: {
         display: 'flex',
         flexDirection: 'row',
-        padding: 0,
         alignItems: 'center',
-        justifyContent: 'center',
         height: '30%',
     },
 
@@ -238,27 +224,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
     },
-    continueButton: {
-        backgroundColor: 'white',
-        borderWidth: 1,
-        borderColor: 'white',
-        borderRadius: 99999,
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: windowWidth * 0.5,
-        height: windowHeight * 0.06,
-        position: 'absolute',
-        alignItems: 'center',
-        alignContent: 'center',
-        bottom: 0.12 * windowHeight,
-
-    },
-    continueButtonText: {
-        fontWeight: 'bold',
-        color: '#4A9BB4',
-        textAlign: 'center',
-    },
-
+  
     chipsContainer: {
         alignItems: 'center',
         justifyContent: 'center',
@@ -316,7 +282,7 @@ const styles = StyleSheet.create({
         padding: 8,
         borderColor: 'white',
         borderRadius: 99999,
-        width: windowWidth * 0.4
+        width: windowWidth * 0.5
     },
     buttonRow: {
         flexDirection: 'row',

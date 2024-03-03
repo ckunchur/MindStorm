@@ -1,20 +1,14 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Image, ImageBackground, Dimensions } from 'react-native';
-import SwitchSelector from "react-native-switch-selector";
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { journalEntries } from '../data/fakeEntries';
-
+import MoodPieChart from './MoodPieChart';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const options = [
-    { label: <Ionicons name="text-outline" size={24} color="white" />, value: "keyboard" },  // use 'keyboard' icon here
-    { label: <Ionicons name="mic-outline" size={24} color="white" />, value: "microphone" }  // use 'microphone' icon here
-];
 
-
-const ChipsRow = ({ title, items, onAddItem }) => {
+const ChipsRow = ({ title, items}) => {
     return (
         <View style={styles.chipsRowContainer}>
             <Text style={styles.chipsHeading}>{title}</Text>
@@ -25,60 +19,78 @@ const ChipsRow = ({ title, items, onAddItem }) => {
                             <Text style={styles.chipText}>{item}</Text>
                         </TouchableOpacity>
                     ))}
+                  
                 </View>
             </ScrollView>
         </View>
     );
 };
 
-const moods = ['Anxious', 'Overwhelmed'];
-const topics = ['Eating', 'Work'];
-const rangeOptions = [
-    { label: "Weekly", value: "week" },
-    { label: "Monthly", value: "month" },
-];
-
-// Dummy function for demonstration
-const handleAddItem = () => console.log('Add item');
 
 
+const weather_moods = {
+    "Stormy": require("../assets/stormy-mood.png"), 
+"Rainy": require("../assets/rainy-mood.png"), 
+"Cloudy": require("../assets/cloudy-mood.png"),
+"Partly Cloudy": require("../assets/partial-cloudy-mood.png"),
+"Cloudy": require("../assets/cloudy-mood.png"),
+"Sunny": require("../assets/sunny-mood.png"),
+ }
+
+
+const topMoods = ["Anxious", "Stressed"];
+const topTopics = ["School", "Work", "Procrastination"];
+const weatherMood = "Anxious";
+const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style]}>{title}</Text>;
+const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText, style]}>{message}</Text>;
 
 
 export default function DataScreen() {
-
-
     const navigation = useNavigation();
-
+    const MoodImage = ({mood}) => {
+        return (
+        <Image
+            source={weather_moods[mood]}
+            style={styles.moodImage  }
+            resizeMode="contain"
+        ></Image>
+        )
+    }
     return (
-        <View style={styles.container}>
+        <View style={styles.fullScreenContainer}>
+
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                <Ionicons name="arrow-back-circle-outline" color="#4A9BB4" size={48} />
+            </TouchableOpacity>
             <ImageBackground
-                source={require('../assets/background-beach.png')}
-                style={styles.bgImage}
+                resizeMode="cover"
+                source={require('../assets/journal-background.png')}
+                style={styles.fullScreen}
             >
-                <View style={styles.controls}
-                >
+                <WelcomeTitle title="Emotional Report" style={styles.title} />
+                <WelcomeMessage message="A summary of your key feelings and topics over time" style={styles.subheaderText} />
+        
+                <View style={styles.forecastView}>
+                <Text style={styles.forecasttitle}>Last Feeling: {weatherMood}</Text>
+                <View style={styles.moodRow}>
+                    <MoodImage mood="Stormy"></MoodImage>
+                    <MoodImage  mood="Rainy"></MoodImage>
+                    <MoodImage  mood="Cloudy"></MoodImage>
+                    <MoodImage  mood="Partly Cloudy"></MoodImage>
+                    <MoodImage  mood="Sunny"></MoodImage>
+
+                </View>
+                </View>
 
 
-                    <Text style={styles.heading}>Your Data</Text>
-                    <SwitchSelector
-                        options={rangeOptions}
-                        initial={0}
-                        textColor={'#DAE2EB'}
-                        buttonColor={"#4A9BB4"}
-                        selectedColor={'white'} // the text color of the selected option
-                        backgroundColor={'#1F7D9B'}
-                        onPress={value => console.log(`Call function associated with ${value}`)}
-                        style={styles.switchSelector}
-                    />
+                <View style={styles.controls}>
                     <View style={styles.chipsContainer}>
-                        <ChipsRow title="Detected Moods" items={moods} onAddItem={handleAddItem} />
-                        <ChipsRow title="Detected Topics" items={topics} onAddItem={handleAddItem} />
+                        <ChipsRow title="Top Moods" items={topMoods}  />
+                        <ChipsRow title="Top Topics" items={topTopics} />
                     </View>
                    
+
                 </View>
-               
-
-
 
 
             </ImageBackground>
@@ -87,6 +99,14 @@ export default function DataScreen() {
 };
 
 const styles = StyleSheet.create({
+    fullScreenContainer: {
+        flex: 1, // Make the container fill the whole screen
+    },
+    fullScreen: {
+        flex: 1, // Make the background image fill the whole screen
+        justifyContent: 'center', // Center the children vertically
+        alignItems: 'center', // Center the children horizontally
+    },
     container: {
         flex: 1,
         alignItems: 'center',
@@ -94,19 +114,73 @@ const styles = StyleSheet.create({
         padding: 24,
         backgroundColor: 'blue'
     },
-    controls: {
+    backButton: {
         position: 'absolute',
-        top: 0.2 * windowHeight,
+        top: 80, // Adjusted to be below status bar
+        left: 20,
+        zIndex: 10, // Ensure the back button is above the chat bubbles
+    },
+    moodImage:{
+        width: 35,
+        marginRight: 8,
+        opacity: 0.5
+    },
+    selectedMoodImage:{
+        width: 48,
+        marginRight: 8,
+        },
+    moodRow: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: '30%',
+    },
+
+    title: {
+        position: 'absolute',
+        top: 100,
+        color: "#4A9BB4",
+        fontSize: 32,
+        marginBottom: 16,
+        fontWeight: "700",
+        fontFamily: "Inter, sans-serif",
+    },
+    forecastView: {
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'absolute',
+        top: 196,
+        padding: '8',
         alignItems: 'center',
         justifyContent: 'center',
-
+    },
+    forecasttitle: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        color: 'white'
+    },
+    subheaderText: {
+        position: 'absolute',
+        top: 140,
+        textAlign: 'center',
+        width: '80%',
+        color: "#4A9BB4",
+        fontSize: 16,
+        fontFamily: "Inter, sans-serif",
+        marginBottom: 120, // Adjust the value as needed
+    },
+    controls: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 260
     },
     bgImage: {
         width: windowWidth,
         height: windowHeight * 1.02,
         alignItems: 'center',
         justifyContent: 'center',
-        
+
     },
     heading: {
         fontSize: 24,
@@ -122,42 +196,23 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
 
-    bodyText: {
-        fontSize: 18,
-        padding: 16,
-        color: 'white',
-        backgroundColor: '#4A9BB4',
-        opacity: '0.6',
+    predictedTextContainer: {
+        width: '80%', // Adjust the width as needed
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 24,
+        backgroundColor: "rgba(255, 255, 255, 0.4)",
+        padding: 8,
+        textAlign: "center",
+        fontFamily: "Inter, sans-serif",
     },
     predictedText: {
-        fontSize: 18,
-        padding: 16,
+        fontFamily: "Inter, sans-serif",
+        textAlign: 'center',
         color: 'white',
-        backgroundColor: '#4A9BB4',
-        opacity: '0.6',
-        textAlign: 'center',
+        fontSize: 16,
     },
-    continueButton: {
-        backgroundColor: 'white',
-        borderWidth: 1,
-        borderColor: 'white',
-        borderRadius: 99999,
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: windowWidth * 0.5,
-        height: windowHeight * 0.06,
-        position: 'absolute',
-        alignItems: 'center',
-        alignContent: 'center',
-        bottom: 0.12 * windowHeight,
-
-    },
-    continueButtonText: {
-        fontWeight: 'bold',
-        color: '#4A9BB4',
-        textAlign: 'center',
-    },
-
+  
     chipsContainer: {
         alignItems: 'center',
         justifyContent: 'center',
@@ -167,8 +222,8 @@ const styles = StyleSheet.create({
     chipsRowContainer: {
         alignItems: 'center',
         width: '100%',
-        marginBottom: 20,
-        marginTop: 20,
+        marginBottom: 8,
+        marginTop: 8,
     },
     chipsHeading: {
         fontSize: 18,
@@ -176,13 +231,13 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         marginLeft: 20,
         color: 'white',
-        
+
     },
     chipsContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
         paddingHorizontal: 20,
-        
+
     },
     chip: {
         backgroundColor: '#1F7D9B',
@@ -200,22 +255,22 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
 
-    customizeButtonText: {
+    chatButtonText: {
         fontWeight: 'bold',
         fontSize: 16,
-        color: '#4A9BB4',
+        color: '#7887DA',
         textAlign: 'center',
         marginLeft: 8
     },
-    customizeButton: {
-       
+    chatButton: {
+
         zIndex: 10,
         backgroundColor: 'white',
         margin: 8,
         padding: 8,
         borderColor: 'white',
         borderRadius: 99999,
-        width: windowWidth * 0.4
+        width: windowWidth * 0.5
     },
     buttonRow: {
         flexDirection: 'row',
