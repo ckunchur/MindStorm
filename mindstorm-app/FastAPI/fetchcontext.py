@@ -95,24 +95,37 @@ for i, entry in enumerate(sample_entries):
         }
     ])
 
-def generate_advice(query):
-    print(f"original query: {query}")
+async def generate_advice(session_id, query):
+    # Fetch the session history
+    session_history = await get_session_history(session_id)
+    
+    print(f"Original query: {query}")
     query_vector = embed_text(query)
-    print(f"query vector: {query_vector[:10]}")  # print first 10 elements for brevity
+    print(f"Query vector: {query_vector[:10]}")  # print first 10 elements for brevity
+    
     try:
-        top_matches = index.query(vector=[query_vector], top_k=3, include_metadata=true)
-    except exception as e:
-        print(f"querying error: {e}")
+        top_matches = index.query(vector=[query_vector], top_k=3, include_metadata=True)
+    except Exception as e:
+        print(f"Querying error: {e}")
         raise
-    print(top_matches)
+
+    # Format the retrieved matches into a context string
     context = format_context(top_matches)
-    prompt = f"{SYSTEM_PROMPT}\n\nPreviously: {context}\n\nUser: {query}\nElla:"
-    response = client.chat.completions.create(
-        messages=[
-            {"role": "user", "content": prompt},
-        ],
-        model="gpt-3.5-turbo",
-    )
+    
+    # Combine session history, RAG context, and user query into the prompt
+    prompt = f"{SYSTEM_PROMPT}\n\nSession History:\n{session_history}\n\nRAG Context: {context}\n\nUser: {query}\nElla:"
+    
+    try:
+        response = client.chat.completions.create(
+            messages=[
+                {"role": "user", "content": prompt},
+            ],
+            model="gpt-3.5-turbo",
+        )
+    except Exception as e:
+        print(f"Error in generating response: {e}")
+        raise
+
     return response.choices[0].message.content
 
 
