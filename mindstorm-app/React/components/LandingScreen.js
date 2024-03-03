@@ -18,7 +18,7 @@ return (
       source={require('../assets/cloud-egg-1.png')} 
       style={styles.welcomeImage} 
     />
-    <TouchableOpacity style={styles.getStartButton}  onPress={() => navigation.navigate('CreateAccount')}>
+    <TouchableOpacity style={styles.getStartButton}  onPress={() => navigation.navigate('ChooseGoals')}>
       <Text style={styles.getStartButtonText}>Get Started</Text>
     </TouchableOpacity>
     <View style={styles.loginOption}>

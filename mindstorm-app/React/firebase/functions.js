@@ -13,23 +13,47 @@ import {
   updatePassword,
 } from 'firebase/auth';
 
-export const updatePersonalInfo = async (uid, selectedGender, selectedAge, selectedOccupation) => {
-
-
+export const updatePersonalInfo = async (uid, gender, age, relaxActivities, hobbies) => {
   try {
-    // Create a reference to the user's personal info document
-    const personalInfoRef = collection(db, `users/${uid}/personalInfo`);
-    await addDoc(personalInfoRef, {
-      gender: selectedGender,
-      age: selectedAge,
-      occupation: selectedOccupation 
-    },{ merge: true });
-    
-    console.log("Personal info updated successfully.");
+    const userDocRef = doc(db, `users`, uid);
+
+    // Construct an object with only the fields that are not null
+    let updateData = {};
+    if (gender !== null) updateData.gender = gender;
+    if (age !== null) updateData.age = age;
+    if (relaxActivities !== null) updateData.relaxActivities = relaxActivities;
+    if (hobbies !== null) updateData.hobbies = hobbies;
+
+    // Only call setDoc if there's at least one field to update
+    if (Object.keys(updateData).length > 0) {
+      await setDoc(userDocRef, updateData, { merge: true });
+      console.log("Personal info updated successfully.");
+    } else {
+      console.log("No personal info fields to update.");
+    }
   } catch (error) {
     console.error("Error updating personal info: ", error);
   }
 };
+
+export const updatePersonalGoals = async (uid, goals, struggles) => {
+  try {
+    // Create a reference to the user's personal goals document
+    const userDocRef = doc(db, `users`, uid);
+    let updateData = {};
+    if (goals.length > 0) updateData.goals = goals;
+    if (struggles !== null) updateData.struggles = struggles;
+    if (Object.keys(updateData).length > 0) {
+      await setDoc(userDocRef, updateData, { merge: true });
+      console.log("Personal info updated successfully.");
+    } else {
+      console.log("No personal info fields to update.");
+    }
+  } catch (error) {
+    console.error("Error updating personal info: ", error);
+  }
+};
+
 
 
 export const signInUser = async (email, password) => {
