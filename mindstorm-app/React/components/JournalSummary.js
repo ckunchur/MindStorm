@@ -1,17 +1,11 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Image, ImageBackground, Dimensions } from 'react-native';
-import SwitchSelector from "react-native-switch-selector";
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { journalEntries } from '../data/fakeEntries';
 import MoodPieChart from './MoodPieChart';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-
-const options = [
-    { label: <Ionicons name="text-outline" size={24} color="white" />, value: "keyboard" },  // use 'keyboard' icon here
-    { label: <Ionicons name="mic-outline" size={24} color="white" />, value: "microphone" }  // use 'microphone' icon here
-];
 
 
 const ChipsRow = ({ title, items, onAddItem }) => {
@@ -46,6 +40,7 @@ const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText,
 
 export default function JournalSummary() {
 
+    // const { topTopics, topMoods, weatherMood, botRecommendation } = route.params;
 
     const navigation = useNavigation();
 
@@ -60,7 +55,7 @@ export default function JournalSummary() {
                 source={require('../assets/journal-background.png')}
                 style={styles.fullScreen}
             >
-                <WelcomeTitle title="Your Mood Forecast" style={styles.title} />
+                <WelcomeTitle title="Mood Forecast" style={styles.title} />
                 <WelcomeMessage message="A summary of the key feelings and topics on your mind now. " style={styles.subheaderText} />
                {/* <MoodPieChart></MoodPieChart> */}
                 <View style={styles.controls}>

@@ -1,135 +1,187 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Image, ImageBackground, Dimensions } from 'react-native';
-import SwitchSelector from "react-native-switch-selector";
-import { Ionicons } from '@expo/vector-icons';
+import { React, useState } from "react";
+import { View, StyleSheet, ImageBackground, Text, TextInput, Alert, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+import { collection, serverTimestamp, addDoc } from 'firebase/firestore';
+import { db } from '../firebaseConfig';
+import { topMoodsAndTopicsWithChatGPT, moodWeatherClassificationWithChatGPT, recommendTherapyChatbotWithChatGPT } from '../OpenAI/OpenAI';
 
-const options = [
-    { label: <Ionicons name="text-outline" size={24} color="white" />, value: "keyboard" },  // use 'keyboard' icon here
-    { label: <Ionicons name="mic-outline" size={24} color="white" />, value: "microphone" }  // use 'microphone' icon here
-];
-
+const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style]}>{title}</Text>;
+const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText, style]}>{message}</Text>;
 
 export default function JournalScreen() {
-    const navigation = useNavigation();
-    return (
-        <View style={styles.container}>
-            <ImageBackground
-                source={require('../assets/background-beach.png')}
-                style={styles.bgImage}
-            >
-                <View style={styles.controls}
-                >
+  const navigation = useNavigation();
+  const [entryText, setEntryText] = useState("");
+  const [topTopics, setTopTopics] = useState("");
+  const [topMoods, setTopMoods] = useState("");
+  const [weatherMood, setWeatherMood] = useState("");
+  const [botRecommendation, setBotRecommendation] = useState("");
 
 
-                    <Text style={styles.heading}>What's troubling you today?</Text>
-                    <Text style={styles.subheading}>Speak or type to get your thoughts down!</Text>
-                    <SwitchSelector
-                        options={options}
-                        initial={0}
-                        buttonColor={'#4A9BB4'}
-                        selectedColor={'white'} // the text color of the selected option
-                        backgroundColor={'#1F7D9B'}
-                        onPress={value => console.log(`Call function associated with ${value}`)}
-                        style={styles.switchSelector}
-                    />
-                    <Text style={styles.subheading}>February 14, 2024 2:04 PM</Text>
-
-                </View>
+  const uid = "imIQfhTxJteweMhIh88zvRxq5NH2" // hardcoded for now
 
 
-                <TextInput
-                    style={styles.inputBodyText}
-                    placeholder="Type here..."
-                    placeholderTextColor="white"
-                    multiline
-                />
-                <TouchableOpacity style={styles.continueButton} onPress={() => navigation.navigate('JournalSummary')}>
-                    <Text style={styles.continueButtonText}>Submit</Text>
-                </TouchableOpacity>
+  const handleEntrySubmit = async (uid) => {
+    if (!uid) {
+      Alert.alert("Error", "User ID is missing.");
+      return;
+    }
+    if (!entryText.trim()) {
+      Alert.alert("Error", "Entry text cannot be empty.");
+      return;
+    }
 
-            </ImageBackground>
-        </View>
-    );
+    try {
+      // Run API calls concurrently and wait for all to complete
+      // const results = await Promise.all([
+      //   topMoodsAndTopicsWithChatGPT(entryText),
+      //   moodWeatherClassificationWithChatGPT(entryText),
+      //   recommendTherapyChatbotWithChatGPT(entryText),
+      // ]);
+
+      // // Update state with results from API calls
+      // const [topMoodsAndTopicsResult, moodWeatherClassificationResult, recommendTherapyChatbotResult] = results;
+      // setTopTopics(topMoodsAndTopicsResult.data.topics);
+      // setTopMoods(topMoodsAndTopicsResult.data.moods);
+      // setWeatherMood(moodWeatherClassificationResult.data);
+      // setBotRecommendation(recommendTherapyChatbotResult.data);
+
+
+      // Create a new entry in the "entries" collection for the user
+      const entriesRef = collection(db, `users/${uid}/entries`);
+      await addDoc(entriesRef, {
+        entryText: entryText,
+        // topTopics: topMoodsAndTopicsResult.data.topics,
+        // topMoods: topMoodsAndTopicsResult.data.moods,
+        // weatherMood: moodWeatherClassificationResult.data,
+        // botRecommendation: recommendTherapyChatbotResult.data,
+        timeStamp: serverTimestamp(), // Use Firestore's serverTimestamp for consistency
+      });
+      // Alert.alert("Entry Saved", "Your entry has been successfully saved", [
+      //   {
+      //     text: "OK", onPress: () =>
+      //       navigation.navigate('JournalSummary', {
+      //         topTopics: topMoodsAndTopicsResult.data.topics,
+      //         topMoods: topMoodsAndTopicsResult.data.moods,
+      //         weatherMood: moodWeatherClassificationResult.data,
+      //         botRecommendation: recommendTherapyChatbotResult.data,
+      //       })
+      //   }
+      // ]);
+      Alert.alert("Entry Saved", "Your entry has been successfully saved", [
+        { text: "OK", onPress: () => navigation.navigate('JournalSummary') }
+      ]);
+
+
+
+      setEntryText(""); // Clear the input field after successful submission
+    } catch (error) {
+      console.error("Error submitting entry: ", error);
+      Alert.alert("Submission Failed", "Failed to save your entry. Please try again.");
+    }
+  };
+
+  return (
+    <View style={styles.fullScreenContainer}>
+
+      <ImageBackground
+        resizeMode="cover"
+        source={require('../assets/journal-background.png')}
+        style={styles.fullScreen}
+      >
+        <WelcomeTitle title="What's on your mind?" style={styles.title} />
+        <WelcomeMessage message="This is your mind space. Write down anything you wish!" style={styles.subheaderText} />
+
+        <TextInput
+          placeholder="Start writing here"
+          value={entryText}
+          onChangeText={setEntryText}
+          style={styles.input}
+          placeholderTextColor="grey"
+          multiline={true}
+        />
+
+
+
+
+        <TouchableOpacity style={styles.continueButton} onPress={() => handleEntrySubmit(uid)}>
+          <Text style={styles.continueButtonText}>Submit</Text>
+        </TouchableOpacity>
+      </ImageBackground>
+    </View>
+  )
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 24,
-        backgroundColor: 'blue'
-    },
-    controls: {
-        position: 'absolute',
-        top: 0.2 * windowHeight,
-        alignItems: 'center',
-        justifyContent: 'center',
 
-    },
-    bgImage: {
-        width: windowWidth,
-        height: windowHeight * 1.02,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    heading: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 8,
-        color: 'white',
-        textAlign: 'center',
-    },
-    subheading: {
-        fontSize: 18,
-        color: 'white',
-        textAlign: 'center',
-        marginBottom: 16,
-    },
-    inputTitleText: {
-        fontSize: 24,
-        bottom: 0.12 * windowHeight,
-    },
-    inputBodyText: {
-        padding: 16,
-        fontSize: 18,
-        color: 'white',
-        // backgroundColor: '#4A9BB4',
-        // opacity: 0.6,
-        textAlign: 'center'
-    }
+  fullScreenContainer: {
+    flex: 1, // Make the container fill the whole screen
+  },
+  fullScreen: {
+    flex: 1, // Make the background image fill the whole screen
+    justifyContent: 'center', // Center the children vertically
+    alignItems: 'center', // Center the children horizontally
+  },
+  title: {
+    position: 'absolute',
+    top: 80,
+    color: "#4A9BB4",
+    fontSize: 32,
+    marginBottom: 16,
+    fontWeight: "700",
+    fontFamily: "Inter, sans-serif",
+  },
+  subheaderText: {
+    position: 'absolute',
+    top: 120,
+    textAlign: 'center',
+    width: '60%',
+    color: "#4A9BB4",
+    fontSize: 16,
+    fontFamily: "Inter, sans-serif",
+    marginBottom: 50, // Adjust the value as needed
+  },
 
-    ,
-    continueButton: {
-        backgroundColor: 'white',
-        borderWidth: 1,
-        borderColor: 'white',
-        borderRadius: 99999,
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: windowWidth * 0.5,
-        height: windowHeight * 0.06,
-        position: 'absolute',
-        alignItems: 'center',
-        alignContent: 'center',
-        bottom: 0.12 * windowHeight,
+  inputSubheader: {
+    color: "white",
+    fontSize: 16,
+    fontFamily: "Inter, sans-serif",
+  },
+  inputHeader: {
+    color: "white",
+    fontWeight: 'bold',
+    fontSize: 18,
+    fontFamily: "Inter, sans-serif",
+  },
 
-    },
-    continueButtonText: {
-        fontWeight: 'bold',
-        color: '#4A9BB4',
-        textAlign: 'center',
-        fontSize: 16,
-    },
+  input: {
+    marginTop: 220,
+    height: '50%',
+    width: '80%',
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    color: 'black',
 
-    switchSelector: {
-        width: windowWidth * 0.6,
-        height: 40,
-        marginBottom: 20,
-        // Add more styling as per your design
-    },
+  },
+
+  continueButton: {
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 48,
+    backgroundColor: "#FFF",
+    position: "relative",
+    width: "100%",
+    maxWidth: 327,
+    color: "#4A9BB4",
+    textAlign: "center",
+    marginTop: 36,
+    padding: 18,
+    fontSize: 16,
+    fontWeight: "700",
+    fontFamily: "Inter, sans-serif",
+  },
+  continueButtonText: {
+    color: "#4A9BB4",
+    fontWeight: 'bold'
+  },
 });
-

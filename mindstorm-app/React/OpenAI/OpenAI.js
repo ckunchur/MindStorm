@@ -37,7 +37,7 @@ const chatgptApiCall = async (prompt, messages) => {
 }
 
 
-const topMoodsAndTopicsWithChatGPT= async (text) => {
+export const topMoodsAndTopicsWithChatGPT= async (text) => {
     let prompt = top_moods_topics_prompt;
     try {
         const res = await client.post(chatgptUrl, {
@@ -64,7 +64,7 @@ const topMoodsAndTopicsWithChatGPT= async (text) => {
 }
 
 
-const moodWeatherClassificationWithChatGPT= async (text) => {
+export const moodWeatherClassificationWithChatGPT= async (text) => {
     let prompt = mood_weather_classification_prompt;
     try {
         const res = await client.post(chatgptUrl, {
@@ -90,7 +90,7 @@ const moodWeatherClassificationWithChatGPT= async (text) => {
 }
 
 
-const recommendTherapyChatbotWithChatGPT= async (text) => {
+export const recommendTherapyChatbotWithChatGPT= async (text) => {
     let prompt = chatbot_recommendation_prompt;
     try {
         const res = await client.post(chatgptUrl, {

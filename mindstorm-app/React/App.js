@@ -5,14 +5,12 @@ import 'react-native-gesture-handler';
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-// import LandingScreen from './components/LandingScreen';
 import ChooseGoalsScreen from './components/ChooseGoals';
-import NewLandingScreen from './components/NewLanding';
-import JournalScreen from './components/NewJournalScreen';
+import NewLandingScreen from './components/LandingScreen';
+import JournalScreen from './components/JournalScreen';
 import JournalSummary from './components/JournalSummary';
 import ChatScreen from './components/ChatScreen';
 import CustomizeScreen from './components/CustomizeScreen';
-import HomeScreen from './components/HomeScreen';
 import DataScreen from './components/DataScreen';
 import PersonalInfoScreen from './components/PersonalInfoScreen';
 import ChooseYourBuddy from './components/ChooseBuddy';
@@ -31,9 +29,6 @@ const Tab = createBottomTabNavigator();
 const OnboardingStack = createStackNavigator();
 const ChatStack = createStackNavigator();
 const JournalStack = createStackNavigator();
-const HomeStack = createStackNavigator();
-
-
 
 
 // Stack Navigator for the Chat tab
@@ -57,19 +52,6 @@ function JournalStackNavigator() {
     </JournalStack.Navigator>
   );
 }
-
-
-// function HomeStackNavigator() {
-//   return (
-//     <HomeStack.Navigator initialRouteName="LandingScreen" screenOptions={{ headerShown: false }}>
-//       <HomeStack.Screen name="LandingScreen" component={NewLandingScreen} />
-//       <HomeStack.Screen name="LogInScreen" component={LogInScreen} />
-//       <HomeStack.Screen name="JournalScreen" component={JournalScreen} />
-//       <HomeStack.Screen name="ChooseYourBuddy" component={ChooseYourBuddy} />
-
-//     </HomeStack.Navigator>
-//   );
-// }
 
 function OnboardingStackNavigator({ setOnboardingComplete }) {
   return (
