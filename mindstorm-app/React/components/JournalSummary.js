@@ -8,7 +8,7 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 
-const ChipsRow = ({ title, items, onAddItem }) => {
+const ChipsRow = ({ title, items}) => {
     return (
         <View style={styles.chipsRowContainer}>
             <Text style={styles.chipsHeading}>{title}</Text>
@@ -19,15 +19,40 @@ const ChipsRow = ({ title, items, onAddItem }) => {
                             <Text style={styles.chipText}>{item}</Text>
                         </TouchableOpacity>
                     ))}
-                    {/* <TouchableOpacity onPress={onAddItem} style={[styles.chip, styles.addButton]}>
-                        <Text style={styles.chipText}>+ Item</Text>
-                    </TouchableOpacity> */}
+                  
                 </View>
             </ScrollView>
         </View>
     );
 };
 
+const MoodImage = ({source}) => {
+    return (
+    <Image
+        source={source}
+        style={styles.moodImage}
+        resizeMode="contain"
+    ></Image>
+    )
+}
+const SelectedMoodImage = ({source}) => {
+    return (
+    <Image
+        source={source}
+        style={styles.selectedMoodImage}
+        resizeMode="contain"
+    ></Image>
+    )
+}
+
+const weather_moods = {
+    "Stormy": "../assets/stormy-mood.png", 
+"Rainy": "../assets/rainy-mood.png", 
+"Cloudy": "../assets/cloudy-mood.png",
+"Partially Cloudy": "../assets/partial-cloudy-mood.png",
+"Cloudy": "../assets/cloudy-mood.png",
+"Sunny": "../assets/sunny-mood.png",
+ }
 const moods = ['Anxious', 'Overwhelmed', 'Stressed', 'Tired'];
 const topics = ['Procrastination', 'Work'];
 
@@ -57,26 +82,42 @@ export default function JournalSummary() {
             >
                 <WelcomeTitle title="Mood Forecast" style={styles.title} />
                 <WelcomeMessage message="A summary of the key feelings and topics on your mind now. " style={styles.subheaderText} />
-               {/* <MoodPieChart></MoodPieChart> */}
+                {/* <MoodImage source={require("../assets/stormy-mood.png")}></MoodImage> */}
+
+                {/* <MoodPieChart></MoodPieChart> */}
+                <View style={styles.forecastView}>
+                <Text style={styles.forecasttitle}>Feeling: Slightly Cloudy</Text>
+                <View style={styles.moodRow}>
+                    <MoodImage source={require("../assets/stormy-mood.png")}></MoodImage>
+                    <MoodImage source={require("../assets/rainy-mood.png")}></MoodImage>
+                    <MoodImage source={require("../assets/cloudy-mood.png")}></MoodImage>
+                    <SelectedMoodImage source={require("../assets/partial-cloudy-mood.png")}></SelectedMoodImage>
+                    <MoodImage source={require("../assets/sunny-mood.png")}></MoodImage>
+
+                </View>
+                </View>
+
+
                 <View style={styles.controls}>
                     <View style={styles.chipsContainer}>
                         <ChipsRow title="Detected Moods" items={moods} onAddItem={handleAddItem} />
                         <ChipsRow title="Detected Topics" items={topics} onAddItem={handleAddItem} />
                     </View>
                     <View style={styles.predictedTextContainer}>
-                    <Text style={styles.predictedText}> Based on your entry, we think {journalEntries[0].suggestedBuddy} would be a good buddy to talk to!
-                    </Text>
-                    <Image  source={require('../assets/lyra-avatar.png')}></Image>
-                    <TouchableOpacity style={styles.chatButton}
-                        onPress={() => navigation.navigate('ChatScreen')}
-                    >
-                        <Text style={[styles.chatButtonText]}>Chat with {journalEntries[0].suggestedBuddy}</Text>
-                    </TouchableOpacity>
+                        <Text style={styles.predictedText}> Based on your entry, we think {journalEntries[0].suggestedBuddy} would be a good buddy to talk to!
+                        </Text>
+                        <Image source={require('../assets/lyra-avatar.png')}></Image>
+                        <TouchableOpacity style={styles.chatButton}
+                            onPress={() => navigation.navigate('ChatScreen')}
+                        >
+                            <Text style={[styles.chatButtonText]}>Chat with {journalEntries[0].suggestedBuddy}</Text>
+                        </TouchableOpacity>
 
                     </View>
-                    
+
                 </View>
-             
+
+
             </ImageBackground>
         </View>
     );
@@ -103,21 +144,52 @@ const styles = StyleSheet.create({
         top: 80, // Adjusted to be below status bar
         left: 20,
         zIndex: 10, // Ensure the back button is above the chat bubbles
-       
     },
+    moodImage:{
+        width: 35,
+        marginRight: 4,
+        opacity: '0.5'
+    },
+    selectedMoodImage:{
+        width: 48,
+        },
+    moodRow: {
+        display: 'flex',
+        flexDirection: 'row',
+        padding: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '30%',
+    },
+
     title: {
         position: 'absolute',
-        top: 120,
+        top: 100,
         color: "#4A9BB4",
         fontSize: 32,
         marginBottom: 16,
         fontWeight: "700",
         fontFamily: "Inter, sans-serif",
     },
+    forecastView: {
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'absolute',
+        top: 196,
+        padding: '8',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    forecasttitle: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        color: 'white'
+    },
     subheaderText: {
         position: 'absolute',
-        top: 160,
-       textAlign: 'center',
+        top: 140,
+        textAlign: 'center',
         width: '80%',
         color: "#4A9BB4",
         fontSize: 16,
@@ -127,7 +199,7 @@ const styles = StyleSheet.create({
     controls: {
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 136
+        marginTop: 260
     },
     bgImage: {
         width: windowWidth,
@@ -155,17 +227,17 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 24,
-        backgroundColor: "rgba(255, 255, 255, 0.6)",
-        padding: 16,
+        backgroundColor: "rgba(255, 255, 255, 0.4)",
+        padding: 8,
         textAlign: "center",
         fontFamily: "Inter, sans-serif",
-      },
-      predictedText: {
+    },
+    predictedText: {
         fontFamily: "Inter, sans-serif",
         textAlign: 'center',
-        color: '#7887DA',
+        color: 'white',
         fontSize: 16,
-      },
+    },
     continueButton: {
         backgroundColor: 'white',
         borderWidth: 1,
@@ -196,8 +268,8 @@ const styles = StyleSheet.create({
     chipsRowContainer: {
         alignItems: 'center',
         width: '100%',
-        marginBottom: 20,
-        marginTop: 20,
+        marginBottom: 8,
+        marginTop: 8,
     },
     chipsHeading: {
         fontSize: 18,
@@ -236,7 +308,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginLeft: 8
     },
-   chatButton: {
+    chatButton: {
 
         zIndex: 10,
         backgroundColor: 'white',

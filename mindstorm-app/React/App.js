@@ -4,7 +4,8 @@ import { StyleSheet, SafeAreaView, Platform, View } from 'react-native';
 import 'react-native-gesture-handler';
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
+
 import ChooseGoalsScreen from './components/ChooseGoals';
 import NewLandingScreen from './components/LandingScreen';
 import JournalScreen from './components/JournalScreen';
@@ -55,7 +56,10 @@ function JournalStackNavigator() {
 
 function OnboardingStackNavigator({ setOnboardingComplete }) {
   return (
-    <OnboardingStack.Navigator initialRouteName="LandingScreen" screenOptions={{ headerShown: false }}>
+    <OnboardingStack.Navigator 
+    initialRouteName="LandingScreen"
+     screenOptions={{ headerShown: false,  cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}
+     >
       <OnboardingStack.Screen name="LandingScreen" component={NewLandingScreen} />
       <OnboardingStack.Screen name="LogInScreen">
       {(props) => <LogInScreen {...props} setOnboardingComplete={setOnboardingComplete} />}
@@ -71,7 +75,6 @@ function OnboardingStackNavigator({ setOnboardingComplete }) {
 
 export default function App() {
   const [onboardingComplete, setOnboardingComplete] = useState(false);
-  const size = 25;
   let contentDisplayed;
   // <OnboardingContext.Provider value={{ setOnboardingComplete: setOnboardingComplete }}>
   // {onboardingComplete ? (

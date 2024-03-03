@@ -82,7 +82,7 @@ export const moodWeatherClassificationWithChatGPT= async (text) => {
         });
 
         let answerString = res.data.choices[0].message.content.trim();
-        return Promise.resolve({success: true, data:  parseInt(answerString, 10)});
+        return Promise.resolve({success: true, data:  answerString});
     } catch (err) {
         console.log('error: ', err);
         return Promise.resolve({success: false, msg: err.message});

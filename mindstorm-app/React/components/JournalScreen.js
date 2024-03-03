@@ -17,7 +17,7 @@ export default function JournalScreen() {
   const [botRecommendation, setBotRecommendation] = useState("");
 
 
-  const uid = "imIQfhTxJteweMhIh88zvRxq5NH2" // hardcoded for now
+  const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2" // hardcoded for now
 
 
   const handleEntrySubmit = async (uid) => {
@@ -32,44 +32,44 @@ export default function JournalScreen() {
 
     try {
       // Run API calls concurrently and wait for all to complete
-      // const results = await Promise.all([
-      //   topMoodsAndTopicsWithChatGPT(entryText),
-      //   moodWeatherClassificationWithChatGPT(entryText),
-      //   recommendTherapyChatbotWithChatGPT(entryText),
-      // ]);
+      const results = await Promise.all([
+        topMoodsAndTopicsWithChatGPT(entryText),
+        moodWeatherClassificationWithChatGPT(entryText),
+        recommendTherapyChatbotWithChatGPT(entryText),
+      ]);
 
       // // Update state with results from API calls
-      // const [topMoodsAndTopicsResult, moodWeatherClassificationResult, recommendTherapyChatbotResult] = results;
-      // setTopTopics(topMoodsAndTopicsResult.data.topics);
-      // setTopMoods(topMoodsAndTopicsResult.data.moods);
-      // setWeatherMood(moodWeatherClassificationResult.data);
-      // setBotRecommendation(recommendTherapyChatbotResult.data);
+      const [topMoodsAndTopicsResult, moodWeatherClassificationResult, recommendTherapyChatbotResult] = results;
+      setTopTopics(topMoodsAndTopicsResult.data.topics);
+      setTopMoods(topMoodsAndTopicsResult.data.moods);
+      setWeatherMood(moodWeatherClassificationResult.data);
+      setBotRecommendation(recommendTherapyChatbotResult.data);
 
 
       // Create a new entry in the "entries" collection for the user
       const entriesRef = collection(db, `users/${uid}/entries`);
       await addDoc(entriesRef, {
         entryText: entryText,
-        // topTopics: topMoodsAndTopicsResult.data.topics,
-        // topMoods: topMoodsAndTopicsResult.data.moods,
-        // weatherMood: moodWeatherClassificationResult.data,
-        // botRecommendation: recommendTherapyChatbotResult.data,
+        topTopics: topMoodsAndTopicsResult.data.topics,
+        topMoods: topMoodsAndTopicsResult.data.moods,
+        weatherMood: moodWeatherClassificationResult.data,
+        botRecommendation: recommendTherapyChatbotResult.data,
         timeStamp: serverTimestamp(), // Use Firestore's serverTimestamp for consistency
       });
-      // Alert.alert("Entry Saved", "Your entry has been successfully saved", [
-      //   {
-      //     text: "OK", onPress: () =>
-      //       navigation.navigate('JournalSummary', {
-      //         topTopics: topMoodsAndTopicsResult.data.topics,
-      //         topMoods: topMoodsAndTopicsResult.data.moods,
-      //         weatherMood: moodWeatherClassificationResult.data,
-      //         botRecommendation: recommendTherapyChatbotResult.data,
-      //       })
-      //   }
-      // ]);
       Alert.alert("Entry Saved", "Your entry has been successfully saved", [
-        { text: "OK", onPress: () => navigation.navigate('JournalSummary') }
+        {
+          text: "OK", onPress: () =>
+            navigation.navigate('JournalSummary', {
+              topTopics: topMoodsAndTopicsResult.data.topics,
+              topMoods: topMoodsAndTopicsResult.data.moods,
+              weatherMood: moodWeatherClassificationResult.data,
+              botRecommendation: recommendTherapyChatbotResult.data,
+            })
+        }
       ]);
+      // Alert.alert("Entry Saved", "Your entry has been successfully saved", [
+      //   { text: "OK", onPress: () => navigation.navigate('JournalSummary') }
+      // ]);
 
 
 
@@ -103,7 +103,7 @@ export default function JournalScreen() {
 
 
 
-        <TouchableOpacity style={styles.continueButton} onPress={() => handleEntrySubmit(uid)}>
+        <TouchableOpacity style={styles.continueButton} onPress={() => handleEntrySubmit(testUser)}>
           <Text style={styles.continueButtonText}>Submit</Text>
         </TouchableOpacity>
       </ImageBackground>
