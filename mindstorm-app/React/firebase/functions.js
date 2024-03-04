@@ -161,36 +161,32 @@ export const readChatHistoryFromFirebase = async (userId) => {
 };
 
 
-export const ExtractEntriesFromFirebase = (userId) => {
-  const [entryList, setEntryList] = useState([]);
-  const [loading, setLoading] = useState(true);
+export const ExtractEntriesFromFirebase = async (userId) => {
+  let entriesData = []; // This will hold the formatted entries data
+  try {
+    // Reference to the "entries" subcollection of a "users" document
+    const entriesCollectionRef = collection(db, 'users', userId, 'entries');
 
-  useEffect(() => {
-    const getEntries = async () => {
-      try {
-        const entriesRef = collection(db, 'users', userId, 'entries');
-        const entriesSnapshot = await getDocs(entriesRef);
+    // Retrieve all documents from the "entries" subcollection
+    const querySnapshot = await getDocs(entriesCollectionRef);
 
-        const entries = entriesSnapshot.docs.map((entryDoc) => ({
-          
-          id: entryDoc.id,
-          ...entryDoc.data(),
-        }));
-
-        setEntryList(entries);
-        console.log(entries);
-      } catch (error) {
-        console.error('Failed to fetch entries:', error);
-      } finally {
-        setLoading(false);
+    // Loop through each document in the "entries" subcollection
+    querySnapshot.forEach((doc) => {
+      const entry = doc.data();
+      // Assuming each entry document has an "entryText" field you want to extract
+      if (entry && entry.entryText) {
+        // Push the entry text and any other relevant data you need
+        entriesData.push({
+          id: doc.id, // the document ID
+          text: entry.entryText, // the entry text
+          // You can add more fields here if necessary, like `emotions` or `timestamp`
+        });
       }
-    };
+    });
 
-    if (userId) getEntries();
-  }, [userId]);
-
-  return entryList;
+    console.log("Extracted entries data: ", entriesData);
+    return entriesData; // Return the array of entries data
+  } catch (e) {
+    console.error("Error extracting entries from Firestore: ", e);
+  }
 };
-
-
-

@@ -64,7 +64,7 @@ export default function ChatScreen() {
   const handleBackPress = () => {
     //setSessionID(""); // Reset session ID
     //setChatHistory([]); // Optionally clear chat history if starting fresh next time
-    const { entryList } = ExtractEntriesFromFirebase(testUser);
+    const entryList  = ExtractEntriesFromFirebase(testUser);
     console.log(entryList)
     navigation.goBack();
   };
