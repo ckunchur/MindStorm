@@ -8,9 +8,9 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const colors = ['#1a75ad', '#a47dff', '#335c9e', 'skyblue'];
-const ChipsRow = ({ title, items }) => {
+const ChartRow = ({ title, items }) => {
     return (
-        <View style={styles.chipsRowContainer}>
+        <View style={styles.chartRowContainer}>
            
             <DonutChart
                 size={160}
@@ -102,8 +102,8 @@ export default function DataScreen() {
                 <View style={styles.controls}>
 
                     <View style={styles.chipsContainer}>
-                        <ChipsRow title="Top Moods" items={topMoods} />
-                        <ChipsRow title="Top Topics" items={topTopics} />
+                        <ChartRow title="Top Moods" items={topMoods} />
+                        <ChartRow title="Top Topics" items={topTopics} />
                     </View>
 
 
@@ -156,7 +156,6 @@ const styles = StyleSheet.create({
     },
     moodWeatherText: {
         color: 'white',
-        opacity: 1,
         paddingBottom: 16,
         fontWeight: 'bold'
 
@@ -172,7 +171,7 @@ const styles = StyleSheet.create({
 
     title: {
         position: 'absolute',
-        top: 100,
+        top: 110,
         color: "#4A9BB4",
         fontSize: 32,
         marginBottom: 16,
@@ -196,7 +195,7 @@ const styles = StyleSheet.create({
     },
     subheaderText: {
         position: 'absolute',
-        top: 140,
+        top: 148,
         textAlign: 'center',
         width: '80%',
         color: "#4A9BB4",
@@ -251,11 +250,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    chipsRowContainer: {
+    chartRowContainer: {
         alignItems: 'center',
         width: '100%',
         marginBottom: 8,
+        padding: 4,
+        borderRadius: 16,
         marginTop: 8,
+        backgroundColor: 'rgba(0, 255, 255, 0.2)',
         display: 'flex',
         flexDirection: 'row'
     },

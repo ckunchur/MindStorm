@@ -93,19 +93,7 @@ export default function App() {
               } else if (route.name === 'Insights') {
                 iconName = focused ? 'bar-chart' : 'bar-chart-outline';
               }
-              if (route.name === 'Chat') {
-                return <View style={{
-                  width: 80,
-                  height: 80,
-                  borderRadius: 35,
-                  backgroundColor: 'white',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginBottom: 30,
-                }}>
-                  <Ionicons name={iconName} size={44} color="#4A9BB4" />
-                </View>
-              }
+             
               return <Ionicons name={iconName} size={32} color="#4A9BB4" />;
             },
           })}
