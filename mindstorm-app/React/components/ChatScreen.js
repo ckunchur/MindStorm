@@ -5,8 +5,7 @@ import { apiCall } from '../OpenAI/OpenAI';
 import axios from 'axios';
 import { Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { writeChatHistoryToFirebase } from '../firebase/functions';
-import { ExtractEntriesFromFirebase } from '../firebase/functions';
+import { writeChatHistoryToFirebase, ExtractUserProfileFromFirebase} from '../firebase/functions';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import { v1 as uuidv1, v3 as uuidv3, v5 as uuidv5, NIL as NIL_UUID } from 'uuid';
@@ -62,10 +61,8 @@ export default function ChatScreen() {
   };
 
   const handleBackPress = () => {
-    //setSessionID(""); // Reset session ID
-    //setChatHistory([]); // Optionally clear chat history if starting fresh next time
-    const entryList  = ExtractEntriesFromFirebase(testUser);
-    console.log(entryList)
+    setSessionID(""); // Reset session ID
+    setChatHistory([]); // Optionally clear chat history if starting fresh next time
     navigation.goBack();
   };
 
@@ -119,7 +116,7 @@ export default function ChatScreen() {
             </TouchableOpacity>
 
         <ScrollView style={styles.chatContainer}>
-          {chatHistory.map((msg, index) => (
+          {chatHistory.slice(1).map((msg, index) => (
             <View key={index} style={[styles.bubble, msg.role === 'user' ? styles.userBubble : styles.aiBubble]}>
               <Text style={{ color: msg.role === 'user' ? '#ffffff' : '#000000' }}>{msg.content}</Text>
             </View>
