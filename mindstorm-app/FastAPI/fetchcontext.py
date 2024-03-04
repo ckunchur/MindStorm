@@ -95,16 +95,20 @@ for i, entry in enumerate(sample_entries):
         }
     ])
 
-async def generate_advice(session_id, query):
-    # Fetch the session history
-    session_history = await get_session_history(session_id)
+
+async def generate_advice(session_history, query):
+    # Concatenate the session history and the user's current query
+    combined_text = f"{session_history}\n{query}"
+    
+    # Embed the combined text to get a vector for RAG
+    combined_vector = embed_text(combined_text)
     
     print(f"Original query: {query}")
-    query_vector = embed_text(query)
-    print(f"Query vector: {query_vector[:10]}")  # print first 10 elements for brevity
+    print(f"Combined vector: {combined_vector[:10]}")  # print first 10 elements for brevity
     
+    # Retrieve context using RAG with the combined vector
     try:
-        top_matches = index.query(vector=[query_vector], top_k=3, include_metadata=True)
+        top_matches = index.query(vector=combined_vector, top_k=3, include_metadata=True)
     except Exception as e:
         print(f"Querying error: {e}")
         raise
@@ -112,19 +116,17 @@ async def generate_advice(session_id, query):
     # Format the retrieved matches into a context string
     context = format_context(top_matches)
     
-    # Combine session history, RAG context, and user query into the prompt
+    # Combine session history, RAG context, and user query into the prompt for the language model
     prompt = f"{SYSTEM_PROMPT}\n\nSession History:\n{session_history}\n\nRAG Context: {context}\n\nUser: {query}\nElla:"
     
-    try:
-        response = client.chat.completions.create(
-            messages=[
-                {"role": "user", "content": prompt},
-            ],
-            model="gpt-3.5-turbo",
-        )
-    except Exception as e:
-        print(f"Error in generating response: {e}")
-        raise
+    # Generate a response using the language model
+    response = client.chat.completions.create(
+        messages=[
+            {"role": "user", "content": prompt},
+        ],
+        model="gpt-3.5-turbo",
+    )
+
 
     return response.choices[0].message.content
 

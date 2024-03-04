@@ -127,6 +127,7 @@ export const writeChatHistoryToFirebase = async (userId, history) => {
     }
 };
 
+
 export const ExtractEntriesFromFirebase = (userId) => {
   const [entryList, setEntryList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -134,23 +135,20 @@ export const ExtractEntriesFromFirebase = (userId) => {
   useEffect(() => {
     const getEntries = async () => {
       try {
-        const userRef = doc(db, 'users', userId);
-        const userDoc = await getDoc(userRef);
+        // Correctly using the `db` instance here
+        const entriesRef = collection(db, 'users', userId, 'entries');
+        const entriesSnapshot = await getDocs(entriesRef);
 
-        if (userDoc.exists()) {
-          const entriesRef = collection(userRef, 'entries');
-          const entriesSnapshot = await getDocs(entriesRef);
+        const entries = entriesSnapshot.docs.map((entryDoc) => ({
+          
+          id: entryDoc.id,
+          ...entryDoc.data(),
+        }));
 
-          const entries = entriesSnapshot.docs.map((entryDoc) => ({
-            ...entryDoc.data(),
-          }));
-
-          setEntryList(entries);
-        } else {
-          console.error('User not found');
-        }
+        setEntryList(entries);
+        console.log(entries);
       } catch (error) {
-        console.error('Error fetching entries', error);
+        console.error('Failed to fetch entries:', error);
       } finally {
         setLoading(false);
       }
@@ -161,3 +159,4 @@ export const ExtractEntriesFromFirebase = (userId) => {
 
   return { entryList, loading };
 };
+
