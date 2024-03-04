@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { apiCall } from '../OpenAI/OpenAI';
 import axios from 'axios';
 import { Alert } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -78,11 +79,11 @@ export default function ChatScreen() {
   };
   return (
     <View style={styles.container}>
-      <ImageBackground source={require('../assets/background-beach.png')} style={styles.bgImage}>
+      <ImageBackground source={require('../assets/onboarding-background.png')} style={styles.bgImage}>
 
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Text>Back</Text>
-        </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                <Ionicons name="arrow-back-circle-outline" color="white" size={48} />
+            </TouchableOpacity>
 
         <ScrollView style={styles.chatContainer}>
           {chatHistory.map((msg, index) => (
@@ -99,9 +100,10 @@ export default function ChatScreen() {
             value={userInput}
             placeholder="Type your message..."
           />
-          <TouchableOpacity onPress={handleSend} style={styles.sendButton}>
-            <Text style={styles.sendButtonText}>Send</Text>
-          </TouchableOpacity>
+          
+          <TouchableOpacity onPress={handleSend}>
+                <Ionicons name="send-outline" color="white" size={36} />
+            </TouchableOpacity>
         </View>
 
       </ImageBackground>
@@ -120,16 +122,13 @@ const styles = StyleSheet.create({
     width: windowWidth,
     height: windowHeight,
     padding: 20,
-  },
+  },  
   backButton: {
     position: 'absolute',
-    top: 80, // Adjusted for visibility
+    top: 80, // Adjusted to be below status bar
     left: 20,
-    backgroundColor: "#DDD",
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 5,
-  },
+    zIndex: 10, // Ensure the back button is above the chat bubbles
+},
   testButton: {
     // Style for the Test Hello World Button
     backgroundColor: '#4CAF50', // Green background
@@ -146,17 +145,18 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
+    marginBottom: 40,
+
   },
   input: {
-    flex: 1,
+    flex: 1, 
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
     marginRight: 10,
+    borderRadius: 24,
     paddingHorizontal: 10,
     backgroundColor: "#FFF", // Set input background to white
-    marginBottom: 40
   },
   sendButton: {
     backgroundColor: '#007bff',

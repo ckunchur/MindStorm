@@ -15,8 +15,8 @@ export const buddies = [
         "speciality": "Productivity",
         "image": require("../assets/nimbus.png"),
         "background": require("../assets/nimbus-background.png"),
-        "lightColor": "#FF8D94",
-        "darkColor": "#FF5E67",
+        "lightColor": "#7887DA",
+        "darkColor": "#4D64E4",
         "text": "Stuck in a rut? Need help breaking your tasks into bit-size chunks? Nimbus is here to help!"
     }
 ];
