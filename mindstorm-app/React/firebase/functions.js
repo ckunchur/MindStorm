@@ -113,18 +113,46 @@ export const writeBotSettingsToFirebase = async (userId, bot, memory, tone, age,
     }
 };
 
-export const writeChatHistoryToFirebase = async (userId, history) => {
-    try {
-        // Ensure the collection path is correctly constructed
-        const chatsCollectionRef = collection(db, `users/${userId}/chats`);
-        const docRef = await addDoc(chatsCollectionRef, {
-            chatHistory: history,
-            timestamp: new Date() // Adds a timestamp
-        });
-        console.log("Document written with ID: ", docRef.id);
-    } catch (e) {
-        console.error("Error adding document: ", e);
-    }
+export const writeChatHistoryToFirebase = async (userId, sessionID, history) => {
+  if (!sessionID) {
+    console.error("Invalid sessionID");
+    return;
+  }
+  try {
+      // Reference to a specific document in the "chats" subcollection of a "users" document
+      const docRef = doc(db, `users/${userId}/chats`, sessionID);
+
+      // Set the document with the provided data, merging it into an existing document if one exists
+      await setDoc(docRef, {
+          chatHistory: history,
+          timestamp: new Date() // Adds a timestamp
+      }, { merge: true });
+
+      console.log("Document written with ID: ", docRef.id);
+  } catch (e) {
+      console.error("Error adding or updating document: ", e);
+  }
+};
+
+export const readChatHistoryFromFirebase = async (userId) => {
+  if (!sessionID) {
+    console.error("Invalid sessionID");
+    return;
+  }
+  try {
+      // Reference to a specific document in the "chats" subcollection of a "users" document
+      const docRef = doc(db, `users/${userId}/chats`, sessionID);
+
+      // Set the document with the provided data, merging it into an existing document if one exists
+      await setDoc(docRef, {
+          chatHistory: history,
+          timestamp: new Date() // Adds a timestamp
+      }, { merge: true });
+
+      console.log("Document written with ID: ", docRef.id);
+  } catch (e) {
+      console.error("Error adding or updating document: ", e);
+  }
 };
 
 
