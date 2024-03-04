@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { collection, serverTimestamp, addDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { topMoodsAndTopicsWithChatGPT, moodWeatherClassificationWithChatGPT, recommendTherapyChatbotWithChatGPT } from '../OpenAI/OpenAI';
+// import Sound from 'react-native-sound';
 
 const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style]}>{title}</Text>;
 const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText, style]}>{message}</Text>;
@@ -67,12 +68,6 @@ export default function JournalScreen() {
             })
         }
       ]);
-      // Alert.alert("Entry Saved", "Your entry has been successfully saved", [
-      //   { text: "OK", onPress: () => navigation.navigate('JournalSummary') }
-      // ]);
-
-
-
       setEntryText(""); // Clear the input field after successful submission
     } catch (error) {
       console.error("Error submitting entry: ", error);
