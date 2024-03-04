@@ -15,6 +15,8 @@ import { buddies } from '../data/chatSettings';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style]}>{title}</Text>;
+const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText, style]}>{message}</Text>;
 
 
 export default function ChooseYourBuddy() {
@@ -29,10 +31,11 @@ export default function ChooseYourBuddy() {
                         <Image source={item.image} style={styles.buddyImage}></Image>
                     </TouchableOpacity>
                 </View>
-                
+
+                <WelcomeMessage message={buddies[activeSlide].speciality} style={styles.subheaderText} />
+
                 <View style={[
                     styles.descriptionBox,
-                    { backgroundColor: buddies[activeSlide].lightColor }
                 ]}>
                     <Text style={styles.descriptionText}>{buddies[activeSlide].text}</Text>
                 </View>
@@ -44,11 +47,13 @@ export default function ChooseYourBuddy() {
     return (
         <View style={styles.container}>
             <ImageBackground
+                resizeMode="cover"
                 source={buddies[activeSlide].background}
-                style={styles.bgImage}
+                style={styles.fullScreen}
             >
-                <Text style={styles.heading}>Choose Your Chat Buddy</Text>
-                <Text style={styles.subheading}>{buddies[activeSlide].speciality}</Text>
+                <WelcomeTitle title="What's your focus?" style={styles.title} />
+               
+
                 <Carousel
                     data={buddies}
                     renderItem={renderCarouselItem}
@@ -57,24 +62,24 @@ export default function ChooseYourBuddy() {
                     itemWidth={300}
                     style={styles.carousel}
                 />
-                <View style={styles.buttonRow}>
+                <View style={styles.buttonCol}>
 
 
-<TouchableOpacity style={styles.customizeButton}
-    onPress={() => navigation.navigate('ChatScreen')}
->
-    <Ionicons name="chatbubbles-outline" size={24} />
-    <Text style={[styles.customizeButtonText]}>Chat</Text>
-</TouchableOpacity>
-<TouchableOpacity style={styles.customizeButton}
-    onPress={() => navigation.navigate('CustomizeScreen', { activeSlide: activeSlide })}
+                    <TouchableOpacity style={styles.customizeButton}
+                        onPress={() => navigation.navigate('ChatScreen')}
+                    >
+                        <Ionicons name="chatbubbles-outline" size={24} />
+                        <Text style={[styles.customizeButtonText]}>Chat with {buddies[activeSlide].name}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.customizeButton}
+                        onPress={() => navigation.navigate('CustomizeScreen', { activeSlide: activeSlide })}
 
->
-    <Ionicons name="hammer-outline" size={24} />
-    <Text style={[styles.customizeButtonText]}>Customize</Text>
-</TouchableOpacity>
+                    >
+                        <Ionicons name="hammer-outline" size={24} />
+                        <Text style={[styles.customizeButtonText]}>Customize</Text>
+                    </TouchableOpacity>
 
-</View>
+                </View>
             </ImageBackground>
         </View>
     );
@@ -83,12 +88,28 @@ export default function ChooseYourBuddy() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 24,
-        backgroundColor: 'blue',
     },
-    buddyImage: {},
+    fullScreen: {
+        flex: 1, // Make the background image fill the whole screen
+        justifyContent: 'center', // Center the children vertically
+        alignItems: 'center', // Center the children horizontally
+    },
+    title: {
+        position: 'absolute',
+        top: 80,
+        color: "#4A9BB4",
+        fontSize: 32,
+        marginBottom: 16,
+        fontWeight: "700",
+    },
+    subheaderText: {
+        textAlign: 'center',
+        color: "white",
+        fontSize: 20,
+        fontWeight: 'bold',
+
+    },
+
     bgImage: {
         width: windowWidth,
         height: windowHeight * 1.02,
@@ -111,17 +132,18 @@ const styles = StyleSheet.create({
         marginBottom: 16,
         fontWeight: 'bold'
     },
-    slide: {},
-    carousel: {},
+    slide: {marginTop: 160},
     descriptionBox: {
-        borderRadius: 5,
+        borderRadius: 32,
         padding: 20,
         margin: 16,
-        opacity: 0.9,
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
     },
     descriptionText: {
         color: 'white',
         textAlign: 'center',
+        marginBottom: '20',
+        fontSize: 16
     },
 
     customizeButtonText: {
@@ -141,11 +163,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: windowWidth * 0.4
     },
-    buttonRow: {
-        flexDirection: 'row',
+    buttonCol: {
         position: 'absolute',
-        bottom: 100, // Adjusted to be below status bar
-        flexDirection: "row",
+        bottom: 32, // Adjusted to be below status bar
         alignItems: 'center',
         justifyContent: 'center',
 
