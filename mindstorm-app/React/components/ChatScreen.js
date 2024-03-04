@@ -6,6 +6,7 @@ import axios from 'axios';
 import { Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { writeChatHistoryToFirebase } from '../firebase/functions';
+import { ExtractEntriesFromFirebase } from '../firebase/functions';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import { v1 as uuidv1, v3 as uuidv3, v5 as uuidv5, NIL as NIL_UUID } from 'uuid';
@@ -27,6 +28,7 @@ const generateRandomSessionID = () => {
 export default function ChatScreen() {
   const navigation = useNavigation();
   const [userInput, setUserInput] = useState('');
+  const [shouldFetchEntries, setShouldFetchEntries] = useState(false);
   
   // Initialize chatHistory as an empty array 
   const [chatHistory, setChatHistory] = useState([]);
@@ -60,8 +62,10 @@ export default function ChatScreen() {
   };
 
   const handleBackPress = () => {
-    setSessionID(""); // Reset session ID
-    setChatHistory([]); // Optionally clear chat history if starting fresh next time
+    //setSessionID(""); // Reset session ID
+    //setChatHistory([]); // Optionally clear chat history if starting fresh next time
+    const { entryList } = ExtractEntriesFromFirebase(testUser);
+    console.log(entryList)
     navigation.goBack();
   };
 

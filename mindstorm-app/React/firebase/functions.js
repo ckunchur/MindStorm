@@ -163,7 +163,6 @@ export const ExtractEntriesFromFirebase = (userId) => {
   useEffect(() => {
     const getEntries = async () => {
       try {
-        // Correctly using the `db` instance here
         const entriesRef = collection(db, 'users', userId, 'entries');
         const entriesSnapshot = await getDocs(entriesRef);
 
@@ -185,6 +184,8 @@ export const ExtractEntriesFromFirebase = (userId) => {
     if (userId) getEntries();
   }, [userId]);
 
-  return { entryList, loading };
+  return entryList;
 };
+
+
 
