@@ -32,7 +32,7 @@ export default function ChooseYourBuddy() {
                     </TouchableOpacity>
                 </View>
 
-                <WelcomeMessage message={buddies[activeSlide].speciality} style={styles.subheaderText} />
+                <Text style={styles.subheaderText}>{buddies[activeSlide].name}</Text>
 
                 <View style={[
                     styles.descriptionBox,
@@ -51,7 +51,7 @@ export default function ChooseYourBuddy() {
                 source={buddies[activeSlide].background}
                 style={styles.fullScreen}
             >
-                <WelcomeTitle title="What's your focus?" style={styles.title} />
+                <Text style={styles.title}> {buddies[activeSlide].speciality}</Text>
                
 
                 <Carousel
@@ -69,14 +69,16 @@ export default function ChooseYourBuddy() {
                         onPress={() => navigation.navigate('ChatScreen')}
                     >
                         <Ionicons name="chatbubbles-outline" size={24} />
-                        <Text style={[styles.customizeButtonText]}>Chat with {buddies[activeSlide].name}</Text>
+                        <Text style={{ ...styles.customizeButtonText, color: buddies[activeSlide].lightColor }}>Chat with {buddies[activeSlide].name}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.customizeButton}
                         onPress={() => navigation.navigate('CustomizeScreen', { activeSlide: activeSlide })}
 
                     >
                         <Ionicons name="hammer-outline" size={24} />
-                        <Text style={[styles.customizeButtonText]}>Customize</Text>
+                        <Text style={{ ...styles.customizeButtonText, color: buddies[activeSlide].lightColor }}>
+                            Customize</Text>
+
                     </TouchableOpacity>
 
                 </View>
@@ -150,14 +152,16 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#4A9BB4',
         textAlign: 'center',
-        marginLeft: 8
+        marginLeft: 4
     },
     customizeButton: {
         backgroundColor: 'white',
         margin: 8,
         padding: 8,
+        paddingLeft: 12,
+        paddingRight: 12,
         borderColor: 'white',
-        borderRadius: 99999,
+        borderRadius: 16,
         flexDirection: "row",
         alignItems: 'center',
         justifyContent: 'center',
