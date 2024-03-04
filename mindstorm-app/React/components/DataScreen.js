@@ -3,23 +3,38 @@ import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Image,
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { journalEntries } from '../data/fakeEntries';
-import MoodPieChart from './MoodPieChart';
+import DonutChart from './DonutChart';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-
-const ChipsRow = ({ title, items}) => {
+const colors = ['#1a75ad', '#a47dff', '#335c9e', 'skyblue'];
+const ChipsRow = ({ title, items }) => {
     return (
         <View style={styles.chipsRowContainer}>
+           
+            <DonutChart
+                size={160}
+                strokeWidth={25}
+                sections={[
+                    { percentage: 25, color: colors[0] },
+                    { percentage: 15, color: colors[1] },
+                    { percentage: 35, color: colors[2]},
+                    { percentage: 25, color: colors[3] },
+                ]}
+            />
+            <ScrollView vertical showsHorizontalScrollIndicator={false}>
             <Text style={styles.chipsHeading}>{title}</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <View style={styles.chipsContainer}>
                     {items.map((item, index) => (
-                        <TouchableOpacity key={index} style={styles.chip}>
+                        <TouchableOpacity key={index} 
+                        style={[
+                            styles.chip,
+                            { backgroundColor: colors[index] }
+                          ]}>
                             <Text style={styles.chipText}>{item}</Text>
                         </TouchableOpacity>
                     ))}
-                  
+
                 </View>
             </ScrollView>
         </View>
@@ -29,13 +44,13 @@ const ChipsRow = ({ title, items}) => {
 
 
 const weather_moods = {
-    "Stormy": require("../assets/stormy-mood.png"), 
-"Rainy": require("../assets/rainy-mood.png"), 
-"Cloudy": require("../assets/cloudy-mood.png"),
-"Partly Cloudy": require("../assets/partial-cloudy-mood.png"),
-"Cloudy": require("../assets/cloudy-mood.png"),
-"Sunny": require("../assets/sunny-mood.png"),
- }
+    "Stormy": require("../assets/stormy-mood.png"),
+    "Rainy": require("../assets/rainy-mood.png"),
+    "Cloudy": require("../assets/cloudy-mood.png"),
+    "Partly Cloudy": require("../assets/partial-cloudy-mood.png"),
+    "Cloudy": require("../assets/cloudy-mood.png"),
+    "Sunny": require("../assets/sunny-mood.png"),
+}
 
 
 const topMoods = ["Anxious", "Stressed"];
@@ -47,13 +62,16 @@ const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText,
 
 export default function DataScreen() {
     const navigation = useNavigation();
-    const MoodImage = ({mood}) => {
+    const MoodImage = ({ mood, date }) => {
         return (
-        <Image
-            source={weather_moods[mood]}
-            style={styles.moodImage  }
-            resizeMode="contain"
-        ></Image>
+            <View style={styles.moodWeatherView}>
+                <Image
+                    source={weather_moods[mood]}
+                    style={styles.moodImage}
+                    resizeMode="contain"
+                ></Image>
+                <Text style={styles.moodWeatherText}>{date}</Text>
+            </View>
         )
     }
     return (
@@ -69,26 +87,25 @@ export default function DataScreen() {
             >
                 <WelcomeTitle title="Emotional Report" style={styles.title} />
                 <WelcomeMessage message="A summary of your key feelings and topics over time" style={styles.subheaderText} />
-        
+
                 <View style={styles.forecastView}>
-                <Text style={styles.forecasttitle}>Last Feeling: {weatherMood}</Text>
-                <View style={styles.moodRow}>
-                    <MoodImage mood="Stormy"></MoodImage>
-                    <MoodImage  mood="Rainy"></MoodImage>
-                    <MoodImage  mood="Cloudy"></MoodImage>
-                    <MoodImage  mood="Partly Cloudy"></MoodImage>
-                    <MoodImage  mood="Sunny"></MoodImage>
+                    <View style={styles.moodRow}>
+                        <MoodImage mood="Stormy" date="Today"></MoodImage>
+                        <MoodImage mood="Rainy" date="03/02"></MoodImage>
+                        <MoodImage mood="Cloudy" date="03/01"></MoodImage>
+                        <MoodImage mood="Partly Cloudy" date="02/29"></MoodImage>
+                        <MoodImage mood="Sunny" date="02/28"></MoodImage>
 
+                    </View>
                 </View>
-                </View>
-
 
                 <View style={styles.controls}>
+
                     <View style={styles.chipsContainer}>
-                        <ChipsRow title="Top Moods" items={topMoods}  />
+                        <ChipsRow title="Top Moods" items={topMoods} />
                         <ChipsRow title="Top Topics" items={topTopics} />
                     </View>
-                   
+
 
                 </View>
 
@@ -120,15 +137,32 @@ const styles = StyleSheet.create({
         left: 20,
         zIndex: 10, // Ensure the back button is above the chat bubbles
     },
-    moodImage:{
-        width: 35,
-        marginRight: 8,
-        opacity: 0.5
+    moodWeatherView: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 8,
+        margin: 4,
+        backgroundColor: 'rgba(0, 0, 0, 0.1)"',
+        borderRadius: 12,
+        marginTop: 20
+
     },
-    selectedMoodImage:{
+    moodImage: {
         width: 48,
-        marginRight: 8,
-        },
+        opacity: 0.5,
+        marginTop: 36
+    },
+    moodWeatherText: {
+        color: 'white',
+        opacity: 1,
+        paddingBottom: 16,
+        fontWeight: 'bold'
+
+    },
+
+
     moodRow: {
         display: 'flex',
         flexDirection: 'row',
@@ -212,18 +246,18 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
     },
-  
+
     chipsContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#E5E5E5',
-
     },
     chipsRowContainer: {
         alignItems: 'center',
         width: '100%',
         marginBottom: 8,
         marginTop: 8,
+        display: 'flex',
+        flexDirection: 'row'
     },
     chipsHeading: {
         fontSize: 18,
