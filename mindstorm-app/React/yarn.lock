@@ -2151,6 +2151,16 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
+"@pinecone-database/pinecone@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.npmjs.org/@pinecone-database/pinecone/-/pinecone-2.0.1.tgz"
+  integrity sha512-a1ejzrqdSQ2yW+9QUi2TVlKwYUbrvGH+QH6POJhITyaOz9ANE+EhXqToC9af93Ctzq9n87+bOUvBvewLeW++Mw==
+  dependencies:
+    "@sinclair/typebox" "^0.29.0"
+    ajv "^8.12.0"
+    cross-fetch "^3.1.5"
+    encoding "^0.1.13"
+
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
   resolved "https://registry.npmjs.org/@protobufjs/aspromise/-/aspromise-1.1.2.tgz"
@@ -2607,6 +2617,11 @@
   version "0.27.8"
   resolved "https://registry.npmjs.org/@sinclair/typebox/-/typebox-0.27.8.tgz"
   integrity sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==
+
+"@sinclair/typebox@^0.29.0":
+  version "0.29.6"
+  resolved "https://registry.npmjs.org/@sinclair/typebox/-/typebox-0.29.6.tgz"
+  integrity sha512-aX5IFYWlMa7tQ8xZr3b2gtVReCvg7f3LEhjir/JAjX2bJCMVJA5tIPv30wTD4KDfcwMd7DDYY3hFDeGmOgtrZQ==
 
 "@sinonjs/commons@^3.0.0":
   version "3.0.1"
@@ -3182,6 +3197,16 @@ ajv@^6.12.4, ajv@^6.12.5, ajv@^6.9.1:
     uri-js "^4.2.2"
 
 ajv@^8.0.0:
+  version "8.12.0"
+  resolved "https://registry.npmjs.org/ajv/-/ajv-8.12.0.tgz"
+  integrity sha512-sRu1kpcO9yLtYxBKvqfTeh9KzZEwO3STyX1HT+4CaDzC6HpTGYhIhPIzj9XuKU7KYDwnaeh5hcOwjy1QuJzBPA==
+  dependencies:
+    fast-deep-equal "^3.1.1"
+    json-schema-traverse "^1.0.0"
+    require-from-string "^2.0.2"
+    uri-js "^4.2.2"
+
+ajv@^8.12.0:
   version "8.12.0"
   resolved "https://registry.npmjs.org/ajv/-/ajv-8.12.0.tgz"
   integrity sha512-sRu1kpcO9yLtYxBKvqfTeh9KzZEwO3STyX1HT+4CaDzC6HpTGYhIhPIzj9XuKU7KYDwnaeh5hcOwjy1QuJzBPA==
@@ -4684,7 +4709,7 @@ encodeurl@~1.0.2:
   resolved "https://registry.npmjs.org/encodeurl/-/encodeurl-1.0.2.tgz"
   integrity sha512-TPJXq8JqFaVYm2CWmPvnP2Iyo4ZSM7/QKcSmuMLDObfpH5fi7RUGmd/rTDf+rut/saiDiQEeVTNgAmJEdAOx0w==
 
-encoding@^0.1.0, encoding@^0.1.11:
+encoding@^0.1.0, encoding@^0.1.11, encoding@^0.1.13:
   version "0.1.13"
   resolved "https://registry.npmjs.org/encoding/-/encoding-0.1.13.tgz"
   integrity sha512-ETBauow1T35Y/WZMkio9jiM0Z5xjHHmJ4XmjZOq1l/dXz3lr2sRn87nJy20RupqSh1F2m3HHPSp8ShIPQJrJ3A==
