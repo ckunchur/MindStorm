@@ -194,3 +194,31 @@ export const ExtractEntriesFromFirebase = (userId) => {
 
   return { entryList, loading };
 };
+
+
+export const ExtractUserProfileFromFirebase = async (userId) => {
+  let userProfileString = '';
+  
+  try {
+    const userRef = doc(db, 'users', userId);
+    const userDoc = await getDoc(userRef);
+
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      const age = userData.age || 'an unspecified age';
+      const gender = userData.gender || 'unspecified gender';
+      const hobbies = userData.hobbies || '';
+      const goals = userData.goals ? userData.goals.join(", ") : '';
+      const struggles = userData.struggles || '';
+
+      userProfileString = `User is ${age} and ${gender}, with hobbies ${hobbies}, and goals ${goals}, and struggles ${struggles}.`;
+      console.log(userProfileString);
+    } else {
+      console.error('User not found');
+    }
+  } catch (error) {
+    console.error('Error fetching user profile', error);
+  }
+
+  return userProfileString;
+};

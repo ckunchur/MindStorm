@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { top_moods_topics_prompt, mood_weather_classification_prompt, chatbot_recommendation_prompt } from './prompts';
+import { top_moods_topics_prompt, mood_weather_classification_prompt, chatbot_recommendation_prompt, lyra_prompt } from './prompts';
+import { ExtractUserProfileFromFirebase } from '../firebase/functions';
 const OPENAI_API_KEY = process.env.EXPO_PUBLIC_OPENAI_API_KEY;
 const client = axios.create({
   baseURL: 'https://api.openai.com/v1',
@@ -11,30 +12,60 @@ const client = axios.create({
 
 
 const chatgptUrl = 'https://api.openai.com/v1/chat/completions';
+const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2"; // hardcoded for now
 
 export const apiCall = async (prompt, messages) => {
     return chatgptApiCall(prompt, messages);
 }
+// Global variable to remember if the system prompt has already been added
+let systemPromptAdded = false;
 
 const chatgptApiCall = async (prompt, messages) => {
-    try {
-        const res = await client.post(chatgptUrl, {
-            model: "gpt-3.5-turbo",
-            messages: [{
-                role: 'user',
-                content: prompt
-            }, ...messages] // Assuming 'messages' includes previous chat history if needed
+    const userProfile = await ExtractUserProfileFromFirebase(testUser); // Ensure this function returns a string
+
+    // Define the initial system prompt message only once
+    if (!systemPromptAdded) {
+        console.log("Adding systemPrompt");
+        const systemPrompt = {
+            role: 'system',
+            content: `Instructions: ${lyra_prompt}. Context about user: ${userProfile}`
+        };
+
+        // Add the system prompt to the start of the messages
+        messages.unshift(systemPrompt);
+        systemPromptAdded = true; // Set the flag so it's not added again
+    }
+
+    // Initialize the body with the model and existing messages
+    const body = {
+        model: "gpt-3.5-turbo",
+        messages: [...messages]
+    };
+
+    // If there's a user prompt, add it to the message list
+    if (prompt) {
+        body.messages.push({
+            role: 'user',
+            content: prompt
         });
+        console.log("User prompt added");
+    }
+
+    try {
+        const res = await client.post(chatgptUrl, body);
 
         let answer = res.data.choices[0].message.content.trim();
-        // Assuming you want to append the new response to the existing messages
-        const updatedMessages = [...messages, {role: 'assistant', content: answer}];
-        return Promise.resolve({success: true, data: updatedMessages});
+        // Append only the new assistant response to the existing messages
+        const updatedMessages = [...messages, { role: 'user', content: prompt }, { role: 'assistant', content: answer }];
+        console.log(updatedMessages);
+        return { success: true, data: updatedMessages };
     } catch (err) {
         console.log('error: ', err);
-        return Promise.resolve({success: false, msg: err.message});
+        return { success: false, msg: err.message };
     }
 }
+
+
 
 
 export const topMoodsAndTopicsWithChatGPT= async (text) => {
