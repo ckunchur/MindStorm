@@ -27,6 +27,7 @@ const generateRandomSessionID = () => {
 export default function ChatScreen() {
   const navigation = useNavigation();
   const [userInput, setUserInput] = useState('');
+  const [shouldFetchEntries, setShouldFetchEntries] = useState(false);
   
   // Initialize chatHistory as an empty array 
   const [chatHistory, setChatHistory] = useState([]);
