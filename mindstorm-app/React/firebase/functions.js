@@ -135,23 +135,28 @@ export const writeChatHistoryToFirebase = async (userId, sessionID, history) => 
 };
 
 export const readChatHistoryFromFirebase = async (userId) => {
-  if (!sessionID) {
-    console.error("Invalid sessionID");
-    return;
-  }
+  let chatHistoryStrings = [];
   try {
-      // Reference to a specific document in the "chats" subcollection of a "users" document
-      const docRef = doc(db, `users/${userId}/chats`, sessionID);
+    // Reference to the "chats" subcollection of a "users" document
+    const chatsCollectionRef = collection(db, `users/${userId}/chats`);
 
-      // Set the document with the provided data, merging it into an existing document if one exists
-      await setDoc(docRef, {
-          chatHistory: history,
-          timestamp: new Date() // Adds a timestamp
-      }, { merge: true });
+    // Retrieve all documents from the subcollection
+    const querySnapshot = await getDocs(chatsCollectionRef);
 
-      console.log("Document written with ID: ", docRef.id);
+    // Loop through each document and format the chat history
+    querySnapshot.forEach((doc) => {
+      const chatHistory = doc.data().chatHistory;
+      if (chatHistory) {
+        // Concatenate the chat history into a single string
+        const chatString = chatHistory.map(entry => `role: ${entry.role}, content: "${entry.content}"`).join('; ');
+        chatHistoryStrings.push(chatString);
+      }
+    });
+
+    console.log("Chat history strings: ", chatHistoryStrings);
+    return chatHistoryStrings;
   } catch (e) {
-      console.error("Error adding or updating document: ", e);
+    console.error("Error reading chat history from Firestore: ", e);
   }
 };
 
