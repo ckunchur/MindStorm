@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Image, ImageBackground, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -6,6 +6,7 @@ import { journalEntries } from '../data/fakeEntries';
 import DonutChart from './DonutChart';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+import { ExtractUserNameFromFirebase } from '../firebase/functions';
 
 const colors = ['#1a75ad', '#a47dff', '#335c9e', 'skyblue'];
 const ChartRow = ({ title, items }) => {
@@ -22,6 +23,7 @@ const ChartRow = ({ title, items }) => {
                     { percentage: 25, color: colors[3] },
                 ]}
             />
+
             <ScrollView vertical showsHorizontalScrollIndicator={false}>
             <Text style={styles.chipsHeading}>{title}</Text>
                 <View style={styles.chipsContainer}>
@@ -41,8 +43,6 @@ const ChartRow = ({ title, items }) => {
     );
 };
 
-
-
 const weather_moods = {
     "Stormy": require("../assets/stormy-mood.png"),
     "Rainy": require("../assets/rainy-mood.png"),
@@ -52,7 +52,7 @@ const weather_moods = {
     "Sunny": require("../assets/sunny-mood.png"),
 }
 
-
+// TOPMOODS AND TOPTOPICS ARE HARDCODED - TO FIX
 const topMoods = ["Anxious", "Stressed"];
 const topTopics = ["School", "Work", "Procrastination"];
 const weatherMood = "Anxious";
@@ -62,6 +62,25 @@ const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText,
 
 export default function DataScreen() {
     const navigation = useNavigation();
+    const [userName, setUserName] = useState('');
+
+    useEffect(() => {
+        const fetchUserName = async () => {
+            const userId = "imIQfhTxJteweMhIh88zvRxq5NH2" // hardcoded for now
+            console.log("Fetching user name for ID:", userId); // Debugging: Log the user ID being used
+            const userName = await ExtractUserNameFromFirebase(userId); // Make sure to pass the db reference
+            if (userName) {
+                setUserName(userName); // Set the user's name in the state
+                console.log("User's name:", userName); // Log the user's name
+            } else {
+                console.log("UserName not found or error fetching userName"); // Log if name not found or error
+            }
+        };
+    
+        fetchUserName();
+    }, []); // The empty dependency array ensures this effect runs only once when the component mounts
+    
+
     const MoodImage = ({ mood, date }) => {
         return (
             <View style={styles.moodWeatherView}>
@@ -85,8 +104,8 @@ export default function DataScreen() {
                 source={require('../assets/journal-background.png')}
                 style={styles.fullScreen}
             >
-                <WelcomeTitle title="Emotional Report" style={styles.title} />
-                <WelcomeMessage message="A summary of your key feelings and topics over time" style={styles.subheaderText} />
+                <WelcomeTitle title={userName ? `Hi ${userName},` : "Emotional Report"} style={styles.title} />
+                <WelcomeMessage message="Here is a summary of your key feelings and topics over time" style={styles.subheaderText} />
 
                 <View style={styles.forecastView}>
                     <View style={styles.moodRow}>
@@ -101,10 +120,10 @@ export default function DataScreen() {
 
                 <View style={styles.controls}>
 
-                    <View style={styles.chipsContainer}>
+                    {/* <View style={styles.chipsContainer}>
                         <ChartRow title="Top Moods" items={topMoods} />
                         <ChartRow title="Top Topics" items={topTopics} />
-                    </View>
+                    </View> */}
 
 
                 </View>

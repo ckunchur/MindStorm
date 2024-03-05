@@ -218,3 +218,23 @@ export const ExtractUserProfileFromFirebase = async (userId) => {
 
   return userProfileString;
 };
+
+// Used in DataScreen.js page
+export const ExtractUserNameFromFirebase = async (userId) => {
+  let userName = ''; // Declare userName to be used throughout the function
+  try {
+    const userRef = doc(db, 'users', userId);
+    const userDoc = await getDoc(userRef);
+
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      userName = userData.name || 'an unspecified name'; // Directly assign to userName without const
+      console.log(userName); // This will log the fetched name
+    } else {
+      console.error('User not found');
+    }
+  } catch (error) {
+    console.error('Error fetching user profile', error);
+  }
+  return userName; // Return the userName found or an empty string
+};
