@@ -6,6 +6,7 @@ import { journalEntries } from '../data/fakeEntries';
 import MoodPieChart from './DonutChart';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+import { buddies } from '../data/chatSettings';
 
 
 const ChipsRow = ({ title, items}) => {
@@ -46,7 +47,8 @@ const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText,
 
 export default function JournalSummary() {
     const route = useRoute();
-    const { topTopics, topMoods, weatherMood, botRecommendation } = route.params;
+    const { topTopics, topMoods, weatherMood, botRecommendation, entryText } = route.params;
+    console.log("bot reccomendation",  botRecommendation);
     const navigation = useNavigation();
 
     const MoodImage = ({mood}) => {
@@ -93,9 +95,9 @@ export default function JournalSummary() {
                     <View style={styles.predictedTextContainer}>
                         <Text style={styles.predictedText}> Based on your entry, we think {botRecommendation} would be a good buddy to talk to!
                         </Text>
-                        <Image source={require('../assets/lyra-avatar.png')}></Image>
+                        <Image source={buddies[botRecommendation == "Lyra" ? 0 : 1].image} style={styles.predictedImage}></Image>
                         <TouchableOpacity style={styles.chatButton}
-                            onPress={() => navigation.navigate('ChatScreen')}
+                            onPress={() => navigation.navigate(`${botRecommendation}ChatScreen`, {entryText: entryText})}
                         >
                             <Text style={[styles.chatButtonText]}>Chat with {botRecommendation}</Text>
                         </TouchableOpacity>
@@ -136,6 +138,10 @@ const styles = StyleSheet.create({
         width: 35,
         marginRight: 8,
         opacity: 0.5
+    },
+    predictedImage: {
+       resizeMode:"contain",
+       height: 120
     },
     selectedMoodImage:{
         width: 48,
@@ -226,16 +232,20 @@ const styles = StyleSheet.create({
     },
   
     chipsContainer: {
+        display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#E5E5E5',
+        justifyContent: 'center'
 
     },
     chipsRowContainer: {
+        display: 'flex',
         alignItems: 'center',
         width: '100%',
         marginBottom: 8,
         marginTop: 8,
+        justifyContent: 'center'
     },
     chipsHeading: {
         fontSize: 18,

@@ -48,7 +48,7 @@ export default function ChooseYourBuddy() {
         <View style={styles.container}>
             <ImageBackground
                 resizeMode="cover"
-                source={buddies[activeSlide].background}
+                source={buddies[activeSlide].chooseBackground}
                 style={styles.fullScreen}
             >
                 <Text style={styles.title}> {buddies[activeSlide].speciality}</Text>
@@ -66,7 +66,7 @@ export default function ChooseYourBuddy() {
 
 
                     <TouchableOpacity style={styles.customizeButton}
-                        onPress={() => navigation.navigate('ChatScreen')}
+                        onPress={() => navigation.navigate(`${buddies[activeSlide].name}ChatScreen`, {name: buddies[activeSlide].name})}
                     >
                         <Ionicons name="chatbubbles-outline" size={24} />
                         <Text style={{ ...styles.customizeButtonText, color: buddies[activeSlide].lightColor }}>Chat with {buddies[activeSlide].name}</Text>
