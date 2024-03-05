@@ -160,39 +160,35 @@ export const readChatHistoryFromFirebase = async (userId) => {
   }
 };
 
-export const ExtractEntriesFromFirebase = (userId) => {
-  const [entryList, setEntryList] = useState([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const getEntries = async () => {
-      try {
-        const userRef = doc(db, 'users', userId);
-        const userDoc = await getDoc(userRef);
+export const ExtractEntriesFromFirebase = async (userId) => {
+  let entriesData = []; // This will hold the formatted entries data
+  try {
+    // Reference to the "entries" subcollection of a "users" document
+    const entriesCollectionRef = collection(db, 'users', userId, 'entries');
 
-        if (userDoc.exists()) {
-          const entriesRef = collection(userRef, 'entries');
-          const entriesSnapshot = await getDocs(entriesRef);
+    // Retrieve all documents from the "entries" subcollection
+    const querySnapshot = await getDocs(entriesCollectionRef);
 
-          const entries = entriesSnapshot.docs.map((entryDoc) => ({
-            ...entryDoc.data(),
-          }));
-
-          setEntryList(entries);
-        } else {
-          console.error('User not found');
-        }
-      } catch (error) {
-        console.error('Error fetching entries', error);
-      } finally {
-        setLoading(false);
+    // Loop through each document in the "entries" subcollection
+    querySnapshot.forEach((doc) => {
+      const entry = doc.data();
+      // Assuming each entry document has an "entryText" field you want to extract
+      if (entry && entry.entryText) {
+        // Push the entry text and any other relevant data you need
+        entriesData.push({
+          id: doc.id, // the document ID
+          text: entry.entryText, // the entry text
+          // You can add more fields here if necessary, like `emotions` or `timestamp`
+        });
       }
-    };
+    });
 
-    if (userId) getEntries();
-  }, [userId]);
-
-  return { entryList, loading };
+    console.log("Extracted entries data: ", entriesData);
+    return entriesData; // Return the array of entries data
+  } catch (e) {
+    console.error("Error extracting entries from Firestore: ", e);
+  }
 };
 
 

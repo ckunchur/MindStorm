@@ -4,12 +4,16 @@ chatbotdemos/venv/
 chatbotdemos/venv
 # dependencies
 node_modules/
-
+/mindstorm-app/FastAPI/mindstorm-journal-firebase-adminsdk-fv5xt-9d33c9c77f.json
+mindstorm-app/FastAPI/mindstorm-journal-firebase-adminsdk-fv5xt-9d33c9c77f.json
 # Expo
 .expo/
 dist/
 web-build/
-
+mindstorm-app/FastAPI/.env
+mindstorm-app/FastAPI/venv/
+venv/
+venv
 # Native
 *.orig.*
 *.jks

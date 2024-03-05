@@ -49,6 +49,7 @@ export default function ChooseGoalsScreen() {
    
   const handleContinue = async (uid) => {
     await updatePersonalGoals(uid, selectedGoals, currentStruggles);
+    console.log("hello")
     navigation.navigate('PersonalInfo')
   };
 
