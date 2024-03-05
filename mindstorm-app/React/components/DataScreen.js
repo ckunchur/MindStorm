@@ -6,9 +6,10 @@ import { journalEntries } from '../data/fakeEntries';
 import DonutChart from './DonutChart';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-import { ExtractUserNameFromFirebase } from '../firebase/functions';
+import { ExtractUserNameFromFirebase, ExtractLastWeekEntriesFirebase} from '../firebase/functions';
 
 const colors = ['#1a75ad', '#a47dff', '#335c9e', 'skyblue'];
+
 const ChartRow = ({ title, items }) => {
     return (
         <View style={styles.chartRowContainer}>
@@ -63,23 +64,36 @@ const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText,
 export default function DataScreen() {
     const navigation = useNavigation();
     const [userName, setUserName] = useState('');
+    const [entries, setEntries] = useState([]); // Step 1: State for entries
 
     useEffect(() => {
-        const fetchUserName = async () => {
-            const userId = "imIQfhTxJteweMhIh88zvRxq5NH2" // hardcoded for now
-            console.log("Fetching user name for ID:", userId); // Debugging: Log the user ID being used
-            const userName = await ExtractUserNameFromFirebase(userId); // Make sure to pass the db reference
-            if (userName) {
-                setUserName(userName); // Set the user's name in the state
-                console.log("User's name:", userName); // Log the user's name
+        const userId = "imIQfhTxJteweMhIh88zvRxq5NH2"; // hardcoded for now
+
+        const fetchData = async () => {
+            console.log("Fetching data for user ID:", userId);
+            
+            // Fetch user name
+            const fetchedUserName = await ExtractUserNameFromFirebase(userId);
+            if (fetchedUserName) {
+                setUserName(fetchedUserName);
+                console.log("User's name:", fetchedUserName);
             } else {
-                console.log("UserName not found or error fetching userName"); // Log if name not found or error
+                console.log("UserName not found or error fetching userName");
+            }
+
+            // Fetch entries
+            const fetchedEntries = await ExtractLastWeekEntriesFirebase(userId); // Step 2: Call ExtractEntriesFromFirebase
+            if (fetchedEntries.length > 0) {
+                setEntries(fetchedEntries); // Update state with the fetched entries
+                console.log("Fetched entries:", fetchedEntries);
+            } else {
+                console.log("No entries found or error fetching entries");
             }
         };
-    
-        fetchUserName();
+
+        fetchData();
     }, []); // The empty dependency array ensures this effect runs only once when the component mounts
-    
+
 
     const MoodImage = ({ mood, date }) => {
         return (

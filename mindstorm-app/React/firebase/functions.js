@@ -98,7 +98,6 @@ export const writeBotSettingsToFirebase = async (userId, bot, memory, tone, age,
     try {
         // Construct the document path
         const botSettingsDocRef = doc(db, `users/${userId}/botSettings/${bot}`);
-        
         // Set the document with the provided settings
         await setDoc(botSettingsDocRef, {
             memory: memory,
@@ -139,10 +138,8 @@ export const readChatHistoryFromFirebase = async (userId) => {
   try {
     // Reference to the "chats" subcollection of a "users" document
     const chatsCollectionRef = collection(db, `users/${userId}/chats`);
-
     // Retrieve all documents from the subcollection
     const querySnapshot = await getDocs(chatsCollectionRef);
-
     // Loop through each document and format the chat history
     querySnapshot.forEach((doc) => {
       const chatHistory = doc.data().chatHistory;
@@ -152,7 +149,6 @@ export const readChatHistoryFromFirebase = async (userId) => {
         chatHistoryStrings.push(chatString);
       }
     });
-
     console.log("Chat history strings: ", chatHistoryStrings);
     return chatHistoryStrings;
   } catch (e) {
@@ -166,10 +162,8 @@ export const ExtractEntriesFromFirebase = async (userId) => {
   try {
     // Reference to the "entries" subcollection of a "users" document
     const entriesCollectionRef = collection(db, 'users', userId, 'entries');
-
     // Retrieve all documents from the "entries" subcollection
     const querySnapshot = await getDocs(entriesCollectionRef);
-
     // Loop through each document in the "entries" subcollection
     querySnapshot.forEach((doc) => {
       const entry = doc.data();
@@ -183,7 +177,6 @@ export const ExtractEntriesFromFirebase = async (userId) => {
         });
       }
     });
-
     console.log("Extracted entries data: ", entriesData);
     return entriesData; // Return the array of entries data
   } catch (e) {
@@ -237,4 +230,36 @@ export const ExtractUserNameFromFirebase = async (userId) => {
     console.error('Error fetching user profile', error);
   }
   return userName; // Return the userName found or an empty string
+};
+
+export const ExtractLastWeekEntriesFirebase = async (userId) => {
+  let entriesData = []; // This will hold the formatted entries data
+  try {
+    const entriesCollectionRef = collection(db, 'users', userId, 'entries');
+    const querySnapshot = await getDocs(entriesCollectionRef);
+    
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    querySnapshot.forEach((doc) => {
+      const entry = doc.data();
+      // Check if the entry has an "entryText" field and a valid timestamp
+      if (entry && entry.entryText && entry.timeStamp) {
+        const entryDate = entry.timeStamp.toDate(); // Convert Firestore Timestamp to JavaScript Date object
+
+        // Only push the entry if it's from the last week to now
+        if (entryDate >= oneWeekAgo) {
+          entriesData.push({
+            id: doc.id, // the document ID
+            text: entry.entryText, // the entry text
+            time: entryDate // the entry timestamp as a Date object
+          });
+        }
+      }
+    });
+    console.log("Extracted entries data from the last week: ", entriesData);
+    return entriesData; // Return the array of entries data
+  } catch (e) {
+    console.error("Error extracting entries from Firestore: ", e);
+  }
 };
