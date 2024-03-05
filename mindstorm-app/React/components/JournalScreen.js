@@ -65,6 +65,7 @@ export default function JournalScreen() {
               topMoods: topMoodsAndTopicsResult.data.moods,
               weatherMood: moodWeatherClassificationResult.data,
               botRecommendation: recommendTherapyChatbotResult.data,
+              entryText: entryText
             })
         }
       ]);

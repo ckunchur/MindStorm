@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, ImageBackground, Dimensions, TouchableOpacity, TextInput, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { apiCall } from '../OpenAI/OpenAI';
 import axios from 'axios';
 import { Alert } from 'react-native';
@@ -11,7 +11,7 @@ const windowHeight = Dimensions.get('window').height;
 import { v1 as uuidv1, v3 as uuidv3, v5 as uuidv5, NIL as NIL_UUID } from 'uuid';
 // Seemed like I needed this for Expo GO, but using ios simulator on laptop instead now
 // const IP_ADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
-
+import { nimbus_greeting, nimbus_prompt } from '../OpenAI/prompts';
 const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2"; // hardcoded for now
 
 const generateRandomSessionID = () => {
@@ -24,13 +24,40 @@ const generateRandomSessionID = () => {
 };
 
 
-export default function ChatScreen() {
+export default function NimbusChatScreen() {
   const navigation = useNavigation();
   const [userInput, setUserInput] = useState('');
-  
-  // Initialize chatHistory as an empty array 
+  const route = useRoute();
+  const { entryText } = route.params;
+  console.log("entryText on Nimbus scrreen", entryText);
+  const userProfile = ExtractUserProfileFromFirebase(testUser); 
+  const instructionPrompt = { role: 'system', content: `Context about user: ${userProfile}. System instructions: ${nimbus_prompt}`};
+  const greetingPrompt = { role: 'system', content: `${nimbus_greeting}`};
+
+  let startingPrompt = [instructionPrompt, greetingPrompt];
   const [chatHistory, setChatHistory] = useState([]);
+
+  // Initialize chatHistory as an empty array 
+  useEffect(() => {
+    const initializeChatHistory = async () => {
+      const userProfile = await ExtractUserProfileFromFirebase(testUser);
+      const instructionPrompt = {
+        role: 'system',
+        content: `Context about user: ${userProfile}. System instructions: ${nimbus_prompt}`,
+      };
+      if (entryText) {
+        setUserInput(entryText);
+        setChatHistory([instructionPrompt]); 
+      }
+      else {
+        setChatHistory(startingPrompt);
+      }
+    };
+    initializeChatHistory();
+  }, []); 
   const [sessionID, setSessionID] = useState("");
+
+
   // THIS CODE IS THE IN CONVO CHAT HISTORY, see apiCall in OpenAI.js
   const handleSend = async () => {
     if (!userInput.trim()) return; // Prevent sending empty messages
@@ -61,65 +88,28 @@ export default function ChatScreen() {
 
   const handleBackPress = () => {
     setSessionID(""); // Reset session ID
-    setChatHistory([]); // Optionally clear chat history if starting fresh next time
+    setChatHistory([instructionPrompt, greetingPrompt]); // Optionally clear chat history if starting fresh next time
     navigation.goBack();
   };
 
-  // THIS CODE JUST CONNECTS TO FASTAPI FETCH CONTEXT, BUT DOESNT PRINT IT
-  // const handleSend = async () => {
-  //   try {
-  //     const response = await axios.post("http://localhost:8000/fetch_context/", { input_text: userInput });
-  //     console.log(response.data);
-  //     Alert.alert('Success', 'User input sent successfully');
-  //   } catch (error) {
-  //     console.error('There was an error with the API call', error);
-  //     Alert.alert('Error', 'Failed to send user input');
-  //   }
-  // };
+  console.log("lyrachathistory", chatHistory);
 
-  // const handleSend = async () => {
-  //   if (!userInput.trim()) {
-  //     // Prevent sending empty messages
-  //     Alert.alert('Empty Input', 'Please type something to get advice.');
-  //     return;
-  //   }
-  
-  //   try {
-  //     // Send user input to the FastAPI backend
-  //     const response = await axios.post("http://localhost:8000/fetch_context/", { input_text: userInput });
-  
-  //     if (response.data && response.data.advice) {
-  //       // Print the advice received from the backend
-  //       console.log("Advice:", response.data.advice);
-  //       // Assuming you want to add both the user's question and the AI's advice to the chat history
-  //       let newChatHistory = [...chatHistory, { role: 'user', content: userInput }, { role: 'ai', content: response.data.advice }];
-  //       // Update the state to include the new messages
-  //       setChatHistory(newChatHistory);
-  //       // Clear input after sending
-  //       setUserInput('');
-  //     } else {
-  //       console.error('No advice received');
-  //       Alert.alert('Error', 'No advice received from the server');
-  //     }
-  //   } catch (error) {
-  //     console.error('There was an error with the API call', error);
-  //     Alert.alert('Error', `Failed to get advice: ${error.message}`);
-  //   }
-  // };
   return (
     <View style={styles.container}>
-      <ImageBackground source={require('../assets/onboarding-background.png')} style={styles.bgImage}>
+      <ImageBackground source={require('../assets/chat-nimbus-background.png')} style={styles.bgImage}>
 
       <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
                 <Ionicons name="arrow-back-circle-outline" color="white" size={48} />
             </TouchableOpacity>
 
         <ScrollView style={styles.chatContainer}>
-          {chatHistory.slice(1).map((msg, index) => (
+          { chatHistory.length < 2 ? null :
+          chatHistory.slice(1).map((msg, index) => (
             <View key={index} style={[styles.bubble, msg.role === 'user' ? styles.userBubble : styles.aiBubble]}>
               <Text style={{ color: msg.role === 'user' ? '#ffffff' : '#000000' }}>{msg.content}</Text>
             </View>
-          ))}
+          ))
+          }
         </ScrollView>
 
         <View style={styles.inputContainer}>

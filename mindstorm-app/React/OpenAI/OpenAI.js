@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { top_moods_topics_prompt, mood_weather_classification_prompt, chatbot_recommendation_prompt, lyra_prompt } from './prompts';
+import { top_moods_topics_prompt, mood_weather_classification_prompt, chatbot_recommendation_prompt, lyra_prompt, nimbus_prompt } from './prompts';
 import { ExtractUserProfileFromFirebase } from '../firebase/functions';
 const OPENAI_API_KEY = process.env.EXPO_PUBLIC_OPENAI_API_KEY;
 const client = axios.create({
@@ -21,20 +21,20 @@ export const apiCall = async (prompt, messages) => {
 let systemPromptAdded = false;
 
 const chatgptApiCall = async (prompt, messages) => {
-    const userProfile = await ExtractUserProfileFromFirebase(testUser); // Ensure this function returns a string
+    // const userProfile = await ExtractUserProfileFromFirebase(testUser); // Ensure this function returns a string
+    // let bot_prompt = bot === "lyra" ? lyra_prompt : nimbus_prompt;
+    // // Define the initial system prompt message only once
+    // if (!systemPromptAdded) {
+    //     console.log("Adding systemPrompt");
+    //     const systemPrompt = {
+    //         role: 'system',
+    //         content: ` Context about user: ${userProfile}. System instructions: ${bot_prompt}.`
+    //     };
 
-    // Define the initial system prompt message only once
-    if (!systemPromptAdded) {
-        console.log("Adding systemPrompt");
-        const systemPrompt = {
-            role: 'system',
-            content: `Instructions: ${lyra_prompt}. Context about user: ${userProfile}`
-        };
-
-        // Add the system prompt to the start of the messages
-        messages.unshift(systemPrompt);
-        systemPromptAdded = true; // Set the flag so it's not added again
-    }
+    //     // Add the system prompt to the start of the messages
+    //     messages.unshift(systemPrompt);
+    //     systemPromptAdded = true; // Set the flag so it's not added again
+    // }
 
     // Initialize the body with the model and existing messages
     const body = {

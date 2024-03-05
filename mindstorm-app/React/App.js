@@ -10,7 +10,8 @@ import ChooseGoalsScreen from './components/ChooseGoals';
 import NewLandingScreen from './components/LandingScreen';
 import JournalScreen from './components/JournalScreen';
 import JournalSummary from './components/JournalSummary';
-import ChatScreen from './components/ChatScreen';
+import LyraChatScreen from './components/LyraChatScreen';
+import NimbusChatScreen from './components/NimbusChatScreen';
 import CustomizeScreen from './components/CustomizeScreen';
 import DataScreen from './components/DataScreen';
 import PersonalInfoScreen from './components/PersonalInfoScreen';
@@ -38,7 +39,9 @@ function ChatStackNavigator() {
     <ChatStack.Navigator initialRouteName="ChooseYourBuddy" screenOptions={{ headerShown: false }}>
       <ChatStack.Screen name="ChooseYourBuddy" component={ChooseYourBuddy} />
       <ChatStack.Screen name="CustomizeScreen" component={CustomizeScreen} />
-      <ChatStack.Screen name="ChatScreen" component={ChatScreen} />
+      <ChatStack.Screen name="LyraChatScreen" component={LyraChatScreen} />
+      <ChatStack.Screen name="NimbusChatScreen" component={NimbusChatScreen} />
+
 
     </ChatStack.Navigator>
   );
@@ -49,7 +52,9 @@ function JournalStackNavigator() {
     <JournalStack.Navigator initialRouteName="JournalScreen" screenOptions={{ headerShown: false }}>
       <JournalStack.Screen name="JournalScreen" component={JournalScreen} />
       <JournalStack.Screen name="JournalSummary" component={JournalSummary} />
-      <JournalStack.Screen name="ChatScreen" component={ChatScreen} />
+      <JournalStack.Screen name="LyraChatScreen" component={LyraChatScreen} />
+      <JournalStack.Screen name="NimbusChatScreen" component={NimbusChatScreen} />
+
     </JournalStack.Navigator>
   );
 }
