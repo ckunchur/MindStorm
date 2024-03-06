@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { doc, getDoc, addDoc, getDocs, collection, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, addDoc, getDocs, collection, setDoc, serverTimestamp, query, where, orderBy, limit } from 'firebase/firestore';
 import { db, auth } from '../firebaseConfig';
 import { Alert } from 'react-native';
 import {
@@ -218,3 +218,83 @@ export const ExtractUserProfileFromFirebase = async (userId) => {
 
   return userProfileString;
 };
+
+
+
+// Used in DataScreen.js page
+export const ExtractUserNameFromFirebase = async (userId) => {
+  let userName = ''; // Declare userName to be used throughout the function
+  try {
+    const userRef = doc(db, 'users', userId);
+    const userDoc = await getDoc(userRef);
+
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      userName = userData.name || 'an unspecified name'; // Directly assign to userName without const
+      console.log(userName); // This will log the fetched name
+    } else {
+      console.error('User not found');
+    }
+  } catch (error) {
+    console.error('Error fetching user profile', error);
+  }
+  return userName; // Return the userName found or an empty string
+};
+
+// // Used in DataScreen.js page
+export const ExtractLastWeekEntriesFirebase = async (userId) => {
+  let entriesData = []; // This will hold the formatted entries data
+  try {
+    const entriesCollectionRef = collection(db, 'users', userId, 'entries');
+    const querySnapshot = await getDocs(entriesCollectionRef);
+    
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    querySnapshot.forEach((doc) => {
+      const entry = doc.data();
+      // Check if the entry has an "entryText" field and a valid timestamp
+      if (entry && entry.entryText && entry.timeStamp) {
+        const entryDate = entry.timeStamp.toDate(); // Convert Firestore Timestamp to JavaScript Date object
+
+        // Only push the entry if it's from the last week to now
+        if (entryDate >= oneWeekAgo) {
+          entriesData.push({
+            text: entry.entryText, // the entry text
+            time: entryDate // the entry timestamp as a Date object
+          });
+        }
+      }
+    });
+    console.log("Extracted entries data from the last week: ", entriesData);
+    return entriesData; // Return the array of entries data
+  } catch (e) {
+    console.error("Error extracting entries from Firestore: ", e);
+  }
+};
+
+// // Used in DataScreen.js page
+export async function ExtractLatestWeeklyAnalysisFromFirebase(userId) {
+  try {
+      console.log("Inside ExtractLatestWeeklyAnalysisFromFirebase function");
+      const weeklyAnalysisRef = collection(db, `users/${userId}/weeklyAnalysis`);
+      console.log("Weekly analysis collection reference:", weeklyAnalysisRef);
+      const q = query(weeklyAnalysisRef, orderBy("timeStamp", "desc"), limit(1));
+      console.log("Query:", q);
+      const querySnapshot = await getDocs(q);
+      console.log("Query snapshot:", querySnapshot);
+      
+      if (!querySnapshot.empty) {
+          console.log("Query snapshot is not empty");
+          const doc = querySnapshot.docs[0];
+          console.log("Latest weekly analysis document:", doc);
+          return { id: doc.id, ...doc.data() };
+      } else {
+          console.log("Query snapshot is empty");
+          return null;
+      }
+  } catch (error) {
+      console.error('Error fetching latest weekly analysis:', error);
+      return null;
+  }
+}

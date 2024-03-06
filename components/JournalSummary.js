@@ -27,16 +27,14 @@ const ChipsRow = ({ title, items}) => {
 };
 
 
-
 const weather_moods = {
-    "Stormy": require("../assets/stormy-mood.png"), 
+"Stormy": require("../assets/stormy-mood.png"), 
 "Rainy": require("../assets/rainy-mood.png"), 
 "Cloudy": require("../assets/cloudy-mood.png"),
 "Partly Cloudy": require("../assets/partial-cloudy-mood.png"),
 "Cloudy": require("../assets/cloudy-mood.png"),
 "Sunny": require("../assets/sunny-mood.png"),
  }
-
 
 
 
@@ -87,13 +85,13 @@ export default function JournalSummary() {
 
                 <View style={styles.controls}>
                     <View style={styles.chipsContainer}>
-                        <ChipsRow title="Detected Moods" items={topMoods} />
+                        {/* <ChipsRow title="Detected Moods" items={topMoods} /> */}
                         <ChipsRow title="Detected Topics" items={topTopics} />
                     </View>
                     <View style={styles.predictedTextContainer}>
                         <Text style={styles.predictedText}> Based on your entry, we think {botRecommendation} would be a good buddy to talk to!
                         </Text>
-                        <Image source={require('../assets/lyra-avatar.png')}></Image>
+                        <Image source={require('../assets/lyra.png')}></Image>
                         <TouchableOpacity style={styles.chatButton}
                             onPress={() => navigation.navigate('ChatScreen')}
                         >
@@ -295,4 +293,3 @@ const styles = StyleSheet.create({
 
     }
 });
-
