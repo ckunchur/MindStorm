@@ -1,12 +1,6 @@
 import { readChatHistoryFromFirebase, ExtractEntriesFromFirebase } from "../firebase/functions";
 import { Pinecone } from '@pinecone-database/pinecone';
 
-<<<<<<< Updated upstream
-
-const pineconeApiKey = process.env.PINECONE_API_KEY;
-const openaiApiKey = process.env.EXPO_PUBLIC_OPENAI_API_KEY;
-const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2"; // hardcoded for now
-=======
 import { Pinecone } from '@pinecone-database/pinecone'
 import OpenAI from 'openai';
 import { readChatHistoryFromFirebase } from '../firebase/functions.js';
@@ -29,7 +23,6 @@ async function initialize() {
 }
 
 
->>>>>>> Stashed changes
 
 
 // Pinecone configuration and initialization
@@ -89,9 +82,6 @@ function embed_entries() {
 
 }
 
-<<<<<<< Updated upstream
-function embed_chat_sessions() {
-=======
 // Call createIndexIfNotExists function for each index
 (async () => {
   await createIndex('chat-history-index');
@@ -138,30 +128,28 @@ function formatContext(topMatches) {
   
 }
 
-async function generateResponse(sessionHistory, query, index) {
+async function generateResponse(sessionHistory, query) {
   const combinedText = `${sessionHistory}\n${query}`;
   const combinedVector = await getEmbeddings(combinedText);
-  
+
   try {
-    const topMatches = await index.query({ topK: 3, vector: combinedVector, includeMetadata: true });
-    const context = formatContext(topMatches);
-    console.log('Context:', context);
->>>>>>> Stashed changes
-    
+      const topMatches = await chat_history.query({ topK: 3, vector: combinedVector, includeMetadata: true });
+      const context = formatContext(topMatches);
+      const prompt = `System: ${SYSTEM_PROMPT} \nSession History: ${sessionHistory} \nRAG Context: ${context} \nUser: ${query} \nElla: `;
+
+      const response = await openai.chat.completions.create({
+          messages: [{ role: "system", content: prompt }],
+          model: "gpt-3.5-turbo",
+      });
+
+      return response.choices[0].message.content;
+
+  } catch (error) {
+      console.error("Error in generating advice:", error);
+      throw error;
+  }
 }
 
-<<<<<<< Updated upstream
-export async function fetchContext(userInput, sessionMessages) {
-    console.log("Fetching context for:", userInput);
-    try {
-        const advice = generateAdvice(sessionMessages + "\nUser: " + userInput);
-        console.log("Generated Advice:", advice);
-        return { advice: advice };
-    } catch (e) {
-        console.log("Error during context fetching:", e);
-    }
-}
-=======
 //Test
 // (async () => {
 //   console.log("Testing Pinecone Connection...");
@@ -182,4 +170,3 @@ export async function fetchContext(userInput, sessionMessages) {
 // })();
 
 export const chatHistoryIndex = chat_history;
->>>>>>> Stashed changes
