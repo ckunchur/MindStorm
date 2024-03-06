@@ -1,12 +1,17 @@
-import { doc, getDoc, addDoc, getDocs, collection, setDoc } from 'firebase/firestore';
+import { useState, useEffect } from 'react';
+import { doc, getDoc, addDoc, getDocs, collection, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db, auth } from '../firebaseConfig';
+import { Alert } from 'react-native';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signOut,
+  sendPasswordResetEmail,
   updateProfile,
+  User,
+  updateEmail,
+  updatePassword,
 } from 'firebase/auth';
-
-export const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2"
 
 export const updatePersonalInfo = async (uid, gender, age, relaxActivities, hobbies) => {
   try {
@@ -212,13 +217,4 @@ export const ExtractUserProfileFromFirebase = async (userId) => {
   }
 
   return userProfileString;
-};
-
-export const generateRandomSessionID = () => {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  for (let i = 0; i < 20; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return result;
 };

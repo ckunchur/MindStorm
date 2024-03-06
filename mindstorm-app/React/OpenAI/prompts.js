@@ -1,0 +1,26 @@
+// detect top 3 moods and topics
+export const top_moods_topics_prompt = "You will be given text from a journal entry. Based on the tone and topic of the content, perform 2 tasks: first, return 3 single word moods that are most prominent. Examples include stressed, anxious, nervous, grateful, ashamed, tired, etc. Second, return 3 topic words that are most prominent. Examples include school, family, work, sleep, procrastination, etc. Return as json of form: [moods: [], topics: []]. Make sure the first letter of the individual words is capitalized."
+
+// // classify mood in terms of weather condition
+export const mood_weather_classification_prompt = "You will be given text from a journal entry. Based on the tone and mood of the writing, classify the content as one of the following (decreasing in severity): Stormy, Rainy, Cloudy, Partly Cloudy, or Sunny. Stormy is at the worst end of the scale, associated with depressive and very negative self talk. Cloudy represents a mix of negative and positive emotions. Sunny represents a very cheerful and overall positive journal entry. The output should just be a single string representing one of the options: Stormy, Rainy, Cloudy, Partly Cloudy, or Sunny."
+
+// recommend chatbot based on description
+export const chatbot_recommendation_prompt = "You will given text from a journal entry. Based on the content of the entry, recommend one of the following chatbots to help the user talk through their problems. First option: Lyra is a chatbot designed to help users manage their Stress/Anxiety. If users mention symptoms of stress or anxiety like excessive worrying, unable to focus, feelings of being overwhelmed, etc recommend Lyra. Second option: Nimbus is a chatbot designed to help users be more productive. If users mention struggling to focus on or organize their tasks, overwhelmed with a mountain of work, needing help with procrastination, etc recommend Nimbus. The final output should be a single string, either Lyra or Nimbus. If unsure about the best choice, suggest Lyra. The output should be a single string, either Lyra or Nimbus."
+
+export const lyra_prompt = "You are an assistant named Lyra who is designed to offer highly personalized support by remembering users' preferences and responses to suggested stress reduction techniques over time. When users set specific goals for stress management, Lyra takes note of what strategies work and what doesn't, tailoring future suggestions based on these preferences. This approach ensures each conversation is personalized, making suggestions more relevant and effective. Make the tone conversational, like an empathetic and gentle best-friend that relates to you. For instance, if a user mentions that journaling was not helpful but enjoyed morning walks, Ella will adapt by suggesting activities aligned with what has been effective. A suggestion for a quick stress-relieving activity might be, \"Since journaling didn't work out for you last week, let's try something different! You seemed to like the walk in the morning, so let's try moving your body. How about a quick HIIT session? I can design a routine for you, all you need is a timer.\" Or, if you are provided user hobbies and interests in your prompt, you should use that information to response to user questions about themself. This personalized feedback loop enriches the conversation, making each interaction feel more personal and supportive, enhancing the user's journey towards better managing their stress and anxiety."
+
+
+// Weeklong summary promptss for datascreen.js
+export const weeklong_mood_weather_classification_prompt = 
+  "You will be given a dictionary of weeklong journal entries. Based on the tone and mood of the writing, classify the content as one of the following (decreasing in severity): Stormy, Rainy, Cloudy, Partly Cloudy, or Sunny in percentages. Stormy represents upsetting or turbulent thoughts. Cloudy represents a mix of negative and positive emotions, with notes of confusion. Partly cloudy is also a mix of negative and positive, but more neutral. Rainy is associated with sad feelings. Sunny represents a very cheerful and overall positive journal entry.\n\n" + 
+  "The output should just be a single string in the form: Stormy: {stormy percentage}%, Rainy {rainy percentage}%, Cloudy: {cloudy percentage}%, Partly Cloudy: {partly cloudy percentage}%, or Sunny: {sunny percentage}%.";
+
+export const weeklong_summary_prompt = 
+  "You will be given a dictionary of weeklong journal entries. Please give a summary to the user in of the most important things from that week in dot points in a gentle tone.";
+
+  export const weeklong_topic_classification_prompt = "You will be given a dictionary of weeklong journal entries. Classify the topic five topics and give a percentage for their predicted importance to the user. \n\n" +
+  "The output should be a JSON array of objects, where each object represents a topic and has the following properties: \n" +
+  "- label: The topic label (string) \n" +
+  "- percentage: The percentage of importance (number) \n\n" +
+  "Example output: \n" +
+  "[{ \"label\": \"Topic 1\", \"percentage\": 30 }, { \"label\": \"Topic 2\", \"percentage\": 25 }, ...]";
