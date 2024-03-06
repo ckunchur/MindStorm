@@ -7,43 +7,37 @@ import DonutChart from './DonutChart';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import { ExtractUserNameFromFirebase, ExtractLastWeekEntriesFirebase} from '../firebase/functions';
-import { weeklongMoodWeatherClassificationWithChatGPT} from '../OpenAI/OpenAI';
+import { weeklongTopicClassificationWithChatGPT, weeklongSummaryWithChatGPT} from '../OpenAI/OpenAI';
+const colors = ['#1a75ad', '#a47dff', '#335c9e', 'skyblue', '#ffb6c1'];
 
-const colors = ['#1a75ad', '#a47dff', '#335c9e', 'skyblue'];
-
-const ChartRow = ({ title, items }) => {
+const ChartRow = ({ title, sections }) => {
     return (
-        <View style={styles.chartRowContainer}>
-           
-            <DonutChart
-                size={160}
-                strokeWidth={25}
-                sections={[
-                    { percentage: 25, color: colors[0] },
-                    { percentage: 15, color: colors[1] },
-                    { percentage: 35, color: colors[2]},
-                    { percentage: 25, color: colors[3] },
-                ]}
-            />
-
-            <ScrollView vertical showsHorizontalScrollIndicator={false}>
-            <Text style={styles.chipsHeading}>{title}</Text>
-                <View style={styles.chipsContainer}>
-                    {items.map((item, index) => (
-                        <TouchableOpacity key={index} 
-                        style={[
-                            styles.chip,
-                            { backgroundColor: colors[index] }
-                          ]}>
-                            <Text style={styles.chipText}>{item}</Text>
-                        </TouchableOpacity>
-                    ))}
-
-                </View>
-            </ScrollView>
-        </View>
+      <View style={styles.chartRowContainer}>
+        <DonutChart
+          size={160}
+          strokeWidth={25}
+          sections={sections.map((item, index) => ({
+            ...item,
+            color: colors[index % colors.length],
+          }))}
+        />
+  
+        <ScrollView vertical showsHorizontalScrollIndicator={false}>
+          <Text style={styles.chipsHeading}>{title}</Text>
+          <View style={styles.chipsContainer}>
+            {sections.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[styles.chip, { backgroundColor: colors[index % colors.length] }]}
+              >
+                <Text style={styles.chipText}>{item.label} ({item.percentage}%)</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
+      </View>
     );
-};
+  };
 
 const weather_moods = {
     "Stormy": require("../assets/stormy-mood.png"),
@@ -54,116 +48,126 @@ const weather_moods = {
     "Sunny": require("../assets/sunny-mood.png"),
 }
 
-// TOPMOODS AND TOPTOPICS ARE HARDCODED - TO FIX
-const topMoods = ["Anxious", "Stressed"];
-const topTopics = ["School", "Work", "Procrastination"];
-const weatherMood = "Anxious";
 const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style]}>{title}</Text>;
 const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText, style]}>{message}</Text>;
-
 
 export default function DataScreen() {
     const navigation = useNavigation();
     const [userName, setUserName] = useState('');
     const [entries, setEntries] = useState([]); // Step 1: State for entries
-    const [weeklongWeatherMood, setweeklongWeatherMood] = useState("");
+    const [weeklongSummary, setweeklongSummary] = useState("");
+    const [weeklongTopics, setweeklongTopics] = useState([]);
 
     useEffect(() => {
-    const userId = "imIQfhTxJteweMhIh88zvRxq5NH2"; // hardcoded for now
+        const userId = "imIQfhTxJteweMhIh88zvRxq5NH2"; // hardcoded for now
 
-    const fetchData = async () => {
-        console.log("Fetching data for user ID:", userId);
-        
-        // Fetch user name
-        const fetchedUserName = await ExtractUserNameFromFirebase(userId);
-        if (fetchedUserName) {
-            setUserName(fetchedUserName);
-            console.log("User's name:", fetchedUserName);
-        } else {
-            console.log("UserName not found or error fetching userName");
-        }
-
-        // Fetch entries
-        const fetchedEntries = await ExtractLastWeekEntriesFirebase(userId); // Step 2: Call ExtractEntriesFromFirebase
-        if (fetchedEntries.length > 0) {
-            setEntries(fetchedEntries); // Update state with the fetched entries
-            console.log("Fetched entries:", fetchedEntries);
-            console.log("Attempting mood classification...");
-            // Run API calls concurrently and wait for all to complete
-            try {
-                const results = await Promise.all([
-                    weeklongMoodWeatherClassificationWithChatGPT(JSON.stringify(fetchedEntries)),
-                ]);
-                console.log("Results from mood classification:", results);
-                const [weeklongMoodWeatherClassificationResult] = results;
-                setweeklongWeatherMood(weeklongMoodWeatherClassificationResult.data);
-            } catch (error) {
-                console.error('Error during mood classification:', error);
-                // Handle the error, show an error message, or take appropriate action
+        const fetchData = async () => {
+            console.log("Fetching data for user ID:", userId);
+            
+            // Fetch user name
+            const fetchedUserName = await ExtractUserNameFromFirebase(userId);
+            if (fetchedUserName) {
+                setUserName(fetchedUserName);
+                console.log("User's name:", fetchedUserName);
+            } else {
+                console.log("UserName not found or error fetching userName");
             }
-        } else {
-            console.log("No entries found or error fetching entries");
-        }
-    };
+            // do analysis
+            const fetchedEntries = await ExtractLastWeekEntriesFirebase(userId);
+            if (fetchedEntries.length > 0) {
+                setEntries(fetchedEntries);
+                console.log("Fetched entries:", fetchedEntries);
+                console.log("Attempting mood classification...");
+                // Run API calls concurrently and wait for all to complete
+                try {
+                    const results = await Promise.all([
+                        weeklongSummaryWithChatGPT(JSON.stringify(fetchedEntries)),
+                        weeklongTopicClassificationWithChatGPT(JSON.stringify(fetchedEntries)),
+                    ]);
+                    console.log("Results from mood classification:", results);
+                    const [weeklongSummaryWithResult, weeklongTopicClassificationResult] = results;
+                    setweeklongSummary(weeklongSummaryWithResult.data);
+    
+                    // Extract the JSON string from the response
+                    const jsonString = weeklongTopicClassificationResult.data.match(/```json\s*([\s\S]*?)\s*```/)[1];
+    
+                    // Replace escaped double quotes with regular quotes
+                    const sanitizedJsonString = jsonString.replace(/\\"/g, '"');
+    
+                    try {
+                        const parsedData = JSON.parse(sanitizedJsonString);
+                        setweeklongTopics(parsedData);
+                    } catch (error) {
+                        console.error("Error parsing weeklongTopicClassificationResult:", error);
+                        // Handle the parsing error, show an error message, or take appropriate action
+                    }
+                } catch (error) {
+                    console.error('Error during mood classification:', error);
+                    // Handle the error, show an error message, or take appropriate action
+                }
+            } else {
+                console.log("No entries found or error fetching entries");
+            }
+        };
 
-    fetchData();
-}, []); // The empty dependency array ensures this effect runs only once when the component mounts
+        fetchData();
+    }, []); // The empty dependency array ensures this effect runs only once when the component mounts
 
+    const MoodImage = ({ mood, date }) => {
+        return (
+            <View style={styles.moodWeatherView}>
+                <Image
+                    source={weather_moods[mood]}
+                    style={styles.moodImage}
+                    resizeMode="contain"
+                ></Image>
+                <Text style={styles.moodWeatherText}>{date}</Text>
+            </View>
+        )
+    }
 
-const MoodImage = ({ mood, date }) => {
     return (
-        <View style={styles.moodWeatherView}>
-            <Image
-                source={weather_moods[mood]}
-                style={styles.moodImage}
-                resizeMode="contain"
-            ></Image>
-            <Text style={styles.moodWeatherText}>{date}</Text>
+        <View style={styles.fullScreenContainer}>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                <Ionicons name="arrow-back-circle-outline" color="#4A9BB4" size={48} />
+            </TouchableOpacity>
+            <ImageBackground
+                resizeMode="cover"
+                source={require('../assets/journal-background.png')}
+                style={styles.fullScreen}
+            >
+                <ScrollView contentContainerStyle={styles.scrollContainer}>
+                    <WelcomeTitle title={userName ? `Hi ${userName},` : "Emotional Report"} style={styles.title} />
+                    <WelcomeMessage message="Here is a summary of your key feelings and topics over time" style={styles.subheaderText} />
+                    <Text style={styles.summarySubheading}>Your weather moods this week:</Text>
+                    <View style={styles.forecastView}>
+                        <View style={styles.moodRow}>
+                            <MoodImage mood="Stormy" date="Today"></MoodImage>
+                            <MoodImage mood="Rainy" date="03/02"></MoodImage>
+                            <MoodImage mood="Cloudy" date="03/01"></MoodImage>
+                            <MoodImage mood="Partly Cloudy" date="02/29"></MoodImage>
+                            <MoodImage mood="Sunny" date="02/28"></MoodImage>
+                        </View>
+                    </View>
+                    {weeklongTopics.length > 0 && (
+                        <View style={styles.donutChartContainer}>
+                            <ChartRow title="Weekly Topics" sections={weeklongTopics} />
+                        </View>
+                        )}
+                    <Text style={styles.summarySubheading}>Here is a summary of your week:</Text>
+                    <View style={styles.controls}>
+                        {weeklongSummary && (
+                            <View style={styles.predictedTextContainer}>
+                                <Text style={styles.predictedText}>{weeklongSummary}</Text>
+                            </View>
+                        )}
+
+                    </View>
+                </ScrollView>
+            </ImageBackground>
         </View>
-    )
-}
-return (
-    <View style={styles.fullScreenContainer}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Ionicons name="arrow-back-circle-outline" color="#4A9BB4" size={48} />
-      </TouchableOpacity>
-      <ImageBackground
-        resizeMode="cover"
-        source={require('../assets/journal-background.png')}
-        style={styles.fullScreen}
-      >
-        <ScrollView style={styles.scrollViewStyle} contentContainerStyle={styles.scrollViewContent}>
-          <WelcomeTitle title={userName ? `Hi ${userName},` : "Emotional Report"} style={styles.title} />
-          <WelcomeMessage message="Here is a summary of your key feelings and topics over time" style={styles.subheaderText} />
-
-          <View style={styles.forecastView}>
-                <View style={styles.moodRow}>
-                    <MoodImage mood="Stormy" date="Today"></MoodImage>
-                    <MoodImage mood="Rainy" date="03/02"></MoodImage>
-                    <MoodImage mood="Cloudy" date="03/01"></MoodImage>
-                    <MoodImage mood="Partly Cloudy" date="02/29"></MoodImage>
-                    <MoodImage mood="Sunny" date="02/28"></MoodImage>
-                </View>
-            </View>
-
-            <View style={styles.controls}>
-                <View style={styles.chipsContainer}>
-                        <ChartRow title="Top Moods" items={topMoods} />
-                        <ChartRow title="Top Topics" items={topTopics} />
-                </View>
-            </View>
-
-          {weeklongWeatherMood && (
-            <View style={styles.predictedTextContainer}>
-              <Text style={styles.predictedText}>{weeklongWeatherMood}</Text>
-            </View>
-          )}
-
-        </ScrollView>
-      </ImageBackground>
-    </View>
-  );
-}
+    );
+};
 
 const styles = StyleSheet.create({
     fullScreenContainer: {
@@ -171,8 +175,13 @@ const styles = StyleSheet.create({
     },
     fullScreen: {
         flex: 1, // Make the background image fill the whole screen
-        justifyContent: 'center', // Center the children vertically
-        alignItems: 'center', // Center the children horizontally
+    },
+    scrollContainer: {
+        flexGrow: 1,
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        paddingTop: 120,
+        paddingBottom: 40,
     },
     container: {
         flex: 1,
@@ -183,61 +192,46 @@ const styles = StyleSheet.create({
     },
     backButton: {
         position: 'absolute',
-        top: 80, // Adjusted to be below status bar
+        top: 60,
         left: 20,
-        zIndex: 10, // Ensure the back button is above the chat bubbles
+        zIndex: 10,
     },
-    scrollViewStyle: {
-        width: '100%',
-      },
-      scrollViewContent: {
-        alignItems: 'center', // Center the content horizontally
-        paddingBottom: 20, // Add some padding at the bottom to ensure nothing is cut off
-      },
     moodWeatherView: {
-        display: 'flex',
-        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         padding: 8,
         margin: 4,
-        backgroundColor: 'rgba(0, 0, 0, 0.1)"',
+        backgroundColor: 'rgba(0, 0, 0, 0.1)',
         borderRadius: 12,
-        marginTop: 20
     },
     moodImage: {
         width: 48,
         opacity: 0.5,
-        marginTop: 36
+        marginBottom: 8,
     },
     moodWeatherText: {
         color: 'white',
-        paddingBottom: 16,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
     },
     moodRow: {
-        display: 'flex',
         flexDirection: 'row',
+        justifyContent: 'space-around',
         alignItems: 'center',
-        height: '30%',
+        width: '100%',
+        marginTop: 20,
     },
     title: {
-        position: 'absolute',
-        top: 110,
         color: "#4A9BB4",
         fontSize: 32,
         marginBottom: 16,
         fontWeight: "700",
         fontFamily: "Inter, sans-serif",
+        textAlign: 'center',
     },
     forecastView: {
-        display: 'flex',
-        flexDirection: 'column',
-        position: 'absolute',
-        top: 196,
-        padding: '8',
         alignItems: 'center',
         justifyContent: 'center',
+        marginTop: 10,
     },
     forecasttitle: {
         fontSize: 22,
@@ -246,50 +240,33 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     subheaderText: {
-        position: 'absolute',
-        top: 148,
         textAlign: 'center',
         width: '80%',
         color: "#4A9BB4",
         fontSize: 16,
         fontFamily: "Inter, sans-serif",
-        marginBottom: 120, // Adjust the value as needed
+        marginBottom: 20,
     },
     controls: {
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 360
+        marginTop: 40,
+        width: '100%',
     },
-    bgImage: {
-        width: windowWidth,
-        height: windowHeight * 1.02,
-        alignItems: 'center',
-        justifyContent: 'center',
-
-    },
-    heading: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 8,
-        color: 'white',
-        textAlign: 'center',
-    },
-    subheading: {
+    summarySubheading: {
         fontSize: 18,
-        color: 'white',
+        fontWeight: 'bold',
+        color: '#4A9BB4',
         textAlign: 'center',
-        marginBottom: 16,
-    },
-
+      },
     predictedTextContainer: {
-        width: '80%', // Adjust the width as needed
+        width: '90%',
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 24,
         backgroundColor: "rgba(255, 255, 255, 0.4)",
-        padding: 8,
-        textAlign: "center",
-        fontFamily: "Inter, sans-serif",
+        padding: 16,
+        marginBottom: 20,
     },
     predictedText: {
         fontFamily: "Inter, sans-serif",
@@ -297,10 +274,10 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
     },
-
-    chipsContainer: {
+    donutChartContainer: {
         alignItems: 'center',
         justifyContent: 'center',
+        marginTop: 20,
     },
     chartRowContainer: {
         alignItems: 'center',
@@ -319,13 +296,11 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         marginLeft: 20,
         color: 'white',
-
     },
     chipsContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
         paddingHorizontal: 20,
-
     },
     chip: {
         backgroundColor: '#1F7D9B',
@@ -335,40 +310,8 @@ const styles = StyleSheet.create({
         marginRight: 10,
         marginBottom: 10,
     },
-    addButton: {
-        backgroundColor: '#4A9BB4',
-    },
     chipText: {
         color: 'white',
         textAlign: 'center',
     },
-
-    chatButtonText: {
-        fontWeight: 'bold',
-        fontSize: 16,
-        color: '#7887DA',
-        textAlign: 'center',
-        marginLeft: 8
-    },
-    chatButton: {
-
-        zIndex: 10,
-        backgroundColor: 'white',
-        margin: 8,
-        padding: 8,
-        borderColor: 'white',
-        borderRadius: 99999,
-        width: windowWidth * 0.5
-    },
-    buttonRow: {
-        flexDirection: 'row',
-        position: 'absolute',
-        bottom: 100, // Adjusted to be below status bar
-        right: 12,
-        flexDirection: "row",
-        alignItems: 'center',
-        justifyContent: 'center',
-
-    }
 });
-

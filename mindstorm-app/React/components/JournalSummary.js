@@ -87,7 +87,7 @@ export default function JournalSummary() {
 
                 <View style={styles.controls}>
                     <View style={styles.chipsContainer}>
-                        <ChipsRow title="Detected Moods" items={topMoods} />
+                        {/* <ChipsRow title="Detected Moods" items={topMoods} /> */}
                         <ChipsRow title="Detected Topics" items={topTopics} />
                     </View>
                     <View style={styles.predictedTextContainer}>

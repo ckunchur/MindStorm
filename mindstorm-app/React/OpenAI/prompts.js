@@ -15,7 +15,12 @@ export const weeklong_mood_weather_classification_prompt =
   "You will be given a dictionary of weeklong journal entries. Based on the tone and mood of the writing, classify the content as one of the following (decreasing in severity): Stormy, Rainy, Cloudy, Partly Cloudy, or Sunny in percentages. Stormy represents upsetting or turbulent thoughts. Cloudy represents a mix of negative and positive emotions, with notes of confusion. Partly cloudy is also a mix of negative and positive, but more neutral. Rainy is associated with sad feelings. Sunny represents a very cheerful and overall positive journal entry.\n\n" + 
   "The output should just be a single string in the form: Stormy: {stormy percentage}%, Rainy {rainy percentage}%, Cloudy: {cloudy percentage}%, Partly Cloudy: {partly cloudy percentage}%, or Sunny: {sunny percentage}%.";
 
-
-// Weeklong summary promptss for datascreen.js
 export const weeklong_summary_prompt = 
-  "You will be given a dictionary of weeklong journal entries. Please give a summary of the most important things from that week in dot points.";
+  "You will be given a dictionary of weeklong journal entries. Please give a summary to the user in of the most important things from that week in dot points in a gentle tone.";
+
+  export const weeklong_topic_classification_prompt = "You will be given a dictionary of weeklong journal entries. Classify the topic five topics and give a percentage for their predicted importance to the user. \n\n" +
+  "The output should be a JSON array of objects, where each object represents a topic and has the following properties: \n" +
+  "- label: The topic label (string) \n" +
+  "- percentage: The percentage of importance (number) \n\n" +
+  "Example output: \n" +
+  "[{ \"label\": \"Topic 1\", \"percentage\": 30 }, { \"label\": \"Topic 2\", \"percentage\": 25 }, ...]";

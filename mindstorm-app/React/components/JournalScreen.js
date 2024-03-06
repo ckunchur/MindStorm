@@ -32,14 +32,14 @@ export default function JournalScreen() {
     }
 
     try {
-      // Run API calls concurrently and wait for all to complete
-      const results = await Promise.all([
+      // Run OpenAI API calls 
+        const results = await Promise.all([
         topMoodsAndTopicsWithChatGPT(entryText),
         moodWeatherClassificationWithChatGPT(entryText),
         recommendTherapyChatbotWithChatGPT(entryText),
       ]);
 
-      // // Update state with results from API calls
+      // Update state with results from API calls
       const [topMoodsAndTopicsResult, moodWeatherClassificationResult, recommendTherapyChatbotResult] = results;
       setTopTopics(topMoodsAndTopicsResult.data.topics);
       setTopMoods(topMoodsAndTopicsResult.data.moods);
@@ -47,7 +47,7 @@ export default function JournalScreen() {
       setBotRecommendation(recommendTherapyChatbotResult.data);
 
 
-      // Create a new entry in the "entries" collection for the user
+      // Firebase: Create a new entry in the "entries" collection for the user
       const entriesRef = collection(db, `users/${uid}/entries`);
       await addDoc(entriesRef, {
         entryText: entryText,
