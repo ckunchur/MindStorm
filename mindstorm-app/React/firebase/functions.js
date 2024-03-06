@@ -160,9 +160,37 @@ export const readChatHistoryFromFirebase = async (userId) => {
   }
 };
 
+<<<<<<< Updated upstream
 export const ExtractEntriesFromFirebase = (userId) => {
   const [entryList, setEntryList] = useState([]);
   const [loading, setLoading] = useState(true);
+=======
+export const readChatHistory = async (userId, sessionId) => {
+  try {
+    // Reference to the session ID document under the "chats" collection for the specified user ID
+    const sessionDocRef = doc(db, `users/${userId}/chats`, sessionId);
+    
+    // Retrieve the session ID document
+    const sessionDocSnapshot = await getDoc(sessionDocRef);
+
+    // Check if the session ID document exists and contains the chat history field
+    if (sessionDocSnapshot.exists() && sessionDocSnapshot.data().chatHistory) {
+      const chatHistory = sessionDocSnapshot.data().chatHistory;
+
+      // Concatenate the chat history into a single string
+      const chatString = chatHistory.map(entry => `role: ${entry.role}, content: "${entry.content}"`).join('; ');
+      console.log("Chat history string: ", chatString);
+      return chatString;
+    } else {
+      console.log("Session ID document or chat history not found");
+      return null; // Return null if session ID document or chat history is not found
+    }
+  } catch (e) {
+    console.error("Error reading chat history from Firestore: ", e);
+    return null; // Return null in case of error
+  }
+};
+>>>>>>> Stashed changes
 
   useEffect(() => {
     const getEntries = async () => {

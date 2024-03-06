@@ -45,14 +45,14 @@ print(index.describe_index_stats())
 # Initialize OpenAI client
 client = OpenAI(api_key=openai_api_key)
 model = "text-embedding-ada-002"
-
-def upsert_user_profile(user_id, text):
-    vector = embed_text(text)
-    index.upsert(vectors=[(user_id, vector)])
     
 def embed_text(text, model=model):
     text = text.replace("\n", " ")
     return client.embeddings.create(input=[text], model=model).data[0].embedding
+
+def upsert_user_profile(user_id, text):
+    vector = embed_text(text)
+    index.upsert(vectors=[(user_id, vector)])
 
 def format_context(top_matches):
     """

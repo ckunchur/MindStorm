@@ -1,7 +1,9 @@
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 .env
+mindstorm-app/.env
 chatbotdemos/venv/
 chatbotdemos/venv
+mindstorm-app/React/.env
 # dependencies
 node_modules/
 
