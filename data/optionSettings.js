@@ -24,6 +24,31 @@ export const buddies = [
     }
 ];
 
+export const goalOptions = [
+    { key: "reduceAnxiety", title: "Reduce anxiety"},
+    { key: "mindfulness", title: "Practice mindfulness"},
+    { key: "productivity", title: "Boost productivity"},
+    { key: "gratitude", title: "Practice gratitude"},
+  ];
+
+export const weather_moods = {
+    "Stormy": require("../assets/stormy-mood.png"),
+    "Rainy": require("../assets/rainy-mood.png"),
+    "Cloudy": require("../assets/cloudy-mood.png"),
+    "Partly Cloudy": require("../assets/partial-cloudy-mood.png"),
+    "Cloudy": require("../assets/cloudy-mood.png"),
+    "Sunny": require("../assets/sunny-mood.png"),
+}
+
+export const genders = ['Female', 'Male', 'Non-binary'];
+export const ageGroups = [
+  '18-23',
+  '24-34',
+  '35-44',
+  '45-64',
+  '65+'
+];
+
 
 export const toneOptions = [
     { label: "Therapist", value: "strict" },
@@ -43,3 +68,4 @@ export const memoryOptions = [
     { label: "Forget", value: "forget" },
     { label: "Remember", value: "remember" },
 ];
+

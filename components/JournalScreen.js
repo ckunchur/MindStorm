@@ -4,10 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { collection, serverTimestamp, addDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { topMoodsAndTopicsWithChatGPT, moodWeatherClassificationWithChatGPT, recommendTherapyChatbotWithChatGPT } from '../OpenAI/OpenAI';
-// import Sound from 'react-native-sound';
-
-const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style]}>{title}</Text>;
-const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText, style]}>{message}</Text>;
+import { testUser } from "../firebase/functions";
 
 export default function JournalScreen() {
   const navigation = useNavigation();
@@ -16,11 +13,6 @@ export default function JournalScreen() {
   const [topMoods, setTopMoods] = useState("");
   const [weatherMood, setWeatherMood] = useState("");
   const [botRecommendation, setBotRecommendation] = useState("");
-
-
-  const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2" // hardcoded for now
-
-
   const handleEntrySubmit = async (uid) => {
     if (!uid) {
       Alert.alert("Error", "User ID is missing.");
@@ -30,7 +22,6 @@ export default function JournalScreen() {
       Alert.alert("Error", "Entry text cannot be empty.");
       return;
     }
-
     try {
       // Run API calls concurrently and wait for all to complete
       const results = await Promise.all([
@@ -38,14 +29,12 @@ export default function JournalScreen() {
         moodWeatherClassificationWithChatGPT(entryText),
         recommendTherapyChatbotWithChatGPT(entryText),
       ]);
-
-      // // Update state with results from API calls
+      // Update state with results from API calls
       const [topMoodsAndTopicsResult, moodWeatherClassificationResult, recommendTherapyChatbotResult] = results;
       setTopTopics(topMoodsAndTopicsResult.data.topics);
       setTopMoods(topMoodsAndTopicsResult.data.moods);
       setWeatherMood(moodWeatherClassificationResult.data);
       setBotRecommendation(recommendTherapyChatbotResult.data);
-
 
       // Create a new entry in the "entries" collection for the user
       const entriesRef = collection(db, `users/${uid}/entries`);
@@ -78,15 +67,13 @@ export default function JournalScreen() {
 
   return (
     <View style={styles.fullScreenContainer}>
-
       <ImageBackground
         resizeMode="cover"
         source={require('../assets/journal-background.png')}
         style={styles.fullScreen}
       >
-        <WelcomeTitle title="What's on your mind?" style={styles.title} />
-        <WelcomeMessage message="This is your mind space. Write down anything you wish!" style={styles.subheaderText} />
-
+        <Text style={styles.title}>What's on your mind?</Text>
+        <Text style={styles.subheaderText}>This is your mind space. Write down anything you wish!</Text>
         <TextInput
           placeholder="Start writing here"
           value={entryText}
@@ -95,10 +82,6 @@ export default function JournalScreen() {
           placeholderTextColor="grey"
           multiline={true}
         />
-
-
-
-
         <TouchableOpacity style={styles.continueButton} onPress={() => handleEntrySubmit(testUser)}>
           <Text style={styles.continueButtonText}>Submit</Text>
         </TouchableOpacity>
@@ -108,14 +91,13 @@ export default function JournalScreen() {
 };
 
 const styles = StyleSheet.create({
-
   fullScreenContainer: {
-    flex: 1, // Make the container fill the whole screen
+    flex: 1,
   },
   fullScreen: {
-    flex: 1, // Make the background image fill the whole screen
-    justifyContent: 'center', // Center the children vertically
-    alignItems: 'center', // Center the children horizontally
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
   },
   title: {
     position: 'absolute',
@@ -136,7 +118,6 @@ const styles = StyleSheet.create({
     fontFamily: "Inter, sans-serif",
     marginBottom: 50, // Adjust the value as needed
   },
-
   inputSubheader: {
     color: "white",
     fontSize: 16,
@@ -148,7 +129,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: "Inter, sans-serif",
   },
-
   input: {
     marginTop: 220,
     height: '50%',
@@ -157,9 +137,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     color: 'grey',
-
   },
-
   continueButton: {
     justifyContent: "center",
     alignItems: "center",

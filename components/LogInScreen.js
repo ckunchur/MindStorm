@@ -1,20 +1,13 @@
 import { React, useState } from "react";
 import { View, StyleSheet, ImageBackground, Text, TextInput, Alert, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-// import { useOnboardingContext } from "../contexts/onboardingContext";
-// const { setOnboardingComplete } = useOnboardingContext();
-import { Ionicons } from '@expo/vector-icons'; // Import Ionicons
+import { Ionicons } from '@expo/vector-icons';
 import { signInUser } from "../firebase/functions";
 
-
-const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style]}>{title}</Text>;
-const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText, style]}>{message}</Text>;
-
-export default function LogIn({setOnboardingComplete}) {
+export default function LogIn({ setOnboardingComplete }) {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const handleSignIn = async () => {
     try {
       const success = await signInUser(email, password);
@@ -43,40 +36,27 @@ export default function LogIn({setOnboardingComplete}) {
         source={require('../assets/onboarding-background.png')}
         style={styles.fullScreen}
       >
-        <WelcomeTitle title="Log In" style={styles.title} />
-        <WelcomeMessage message="Sign into an existing account" style={styles.subheaderText} />
-       
-       <Text style={styles.inputHeader}>
-        Email
-      </Text>
-
-      <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        style={styles.input}
-        placeholderTextColor="grey"
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      
-
-      <Text style={styles.inputHeader}>
-        Password
-      </Text>
-     
-      <TextInput
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        style={styles.input}
-        placeholderTextColor="grey"
-        secureTextEntry
-      />
-
-     
-       
-
+        <Text style={styles.title}>Log In</Text>
+        <Text style={styles.subheaderText}>Sign into an existing account</Text>
+        <Text style={styles.inputHeader}>Email</Text>
+        <TextInput
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          style={styles.input}
+          placeholderTextColor="grey"
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+        <Text style={styles.inputHeader}>Password</Text>
+        <TextInput
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          style={styles.input}
+          placeholderTextColor="grey"
+          secureTextEntry
+        />
         <TouchableOpacity style={styles.continueButton} onPress={handleSignIn}>
           <Text style={styles.continueButtonText}>Continue</Text>
         </TouchableOpacity>
@@ -88,32 +68,31 @@ export default function LogIn({setOnboardingComplete}) {
 const styles = StyleSheet.create({
   backButton: {
     position: 'absolute',
-    top: 80, // Adjusted to be below status bar
+    top: 80, 
     left: 20,
-    zIndex: 10, // Ensure the back button is above the chat bubbles
+    zIndex: 10, 
   },
   fullScreenContainer: {
-    flex: 1, // Make the container fill the whole screen
+    flex: 1, 
   },
   fullScreen: {
-    flex: 1, // Make the background image fill the whole screen
-    justifyContent: 'center', // Center the children vertically
-    alignItems: 'center', // Center the children horizontally
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
   },
   title: {
     color: "white",
     fontSize: 32,
     fontWeight: "700",
     fontFamily: "Inter, sans-serif",
-    marginTop: 72, // Adjust the value as needed
+    marginTop: 72, 
   },
   subheaderText: {
     color: "white",
     fontSize: 16,
     fontFamily: "Inter, sans-serif",
-    marginBottom: 50, // Adjust the value as needed
+    marginBottom: 50, 
   },
-
   inputSubheader: {
     color: "white",
     fontSize: 16,
@@ -125,7 +104,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: "Inter, sans-serif",
   },
- 
   input: {
     height: 40,
     width: '80%',
@@ -135,7 +113,6 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     color: 'black',
   },
-  
   continueButton: {
     justifyContent: "center",
     alignItems: "center",
@@ -147,7 +124,6 @@ const styles = StyleSheet.create({
     color: "#4A9BB4",
     textAlign: "center",
     marginTop: 96,
-    // marginVertical: 29,
     padding: 18,
     fontSize: 16,
     fontWeight: "700",

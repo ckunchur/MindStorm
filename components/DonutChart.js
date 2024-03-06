@@ -5,7 +5,7 @@ import { Svg, Path } from 'react-native-svg';
 export default function DonutChart({ size, strokeWidth, sections }){
   const radius = size / 2 - strokeWidth / 2;
   const circumference = 2 * Math.PI * radius;
-
+  
   // Function to calculate the stroke dash array for a section
   const getStrokeDasharray = (percentage) => {
     const sectionLength = (percentage / 100) * circumference;
@@ -21,7 +21,6 @@ export default function DonutChart({ size, strokeWidth, sections }){
   return (
     <View style={styles.container}>
       <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}  fill="none">
-        {/* The Circle component is removed to eliminate the black center */}
         {sections.map((section, index) => (
           <Path
             key={index}

@@ -8,20 +8,17 @@ import {
     ImageBackground,
     Dimensions,
 } from 'react-native';
-import Carousel, { Pagination } from 'react-native-snap-carousel';
-import { useNavigation } from '@react-navigation/native'; // Import useNavigation
+import Carousel from 'react-native-snap-carousel';
+import { useNavigation } from '@react-navigation/native'; 
 import { Ionicons } from '@expo/vector-icons';
-import { buddies } from '../data/chatSettings';
+import { buddies } from '../data/optionSettings';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style]}>{title}</Text>;
-const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText, style]}>{message}</Text>;
-
 
 export default function ChooseYourBuddy() {
     const [activeSlide, setActiveSlide] = useState(0);
-    const navigation = useNavigation(); // Use the useNavigation hook
+    const navigation = useNavigation(); 
 
     const renderCarouselItem = ({ item, index }) => {
         return (
@@ -31,9 +28,7 @@ export default function ChooseYourBuddy() {
                         <Image source={item.image} style={styles.buddyImage}></Image>
                     </TouchableOpacity>
                 </View>
-
                 <Text style={styles.subheaderText}>{buddies[activeSlide].name}</Text>
-
                 <View style={[
                     styles.descriptionBox,
                 ]}>
@@ -52,8 +47,6 @@ export default function ChooseYourBuddy() {
                 style={styles.fullScreen}
             >
                 <Text style={styles.title}> {buddies[activeSlide].speciality}</Text>
-               
-
                 <Carousel
                     data={buddies}
                     renderItem={renderCarouselItem}
@@ -63,24 +56,20 @@ export default function ChooseYourBuddy() {
                     style={styles.carousel}
                 />
                 <View style={styles.buttonCol}>
-
-
                     <TouchableOpacity style={styles.customizeButton}
-                        onPress={() => navigation.navigate(`${buddies[activeSlide].name}ChatScreen`, {name: buddies[activeSlide].name})}
+                        onPress={() => navigation.navigate('ChatScreen', { bot: buddies[activeSlide].name})}
                     >
                         <Ionicons name="chatbubbles-outline" size={24} />
                         <Text style={{ ...styles.customizeButtonText, color: buddies[activeSlide].lightColor }}>Chat with {buddies[activeSlide].name}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.customizeButton}
+                    <TouchableOpacity
+                        style={styles.customizeButton}
                         onPress={() => navigation.navigate('CustomizeScreen', { activeSlide: activeSlide })}
-
                     >
                         <Ionicons name="hammer-outline" size={24} />
                         <Text style={{ ...styles.customizeButtonText, color: buddies[activeSlide].lightColor }}>
                             Customize</Text>
-
                     </TouchableOpacity>
-
                 </View>
             </ImageBackground>
         </View>
@@ -92,9 +81,9 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     fullScreen: {
-        flex: 1, // Make the background image fill the whole screen
-        justifyContent: 'center', // Center the children vertically
-        alignItems: 'center', // Center the children horizontally
+        flex: 1, 
+        justifyContent: 'center', 
+        alignItems: 'center', 
     },
     title: {
         position: 'absolute',
@@ -134,7 +123,7 @@ const styles = StyleSheet.create({
         marginBottom: 16,
         fontWeight: 'bold'
     },
-    slide: {marginTop: 160},
+    slide: { marginTop: 160 },
     descriptionBox: {
         borderRadius: 32,
         padding: 20,
@@ -169,9 +158,8 @@ const styles = StyleSheet.create({
     },
     buttonCol: {
         position: 'absolute',
-        bottom: 32, // Adjusted to be below status bar
+        bottom: 32, 
         alignItems: 'center',
         justifyContent: 'center',
-
     }
 });

@@ -1,17 +1,20 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Image, ImageBackground, Dimensions } from 'react-native';
+import React from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Image, ImageBackground, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { journalEntries } from '../data/fakeEntries';
+import { weather_moods } from '../data/optionSettings';
 import DonutChart from './DonutChart';
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-
 const colors = ['#1a75ad', '#a47dff', '#335c9e', 'skyblue'];
+// hardcoded for now
+const topMoods = ["Anxious", "Stressed"];
+const topTopics = ["School", "Work", "Procrastination"];
+
 const ChartRow = ({ title, items }) => {
     return (
         <View style={styles.chartRowContainer}>
-           
             <DonutChart
                 size={160}
                 strokeWidth={25}
@@ -41,25 +44,6 @@ const ChartRow = ({ title, items }) => {
     );
 };
 
-
-
-const weather_moods = {
-    "Stormy": require("../assets/stormy-mood.png"),
-    "Rainy": require("../assets/rainy-mood.png"),
-    "Cloudy": require("../assets/cloudy-mood.png"),
-    "Partly Cloudy": require("../assets/partial-cloudy-mood.png"),
-    "Cloudy": require("../assets/cloudy-mood.png"),
-    "Sunny": require("../assets/sunny-mood.png"),
-}
-
-
-const topMoods = ["Anxious", "Stressed"];
-const topTopics = ["School", "Work", "Procrastination"];
-const weatherMood = "Anxious";
-const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style]}>{title}</Text>;
-const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText, style]}>{message}</Text>;
-
-
 export default function DataScreen() {
     const navigation = useNavigation();
     const MoodImage = ({ mood, date }) => {
@@ -76,7 +60,6 @@ export default function DataScreen() {
     }
     return (
         <View style={styles.fullScreenContainer}>
-
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                 <Ionicons name="arrow-back-circle-outline" color="#4A9BB4" size={48} />
             </TouchableOpacity>
@@ -85,9 +68,8 @@ export default function DataScreen() {
                 source={require('../assets/journal-background.png')}
                 style={styles.fullScreen}
             >
-                <WelcomeTitle title="Emotional Report" style={styles.title} />
-                <WelcomeMessage message="A summary of your key feelings and topics over time" style={styles.subheaderText} />
-
+                <Text style={styles.title}>Emotional Report </Text>
+                <Text style={styles.subheaderText}> A summary of your key feelings and topics over time </Text>
                 <View style={styles.forecastView}>
                     <View style={styles.moodRow}>
                         <MoodImage mood="Stormy" date="Today"></MoodImage>
@@ -95,21 +77,14 @@ export default function DataScreen() {
                         <MoodImage mood="Cloudy" date="03/01"></MoodImage>
                         <MoodImage mood="Partly Cloudy" date="02/29"></MoodImage>
                         <MoodImage mood="Sunny" date="02/28"></MoodImage>
-
                     </View>
                 </View>
-
                 <View style={styles.controls}>
-
                     <View style={styles.chipsContainer}>
                         <ChartRow title="Top Moods" items={topMoods} />
                         <ChartRow title="Top Topics" items={topTopics} />
                     </View>
-
-
                 </View>
-
-
             </ImageBackground>
         </View>
     );
@@ -117,12 +92,12 @@ export default function DataScreen() {
 
 const styles = StyleSheet.create({
     fullScreenContainer: {
-        flex: 1, // Make the container fill the whole screen
+        flex: 1,
     },
     fullScreen: {
-        flex: 1, // Make the background image fill the whole screen
-        justifyContent: 'center', // Center the children vertically
-        alignItems: 'center', // Center the children horizontally
+        flex: 1, 
+        justifyContent: 'center', 
+        alignItems: 'center',
     },
     container: {
         flex: 1,
@@ -133,9 +108,9 @@ const styles = StyleSheet.create({
     },
     backButton: {
         position: 'absolute',
-        top: 80, // Adjusted to be below status bar
+        top: 80, // adjusted to be below status bar
         left: 20,
-        zIndex: 10, // Ensure the back button is above the chat bubbles
+        zIndex: 10, // ensure the back button is above the chat bubbles
     },
     moodWeatherView: {
         display: 'flex',
@@ -147,7 +122,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.1)"',
         borderRadius: 12,
         marginTop: 20
-
     },
     moodImage: {
         width: 48,
@@ -158,17 +132,13 @@ const styles = StyleSheet.create({
         color: 'white',
         paddingBottom: 16,
         fontWeight: 'bold'
-
     },
-
-
     moodRow: {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         height: '30%',
     },
-
     title: {
         position: 'absolute',
         top: 110,
@@ -201,7 +171,7 @@ const styles = StyleSheet.create({
         color: "#4A9BB4",
         fontSize: 16,
         fontFamily: "Inter, sans-serif",
-        marginBottom: 120, // Adjust the value as needed
+        marginBottom: 120, 
     },
     controls: {
         alignItems: 'center',
@@ -213,7 +183,6 @@ const styles = StyleSheet.create({
         height: windowHeight * 1.02,
         alignItems: 'center',
         justifyContent: 'center',
-
     },
     heading: {
         fontSize: 24,
@@ -228,7 +197,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 16,
     },
-
     predictedTextContainer: {
         width: '80%', // Adjust the width as needed
         justifyContent: "center",
@@ -245,7 +213,6 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
     },
-
     chipsContainer: {
         alignItems: 'center',
         justifyContent: 'center',
@@ -267,13 +234,11 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         marginLeft: 20,
         color: 'white',
-
     },
     chipsContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
         paddingHorizontal: 20,
-
     },
     chip: {
         backgroundColor: '#1F7D9B',
@@ -290,7 +255,6 @@ const styles = StyleSheet.create({
         color: 'white',
         textAlign: 'center',
     },
-
     chatButtonText: {
         fontWeight: 'bold',
         fontSize: 16,
@@ -316,7 +280,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: 'center',
         justifyContent: 'center',
-
     }
 });
 

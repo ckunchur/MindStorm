@@ -5,22 +5,17 @@ import 'react-native-gesture-handler';
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
-
 import ChooseGoalsScreen from './components/ChooseGoals';
 import NewLandingScreen from './components/LandingScreen';
 import JournalScreen from './components/JournalScreen';
 import JournalSummary from './components/JournalSummary';
-import LyraChatScreen from './components/LyraChatScreen';
-import NimbusChatScreen from './components/NimbusChatScreen';
+import ChatScreen from './components/ChatScreen';
 import CustomizeScreen from './components/CustomizeScreen';
 import DataScreen from './components/DataScreen';
 import PersonalInfoScreen from './components/PersonalInfoScreen';
 import ChooseYourBuddy from './components/ChooseBuddy';
 import LogInScreen from './components/LogInScreen';
 import CreateAccountScreen from './components/CreateAccount';
-// import OnboardingContext from './contexts/OnboardingContext'; // Adjust the path as necessary
-
-
 import { Ionicons } from '@expo/vector-icons';
 import { LogBox } from 'react-native';
 LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
@@ -39,10 +34,7 @@ function ChatStackNavigator() {
     <ChatStack.Navigator initialRouteName="ChooseYourBuddy" screenOptions={{ headerShown: false }}>
       <ChatStack.Screen name="ChooseYourBuddy" component={ChooseYourBuddy} />
       <ChatStack.Screen name="CustomizeScreen" component={CustomizeScreen} />
-      <ChatStack.Screen name="LyraChatScreen" component={LyraChatScreen} />
-      <ChatStack.Screen name="NimbusChatScreen" component={NimbusChatScreen} />
-
-
+      <ChatStack.Screen name="ChatScreen" component={ChatScreen} />
     </ChatStack.Navigator>
   );
 }
@@ -52,22 +44,20 @@ function JournalStackNavigator() {
     <JournalStack.Navigator initialRouteName="JournalScreen" screenOptions={{ headerShown: false }}>
       <JournalStack.Screen name="JournalScreen" component={JournalScreen} />
       <JournalStack.Screen name="JournalSummary" component={JournalSummary} />
-      <JournalStack.Screen name="LyraChatScreen" component={LyraChatScreen} />
-      <JournalStack.Screen name="NimbusChatScreen" component={NimbusChatScreen} />
-
+      <JournalStack.Screen name="ChatScreen" component={ChatScreen} />
     </JournalStack.Navigator>
   );
 }
 
 function OnboardingStackNavigator({ setOnboardingComplete }) {
   return (
-    <OnboardingStack.Navigator 
-    initialRouteName="LandingScreen"
-     screenOptions={{ headerShown: false,  cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}
-     >
+    <OnboardingStack.Navigator
+      initialRouteName="LandingScreen"
+      screenOptions={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}
+    >
       <OnboardingStack.Screen name="LandingScreen" component={NewLandingScreen} />
       <OnboardingStack.Screen name="LogInScreen">
-      {(props) => <LogInScreen {...props} setOnboardingComplete={setOnboardingComplete} />}
+        {(props) => <LogInScreen {...props} setOnboardingComplete={setOnboardingComplete} />}
       </OnboardingStack.Screen>
       <OnboardingStack.Screen name="CreateAccount" component={CreateAccountScreen} />
       <OnboardingStack.Screen name="ChooseGoals" component={ChooseGoalsScreen} />
@@ -81,9 +71,6 @@ function OnboardingStackNavigator({ setOnboardingComplete }) {
 export default function App() {
   const [onboardingComplete, setOnboardingComplete] = useState(false);
   let contentDisplayed;
-  // <OnboardingContext.Provider value={{ setOnboardingComplete: setOnboardingComplete }}>
-  // {onboardingComplete ? (
-
   if (onboardingComplete) {
     contentDisplayed = (
       <NavigationContainer>
@@ -98,7 +85,6 @@ export default function App() {
               } else if (route.name === 'Insights') {
                 iconName = focused ? 'bar-chart' : 'bar-chart-outline';
               }
-             
               return <Ionicons name={iconName} size={32} color="#4A9BB4" />;
             },
           })}
@@ -125,7 +111,6 @@ export default function App() {
           <Tab.Screen name="Chat" component={ChatStackNavigator} options={{ headerShown: false, tabBarVisible: false, }} />
           <Tab.Screen name="Insights" component={DataScreen} options={{ headerShown: false }} />
         </Tab.Navigator>
-
       </NavigationContainer>
     );
   }
@@ -133,7 +118,7 @@ export default function App() {
     contentDisplayed = (
       <NavigationContainer>
         <OnboardingStackNavigator setOnboardingComplete={setOnboardingComplete} />
-        </NavigationContainer>
+      </NavigationContainer>
     );
   }
   return contentDisplayed;

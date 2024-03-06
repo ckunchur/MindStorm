@@ -3,10 +3,7 @@ import { View, StyleSheet, ImageBackground, Text, TextInput, TouchableOpacity } 
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons'; // Import Ionicons
 import { updatePersonalInfo } from "../firebase/functions";
-
-
-const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style]}>{title}</Text>;
-const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText, style]}>{message}</Text>;
+import { genders,ageGroups } from "../data/optionSettings";
 const Chip = ({ label, selected, onSelect }) => (
   <TouchableOpacity
     style={[styles.chip, selected && styles.chipSelected]}
@@ -20,20 +17,10 @@ const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2"
 
 export default function PersonalInfoScreen({ setOnboardingComplete }) {
   const navigation = useNavigation();
- 
   const [selectedGender, setSelectedGender] = useState(null);
   const [selectedAge, setSelectedAge] = useState(null);
   const [relaxActivities, setRelaxActivities] = useState(null);
   const [hobbies, setHobbies] = useState(null);
-  const genders = ['Female', 'Male', 'Non-binary'];
-  const ageGroups = [
-    '18-23',
-    '24-34',
-    '35-44',
-    '45-64',
-    '65+'
-  ];
- 
 
 
   const handleContinue = async (uid) => {
@@ -52,10 +39,9 @@ export default function PersonalInfoScreen({ setOnboardingComplete }) {
         source={require('../assets/onboarding-background.png')}
         style={styles.fullScreen}
       >
-        <WelcomeTitle title="Who are you?" style={styles.title} />
-        <WelcomeMessage message="Want to start off with more
-        personalized results? Answer some optional questions about yourself." style={styles.subheaderText} />
-
+        <Text style={styles.title}>Who are you?</Text>
+        <Text style={styles.subheaderText}> Want to start off with more personalized results? 
+        Answer some optional questions about yourself. </Text>
         {/* Gender Chips */}
         <Text style={styles.chipHeader}>
           Gender
@@ -70,8 +56,6 @@ export default function PersonalInfoScreen({ setOnboardingComplete }) {
             />
           ))}
         </View>
-
-
         {/* Age Chips */}
         <Text style={styles.chipHeader}>
           Age
@@ -86,16 +70,12 @@ export default function PersonalInfoScreen({ setOnboardingComplete }) {
             />
           ))}
         </View>
-
-
-        
         <Text style={styles.chipHeader}>
           How do you relax?
         </Text>
         <Text style={{ color: 'white' }}>
           Ex: meditating, going for a walk, etc.
         </Text>
-
         <TextInput
           placeholder="Listening to bird sounds"
           value={relaxActivities}
@@ -103,14 +83,12 @@ export default function PersonalInfoScreen({ setOnboardingComplete }) {
           style={styles.input}
           placeholderTextColor="grey"
         />
-
         <Text style={styles.chipHeader}>
           Any current hobbies?
         </Text>
         <Text style={{ color: 'white' }}>
           Ex: swimming, baking, reading sci-fi
         </Text>
-
         <TextInput
           placeholder="Baking muffins"
           value={hobbies}
@@ -118,18 +96,12 @@ export default function PersonalInfoScreen({ setOnboardingComplete }) {
           style={styles.input}
           placeholderTextColor="grey"
         />
-
-
-
-
-
         <View style={styles.paginationContainer}>
           <View style={styles.paginationInactive} />
           <View style={styles.paginationInactive} />
           <View style={styles.paginationActive} />
           <View style={styles.paginationInactive} />
         </View>
-
         <TouchableOpacity style={styles.continueButton} onPress={() => handleContinue(testUser)}>
           <Text style={styles.continueButtonText}>Continue</Text>
         </TouchableOpacity>
@@ -141,9 +113,9 @@ export default function PersonalInfoScreen({ setOnboardingComplete }) {
 const styles = StyleSheet.create({
   backButton: {
     position: 'absolute',
-    top: 80, // Adjusted to be below status bar
+    top: 80,
     left: 20,
-    zIndex: 10, // Ensure the back button is above the chat bubbles
+    zIndex: 10,
   },
   input: {
     height: 40,
@@ -156,12 +128,12 @@ const styles = StyleSheet.create({
   },
 
   fullScreenContainer: {
-    flex: 1, // Make the container fill the whole screen
+    flex: 1,
   },
   fullScreen: {
-    flex: 1, // Make the background image fill the whole screen
-    justifyContent: 'center', // Center the children vertically
-    alignItems: 'center', // Center the children horizontally,
+    flex: 1, 
+    justifyContent: 'center',
+    alignItems: 'center', 
 
   },
   title: {
@@ -169,13 +141,13 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "700",
     fontFamily: "Inter, sans-serif",
-    marginTop: 72, // Adjust the value as needed
+    marginTop: 72,
   },
   subheaderText: {
     color: "white",
     fontSize: 16,
     fontFamily: "Inter, sans-serif",
-    marginBottom: 50, // Adjust the value as needed
+    marginBottom: 50,
   },
 
   chipHeader: {
@@ -207,7 +179,7 @@ const styles = StyleSheet.create({
   },
   chipSelected: {
     backgroundColor: 'rgba(255, 255, 255, 1)',
-    borderWidth: 4, // Thicker border
+    borderWidth: 4,
     borderColor: "#BCC6FC",
 
   },

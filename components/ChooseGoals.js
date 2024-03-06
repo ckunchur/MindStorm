@@ -2,34 +2,20 @@ import {React, useState} from "react";
 import { View, StyleSheet, ImageBackground, Text, TextInput, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { updatePersonalGoals } from "../firebase/functions";
-import { Ionicons } from '@expo/vector-icons'; // Import Ionicons
-
-const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style]}>{title}</Text>;
-const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText, style]}>{message}</Text>;
-const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2"
-
+import { Ionicons } from '@expo/vector-icons'; 
+import { goalOptions } from "../data/optionSettings";
+import { testUser } from "../firebase/functions";
 
 export default function ChooseGoalsScreen() {
   const navigation = useNavigation();
-
-  const goalOptions = [
-    { key: "reduceAnxiety", title: "Reduce anxiety"},
-    { key: "mindfulness", title: "Practice mindfulness"},
-    { key: "productivity", title: "Boost productivity"},
-    { key: "gratitude", title: "Practice gratitude"},
-  ];
+  const [selectedGoals, setSelectedGoals] = useState([]);
+  const [currentStruggles, setCurrentStruggles] = useState(null);
 
   const GoalOption = ({ title, isSelected, onPress }) => (
     <TouchableOpacity onPress={onPress} style={[styles.goalOption, isSelected && styles.goalOptionSelected]}>
       <Text style={[styles.goalOptionText, isSelected && styles.goalOptionTextSelected]}>{title}</Text>
     </TouchableOpacity>
   );
-  
-
-  const [selectedGoals, setSelectedGoals] = useState([]);
-  const [currentStruggles, setCurrentStruggles] = useState(null);
-
- 
 
   const toggleGoal = (key) => {
     setSelectedGoals((prevSelectedGoals) => {
@@ -44,28 +30,24 @@ export default function ChooseGoalsScreen() {
       }
     });
   };
-  console.log("goals", selectedGoals)
-  console.log("currentStruggles", currentStruggles)
-   
+
   const handleContinue = async (uid) => {
     await updatePersonalGoals(uid, selectedGoals, currentStruggles);
-    console.log("hello")
     navigation.navigate('PersonalInfo')
   };
 
   return(
     <View style={styles.fullScreenContainer}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                <Ionicons name="arrow-back-circle-outline" color="white" size={48} />
+        <Ionicons name="arrow-back-circle-outline" color="white" size={48} />
       </TouchableOpacity>
       <ImageBackground
         resizeMode="cover"
         source={require('../assets/onboarding-background.png')}
         style={styles.fullScreen}
       > 
-        <WelcomeTitle title="What are your goals?" style={styles.title} />
-        <WelcomeMessage message="No pressure! You can always change these later." style={styles.subheaderText} />
-        
+        <Text style={styles.title}>What are your goals?</Text> 
+        <Text style={styles.subheaderText}> No pressure! You can always change these later. </Text> 
         <View style={styles.goalsContainer}>
           {goalOptions.map((option) => (
             <GoalOption 
@@ -76,14 +58,12 @@ export default function ChooseGoalsScreen() {
              />
           ))}
         </View>
-
         <Text style={styles.inputHeader}>
          Anything currently bothering you?
         </Text>
         <Text style={{ color: 'white' }}>
           Ex: recent breakup, struggling in school, etc
         </Text>
-
         <TextInput
           placeholder="Uncertain about my post-graduation plans"
           value={currentStruggles}
@@ -91,14 +71,12 @@ export default function ChooseGoalsScreen() {
           style={styles.input}
           placeholderTextColor="grey"
         />
-        
         <View style={styles.paginationContainer}>
           <View style={styles.paginationInactive} />
           <View style={styles.paginationActive} />
           <View style={styles.paginationInactive} />
           <View style={styles.paginationInactive} />
         </View>
-        
         <TouchableOpacity style={styles.continueButton} 
         onPress={() => handleContinue(testUser)}
         >
@@ -112,9 +90,9 @@ export default function ChooseGoalsScreen() {
 const styles = StyleSheet.create({
   backButton: {
     position: 'absolute',
-    top: 80, // Adjusted to be below status bar
+    top: 80, 
     left: 20,
-    zIndex: 10, // Ensure the back button is above the chat bubbles
+    zIndex: 10, 
   },
  inputHeader: {
     color: "white",
@@ -124,12 +102,12 @@ const styles = StyleSheet.create({
     fontFamily: "Inter, sans-serif",
   },
   fullScreenContainer: {
-    flex: 1, // Make the container fill the whole screen
+    flex: 1, 
   },
   fullScreen: {
-    flex: 1, // Make the background image fill the whole screen
-    justifyContent: 'center', // Center the children vertically
-    alignItems: 'center', // Center the children horizontally
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center', 
   },
   input: {
     height: 50,
@@ -146,29 +124,29 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "700",
     fontFamily: "Inter, sans-serif",
-    marginTop: 108, // Adjust the value as needed
+    marginTop: 108, 
   },
   subheaderText: {
     color: "white",
     fontSize: 16,
     fontFamily: "Inter, sans-serif",
-    marginBottom: 24, // Adjust the value as needed
+    marginBottom: 24, 
   },
   goalsContainer: {
-    width: '90%', // Adjust the width as needed
-    justifyContent: 'space-around', // This will distribute space evenly around the GoalOption components
+    width: '90%', 
+    justifyContent: 'space-around', // distribute space evenly around the GoalOption components
     alignItems: 'center',
-    flexDirection: 'row', // Arrange children in a row
-    flexWrap: 'wrap', // Allow wrapping of children
+    flexDirection: 'row', 
+    flexWrap: 'wrap', // allow wrapping of children
   },
   goalOption: {
-    width: '80%', // Adjust the width as needed
+    width: '80%', 
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 24,
     backgroundColor: "rgba(255, 255, 255, 0.8)",
     padding: 28,
-    margin: 8, // Ensure there's a margin between the boxes
+    margin: 8, 
     textAlign: "center",
     fontFamily: "Inter, sans-serif",
   },
@@ -181,13 +159,13 @@ const styles = StyleSheet.create({
   },
 
   goalOptionSelected: {
-    backgroundColor: "white", // Full opacity
-    borderWidth: 4, // Thicker border
+    backgroundColor: "white", 
+    borderWidth: 4,
     borderColor: "#BCC6FC",
 
   },
   goalOptionTextSelected: {
-   fontWeight: "bold", // Example selected text color, change as needed
+   fontWeight: "bold", 
   },
   paginationContainer: {
     justifyContent: "center",

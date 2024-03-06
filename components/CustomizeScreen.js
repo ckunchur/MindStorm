@@ -11,18 +11,17 @@ import {
 import SwitchSelector from "react-native-switch-selector";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { buddies, toneOptions, genderOptions, ageOptions, memoryOptions } from '../data/chatSettings';
+import { buddies, toneOptions, genderOptions, ageOptions, memoryOptions } from '../data/optionSettings';
 import { writeBotSettingsToFirebase } from '../firebase/functions';
+import { testUser } from '../firebase/functions';
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-
-const userId = "2Plv4ZA1wvY4pdkQyicn";
-
-
 
 export default function CustomizeScreen() {
     const navigation = useNavigation();
     const route = useRoute();
+
     const [activeSlide, setActiveSlide] = useState(route.params?.activeSlide || 0);
     const [memoryOption, setMemoryOption] = useState('forget');
     const [toneOption, setToneOption] = useState('therapist');
@@ -31,24 +30,23 @@ export default function CustomizeScreen() {
 
     const handleSaveSettings = async () => {
         const bot = buddies[activeSlide].id;
-        await writeBotSettingsToFirebase(userId, bot, memoryOption, toneOption, ageOption, genderOption);
+        await writeBotSettingsToFirebase(testUser, bot, memoryOption, toneOption, ageOption, genderOption);
         console.log("Settings saved successfully.");
     };
-
-
 
     return (
         <View style={styles.container}>
             <ImageBackground
-                source={buddies[activeSlide].background}
+                source={buddies[activeSlide].chatBackground}
                 style={styles.bgImage}
             >
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                    <Ionicons name="arrow-back-circle-outline" color="#4A9BB4" size={48} />
+                    <Ionicons name="arrow-back-circle-outline" color="white" size={48} />
                 </TouchableOpacity>
-                <Text style={{ ...styles.title, color: buddies[activeSlide].lightColor }}>
+                <Text style={styles.title}>
                     Customize {buddies[activeSlide].name}
                 </Text>
+                <Image source={buddies[activeSlide].image}></Image>
                 <View style={styles.slide}>
                     <View style={{ flexDirection: 'column', alignItems: 'center' }}>
                         <Image source={buddies[activeSlide].imageNoBackground} style={styles.buddyImage}></Image>
@@ -56,7 +54,6 @@ export default function CustomizeScreen() {
                 </View>
                 <View style={styles.switchGroup}>
                     <Text style={styles.switchHeading}>Conversation Memory</Text>
-
                     <SwitchSelector
                         options={memoryOptions}
                         initial={0}
@@ -73,7 +70,7 @@ export default function CustomizeScreen() {
                         initial={0}
                         buttonColor={buddies[activeSlide].lightColor}
                         textColor={'#DAE2EB'}
-                        selectedColor={'white'} // the text color of the selected option
+                        selectedColor={'white'} 
                         backgroundColor={buddies[activeSlide].darkColor}
                         onPress={value => setToneOption(value)}
                         style={styles.switchSelector}
@@ -101,7 +98,7 @@ const styles = StyleSheet.create({
     title: {
         position: 'absolute',
         top: 140,
-        color: "#4A9BB4",
+        color: "white",
         fontSize: 32,
         marginBottom: 16,
         fontWeight: "700",
@@ -143,7 +140,6 @@ const styles = StyleSheet.create({
     },
     slide: {
         width: 300,
-
     },
     heading: {
         fontSize: 24,
@@ -152,7 +148,6 @@ const styles = StyleSheet.create({
         marginTop: 6,
         color: 'white',
         textAlign: 'center',
-
     },
     switchHeading: {
         fontSize: 18,
@@ -161,9 +156,7 @@ const styles = StyleSheet.create({
         marginTop: 6,
         color: 'white',
         textAlign: 'center',
-
     },
-
     customizeButtonText: {
         fontWeight: 'bold',
         fontSize: 16,
