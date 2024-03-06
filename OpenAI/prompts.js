@@ -14,3 +14,19 @@ export const nimbus_prompt = "The prior text is a breakdown of the user's goals 
 export const nimbus_greeting = "Hi I'm Nimbus, your friendly guide to mastering productivity! It's common to find time management overwhelming! Let's tackle your tasks together. Whenever you're ready, list any tasks you have one by one. Don't worry about the size, every task counts. After each task, let me know the priority and estimated time it'll take.  Just take your time and let's get started. Type \`Done\` once you've listed them all.  When you're finished, type the time you'd like to start. Let's do this!"
 
 export const lyra_greeting = "Hi I'm Lyra, your friendly guide through the stresses of life! What's on your mind today?"
+
+
+// Weeklong summary promptss for datascreen.js
+export const weeklong_mood_weather_classification_prompt = 
+  "You will be given a dictionary of weeklong journal entries. Based on the tone and mood of the writing, classify the content as one of the following (decreasing in severity): Stormy, Rainy, Cloudy, Partly Cloudy, or Sunny in percentages. Stormy represents upsetting or turbulent thoughts. Cloudy represents a mix of negative and positive emotions, with notes of confusion. Partly cloudy is also a mix of negative and positive, but more neutral. Rainy is associated with sad feelings. Sunny represents a very cheerful and overall positive journal entry.\n\n" + 
+  "The output should just be a single string in the form: Stormy: {stormy percentage}%, Rainy {rainy percentage}%, Cloudy: {cloudy percentage}%, Partly Cloudy: {partly cloudy percentage}%, or Sunny: {sunny percentage}%.";
+
+export const weeklong_summary_prompt = 
+  "You will be given a dictionary of weeklong journal entries. Please give a summary to the user in of the most important things from that week in dot points in a gentle tone.";
+
+  export const weeklong_topic_classification_prompt = "You will be given a dictionary of weeklong journal entries. Classify the topic five topics and give a percentage for their predicted importance to the user. \n\n" +
+  "The output should be a JSON array of objects, where each object represents a topic and has the following properties: \n" +
+  "- label: The topic label (string) \n" +
+  "- percentage: The percentage of importance (number) \n\n" +
+  "Example output: \n" +
+  "[{ \"label\": \"Topic 1\", \"percentage\": 30 }, { \"label\": \"Topic 2\", \"percentage\": 25 }, ...]";
