@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { doc, getDoc, addDoc, getDocs, collection, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, addDoc, getDocs, collection, setDoc, serverTimestamp, query, where, orderBy, limit } from 'firebase/firestore';
 import { db, auth } from '../firebaseConfig';
 import { Alert } from 'react-native';
 import {
@@ -232,7 +232,7 @@ export const ExtractUserNameFromFirebase = async (userId) => {
   return userName; // Return the userName found or an empty string
 };
 
-// Used in DataScreen.js page
+// // Used in DataScreen.js page
 export const ExtractLastWeekEntriesFirebase = async (userId) => {
   let entriesData = []; // This will hold the formatted entries data
   try {
@@ -263,3 +263,29 @@ export const ExtractLastWeekEntriesFirebase = async (userId) => {
     console.error("Error extracting entries from Firestore: ", e);
   }
 };
+
+// // Used in DataScreen.js page
+export async function ExtractLatestWeeklyAnalysisFromFirebase(userId) {
+  try {
+      console.log("Inside ExtractLatestWeeklyAnalysisFromFirebase function");
+      const weeklyAnalysisRef = collection(db, `users/${userId}/weeklyAnalysis`);
+      console.log("Weekly analysis collection reference:", weeklyAnalysisRef);
+      const q = query(weeklyAnalysisRef, orderBy("timeStamp", "desc"), limit(1));
+      console.log("Query:", q);
+      const querySnapshot = await getDocs(q);
+      console.log("Query snapshot:", querySnapshot);
+      
+      if (!querySnapshot.empty) {
+          console.log("Query snapshot is not empty");
+          const doc = querySnapshot.docs[0];
+          console.log("Latest weekly analysis document:", doc);
+          return { id: doc.id, ...doc.data() };
+      } else {
+          console.log("Query snapshot is empty");
+          return null;
+      }
+  } catch (error) {
+      console.error('Error fetching latest weekly analysis:', error);
+      return null;
+  }
+}

@@ -27,7 +27,6 @@ const ChipsRow = ({ title, items}) => {
 };
 
 
-
 const weather_moods = {
 "Stormy": require("../assets/stormy-mood.png"), 
 "Rainy": require("../assets/rainy-mood.png"), 
@@ -36,7 +35,6 @@ const weather_moods = {
 "Cloudy": require("../assets/cloudy-mood.png"),
 "Sunny": require("../assets/sunny-mood.png"),
  }
-
 
 
 

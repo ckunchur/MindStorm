@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Image, ImageBackground, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Image, ImageBackground, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { journalEntries } from '../data/fakeEntries';
+import { useNavigation } from '@react-navigation/native';
 import DonutChart from './DonutChart';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-import { ExtractUserNameFromFirebase, ExtractLastWeekEntriesFirebase} from '../firebase/functions';
-import { weeklongTopicClassificationWithChatGPT, weeklongSummaryWithChatGPT} from '../OpenAI/OpenAI';
+import { ExtractUserNameFromFirebase, ExtractLatestWeeklyAnalysisFromFirebase } from '../firebase/functions';
+
 const colors = ['#1a75ad', '#a47dff', '#335c9e', 'skyblue', '#ffb6c1'];
 
 const ChartRow = ({ title, sections }) => {
@@ -54,9 +53,8 @@ const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText,
 export default function DataScreen() {
     const navigation = useNavigation();
     const [userName, setUserName] = useState('');
-    const [entries, setEntries] = useState([]); // Step 1: State for entries
-    const [weeklongSummary, setweeklongSummary] = useState("");
-    const [weeklongTopics, setweeklongTopics] = useState([]);
+    const [weeklongSummary, setWeeklongSummary] = useState("");
+    const [weeklongTopics, setWeeklongTopics] = useState([]);
 
     useEffect(() => {
         const userId = "imIQfhTxJteweMhIh88zvRxq5NH2"; // hardcoded for now
@@ -72,41 +70,16 @@ export default function DataScreen() {
             } else {
                 console.log("UserName not found or error fetching userName");
             }
-            // do analysis
-            const fetchedEntries = await ExtractLastWeekEntriesFirebase(userId);
-            if (fetchedEntries.length > 0) {
-                setEntries(fetchedEntries);
-                console.log("Fetched entries:", fetchedEntries);
-                console.log("Attempting mood classification...");
-                // Run API calls concurrently and wait for all to complete
-                try {
-                    const results = await Promise.all([
-                        weeklongSummaryWithChatGPT(JSON.stringify(fetchedEntries)),
-                        weeklongTopicClassificationWithChatGPT(JSON.stringify(fetchedEntries)),
-                    ]);
-                    console.log("Results from mood classification:", results);
-                    const [weeklongSummaryWithResult, weeklongTopicClassificationResult] = results;
-                    setweeklongSummary(weeklongSummaryWithResult.data);
-    
-                    // Extract the JSON string from the response
-                    const jsonString = weeklongTopicClassificationResult.data.match(/```json\s*([\s\S]*?)\s*```/)[1];
-    
-                    // Replace escaped double quotes with regular quotes
-                    const sanitizedJsonString = jsonString.replace(/\\"/g, '"');
-    
-                    try {
-                        const parsedData = JSON.parse(sanitizedJsonString);
-                        setweeklongTopics(parsedData);
-                    } catch (error) {
-                        console.error("Error parsing weeklongTopicClassificationResult:", error);
-                        // Handle the parsing error, show an error message, or take appropriate action
-                    }
-                } catch (error) {
-                    console.error('Error during mood classification:', error);
-                    // Handle the error, show an error message, or take appropriate action
-                }
+
+            // Fetch latest weekly analysis
+            console.log("Fetching latest weekly analysis...");
+            const fetchedWeeklyAnalysis = await ExtractLatestWeeklyAnalysisFromFirebase(userId);
+            if (fetchedWeeklyAnalysis) {
+                console.log("Fetched weekly analysis:", fetchedWeeklyAnalysis);
+                setWeeklongSummary(fetchedWeeklyAnalysis.weeklongSummary || "");
+                setWeeklongTopics(fetchedWeeklyAnalysis.weeklongTopics || []);
             } else {
-                console.log("No entries found or error fetching entries");
+                console.log("No weekly analysis found or error fetching weekly analysis");
             }
         };
 
@@ -139,35 +112,39 @@ export default function DataScreen() {
                 <ScrollView contentContainerStyle={styles.scrollContainer}>
                     <WelcomeTitle title={userName ? `Hi ${userName},` : "Emotional Report"} style={styles.title} />
                     <WelcomeMessage message="Here is a summary of your key feelings and topics over time" style={styles.subheaderText} />
-                    <Text style={styles.summarySubheading}>Your weather moods this week:</Text>
-                    <View style={styles.forecastView}>
-                        <View style={styles.moodRow}>
-                            <MoodImage mood="Stormy" date="Today"></MoodImage>
-                            <MoodImage mood="Rainy" date="03/02"></MoodImage>
-                            <MoodImage mood="Cloudy" date="03/01"></MoodImage>
-                            <MoodImage mood="Partly Cloudy" date="02/29"></MoodImage>
-                            <MoodImage mood="Sunny" date="02/28"></MoodImage>
-                        </View>
-                    </View>
-                    {weeklongTopics.length > 0 && (
-                        <View style={styles.donutChartContainer}>
-                            <ChartRow title="Weekly Topics" sections={weeklongTopics} />
-                        </View>
-                        )}
-                    <Text style={styles.summarySubheading}>Here is a summary of your week:</Text>
-                    <View style={styles.controls}>
-                        {weeklongSummary && (
-                            <View style={styles.predictedTextContainer}>
-                                <Text style={styles.predictedText}>{weeklongSummary}</Text>
+                    
+                    {weeklongTopics.length > 0 ? (
+                        <>
+                            <Text style={styles.summarySubheading}>Your weather moods this week:</Text>
+                            <View style={styles.forecastView}>
+                                <View style={styles.moodRow}>
+                                    <MoodImage mood="Stormy" date="Today"></MoodImage>
+                                    <MoodImage mood="Rainy" date="03/02"></MoodImage>
+                                    <MoodImage mood="Cloudy" date="03/01"></MoodImage>
+                                    <MoodImage mood="Partly Cloudy" date="02/29"></MoodImage>
+                                    <MoodImage mood="Sunny" date="02/28"></MoodImage>
+                                </View>
                             </View>
-                        )}
-
-                    </View>
+                            <View style={styles.donutChartContainer}>
+                                <ChartRow title="Weekly Topics" sections={weeklongTopics} />
+                            </View>
+                            <Text style={styles.summarySubheading}>Here is a summary of your week:</Text>
+                            <View style={styles.controls}>
+                                {weeklongSummary && (
+                                    <View style={styles.predictedTextContainer}>
+                                        <Text style={styles.predictedText}>{weeklongSummary}</Text>
+                                    </View>
+                                )}
+                            </View>
+                        </>
+                    ) : (
+                        <Text style={styles.noDataText}>No weekly analysis data available.</Text>
+                    )}
                 </ScrollView>
             </ImageBackground>
         </View>
     );
-};
+}
 
 const styles = StyleSheet.create({
     fullScreenContainer: {
