@@ -8,7 +8,6 @@ const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText,
 export default function WelcomeScreen() {
   const navigation = useNavigation();
 
-
 return (
   <View style={styles.container}>
     <WelcomeTitle title="Welcome to MindStorm" style={styles.blueTitle} />
@@ -41,6 +40,15 @@ const styles = StyleSheet.create({
     margin: "auto",
     padding: 47,
   },
+  title: {
+    position: 'absolute',
+    top: 100,
+    color: "#4A9BB4",
+    fontSize: 32,
+    marginBottom: 16,
+    fontWeight: "700",
+    fontFamily: "Inter, sans-serif",
+},
   blueTitle: {
     color: "#4A9BB4",
     marginTop: 99,
