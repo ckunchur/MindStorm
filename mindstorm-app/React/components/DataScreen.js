@@ -7,6 +7,7 @@ import DonutChart from './DonutChart';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import { ExtractUserNameFromFirebase, ExtractLastWeekEntriesFirebase} from '../firebase/functions';
+import { weeklongMoodWeatherClassificationWithChatGPT} from '../OpenAI/OpenAI';
 
 const colors = ['#1a75ad', '#a47dff', '#335c9e', 'skyblue'];
 
@@ -65,88 +66,104 @@ export default function DataScreen() {
     const navigation = useNavigation();
     const [userName, setUserName] = useState('');
     const [entries, setEntries] = useState([]); // Step 1: State for entries
+    const [weeklongWeatherMood, setweeklongWeatherMood] = useState("");
 
     useEffect(() => {
-        const userId = "imIQfhTxJteweMhIh88zvRxq5NH2"; // hardcoded for now
+    const userId = "imIQfhTxJteweMhIh88zvRxq5NH2"; // hardcoded for now
 
-        const fetchData = async () => {
-            console.log("Fetching data for user ID:", userId);
-            
-            // Fetch user name
-            const fetchedUserName = await ExtractUserNameFromFirebase(userId);
-            if (fetchedUserName) {
-                setUserName(fetchedUserName);
-                console.log("User's name:", fetchedUserName);
-            } else {
-                console.log("UserName not found or error fetching userName");
+    const fetchData = async () => {
+        console.log("Fetching data for user ID:", userId);
+        
+        // Fetch user name
+        const fetchedUserName = await ExtractUserNameFromFirebase(userId);
+        if (fetchedUserName) {
+            setUserName(fetchedUserName);
+            console.log("User's name:", fetchedUserName);
+        } else {
+            console.log("UserName not found or error fetching userName");
+        }
+
+        // Fetch entries
+        const fetchedEntries = await ExtractLastWeekEntriesFirebase(userId); // Step 2: Call ExtractEntriesFromFirebase
+        if (fetchedEntries.length > 0) {
+            setEntries(fetchedEntries); // Update state with the fetched entries
+            console.log("Fetched entries:", fetchedEntries);
+            console.log("Attempting mood classification...");
+            // Run API calls concurrently and wait for all to complete
+            try {
+                const results = await Promise.all([
+                    weeklongMoodWeatherClassificationWithChatGPT(JSON.stringify(fetchedEntries)),
+                ]);
+                console.log("Results from mood classification:", results);
+                const [weeklongMoodWeatherClassificationResult] = results;
+                setweeklongWeatherMood(weeklongMoodWeatherClassificationResult.data);
+            } catch (error) {
+                console.error('Error during mood classification:', error);
+                // Handle the error, show an error message, or take appropriate action
             }
+        } else {
+            console.log("No entries found or error fetching entries");
+        }
+    };
 
-            // Fetch entries
-            const fetchedEntries = await ExtractLastWeekEntriesFirebase(userId); // Step 2: Call ExtractEntriesFromFirebase
-            if (fetchedEntries.length > 0) {
-                setEntries(fetchedEntries); // Update state with the fetched entries
-                console.log("Fetched entries:", fetchedEntries);
-            } else {
-                console.log("No entries found or error fetching entries");
-            }
-        };
-
-        fetchData();
-    }, []); // The empty dependency array ensures this effect runs only once when the component mounts
+    fetchData();
+}, []); // The empty dependency array ensures this effect runs only once when the component mounts
 
 
-    const MoodImage = ({ mood, date }) => {
-        return (
-            <View style={styles.moodWeatherView}>
-                <Image
-                    source={weather_moods[mood]}
-                    style={styles.moodImage}
-                    resizeMode="contain"
-                ></Image>
-                <Text style={styles.moodWeatherText}>{date}</Text>
-            </View>
-        )
-    }
+const MoodImage = ({ mood, date }) => {
     return (
-        <View style={styles.fullScreenContainer}>
+        <View style={styles.moodWeatherView}>
+            <Image
+                source={weather_moods[mood]}
+                style={styles.moodImage}
+                resizeMode="contain"
+            ></Image>
+            <Text style={styles.moodWeatherText}>{date}</Text>
+        </View>
+    )
+}
+return (
+    <View style={styles.fullScreenContainer}>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <Ionicons name="arrow-back-circle-outline" color="#4A9BB4" size={48} />
+      </TouchableOpacity>
+      <ImageBackground
+        resizeMode="cover"
+        source={require('../assets/journal-background.png')}
+        style={styles.fullScreen}
+      >
+        <ScrollView style={styles.scrollViewStyle} contentContainerStyle={styles.scrollViewContent}>
+          <WelcomeTitle title={userName ? `Hi ${userName},` : "Emotional Report"} style={styles.title} />
+          <WelcomeMessage message="Here is a summary of your key feelings and topics over time" style={styles.subheaderText} />
 
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                <Ionicons name="arrow-back-circle-outline" color="#4A9BB4" size={48} />
-            </TouchableOpacity>
-            <ImageBackground
-                resizeMode="cover"
-                source={require('../assets/journal-background.png')}
-                style={styles.fullScreen}
-            >
-                <WelcomeTitle title={userName ? `Hi ${userName},` : "Emotional Report"} style={styles.title} />
-                <WelcomeMessage message="Here is a summary of your key feelings and topics over time" style={styles.subheaderText} />
-
-                <View style={styles.forecastView}>
-                    <View style={styles.moodRow}>
-                        <MoodImage mood="Stormy" date="Today"></MoodImage>
-                        <MoodImage mood="Rainy" date="03/02"></MoodImage>
-                        <MoodImage mood="Cloudy" date="03/01"></MoodImage>
-                        <MoodImage mood="Partly Cloudy" date="02/29"></MoodImage>
-                        <MoodImage mood="Sunny" date="02/28"></MoodImage>
-
-                    </View>
+          <View style={styles.forecastView}>
+                <View style={styles.moodRow}>
+                    <MoodImage mood="Stormy" date="Today"></MoodImage>
+                    <MoodImage mood="Rainy" date="03/02"></MoodImage>
+                    <MoodImage mood="Cloudy" date="03/01"></MoodImage>
+                    <MoodImage mood="Partly Cloudy" date="02/29"></MoodImage>
+                    <MoodImage mood="Sunny" date="02/28"></MoodImage>
                 </View>
+            </View>
 
-                <View style={styles.controls}>
-
-                    {/* <View style={styles.chipsContainer}>
+            <View style={styles.controls}>
+                <View style={styles.chipsContainer}>
                         <ChartRow title="Top Moods" items={topMoods} />
                         <ChartRow title="Top Topics" items={topTopics} />
-                    </View> */}
-
-
                 </View>
+            </View>
 
+          {weeklongWeatherMood && (
+            <View style={styles.predictedTextContainer}>
+              <Text style={styles.predictedText}>{weeklongWeatherMood}</Text>
+            </View>
+          )}
 
-            </ImageBackground>
-        </View>
-    );
-};
+        </ScrollView>
+      </ImageBackground>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
     fullScreenContainer: {
@@ -170,6 +187,13 @@ const styles = StyleSheet.create({
         left: 20,
         zIndex: 10, // Ensure the back button is above the chat bubbles
     },
+    scrollViewStyle: {
+        width: '100%',
+      },
+      scrollViewContent: {
+        alignItems: 'center', // Center the content horizontally
+        paddingBottom: 20, // Add some padding at the bottom to ensure nothing is cut off
+      },
     moodWeatherView: {
         display: 'flex',
         flexDirection: 'column',
@@ -180,7 +204,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.1)"',
         borderRadius: 12,
         marginTop: 20
-
     },
     moodImage: {
         width: 48,
@@ -191,17 +214,13 @@ const styles = StyleSheet.create({
         color: 'white',
         paddingBottom: 16,
         fontWeight: 'bold'
-
     },
-
-
     moodRow: {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         height: '30%',
     },
-
     title: {
         position: 'absolute',
         top: 110,
@@ -239,7 +258,7 @@ const styles = StyleSheet.create({
     controls: {
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 260
+        marginTop: 360
     },
     bgImage: {
         width: windowWidth,

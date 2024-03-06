@@ -232,6 +232,7 @@ export const ExtractUserNameFromFirebase = async (userId) => {
   return userName; // Return the userName found or an empty string
 };
 
+// Used in DataScreen.js page
 export const ExtractLastWeekEntriesFirebase = async (userId) => {
   let entriesData = []; // This will hold the formatted entries data
   try {
@@ -250,7 +251,6 @@ export const ExtractLastWeekEntriesFirebase = async (userId) => {
         // Only push the entry if it's from the last week to now
         if (entryDate >= oneWeekAgo) {
           entriesData.push({
-            id: doc.id, // the document ID
             text: entry.entryText, // the entry text
             time: entryDate // the entry timestamp as a Date object
           });

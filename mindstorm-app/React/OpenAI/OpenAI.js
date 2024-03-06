@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { top_moods_topics_prompt, mood_weather_classification_prompt, chatbot_recommendation_prompt, lyra_prompt } from './prompts';
+import { top_moods_topics_prompt, mood_weather_classification_prompt, chatbot_recommendation_prompt, lyra_prompt, weeklong_mood_weather_classification_prompt, weeklong_summary_prompt} from './prompts';
 import { ExtractUserProfileFromFirebase } from '../firebase/functions';
 const OPENAI_API_KEY = process.env.EXPO_PUBLIC_OPENAI_API_KEY;
 const client = axios.create({
@@ -140,6 +140,32 @@ export const recommendTherapyChatbotWithChatGPT= async (text) => {
 
         let answerString = res.data.choices[0].message.content.trim();
         return Promise.resolve({success: true, data: answerString});
+    } catch (err) {
+        console.log('error: ', err);
+        return Promise.resolve({success: false, msg: err.message});
+    }
+}
+
+
+//weeklong summary prompts
+export const weeklongMoodWeatherClassificationWithChatGPT= async (text) => {
+    let prompt = weeklong_summary_prompt;
+    try {
+        const res = await client.post(chatgptUrl, {
+            model: "gpt-3.5-turbo",
+            messages: [
+                {
+                    role: 'system',
+                    content: prompt
+                },
+                {
+                    role: 'user',
+                    content: text
+                }
+            ] 
+        });
+        let answerString = res.data.choices[0].message.content.trim();
+        return Promise.resolve({success: true, data:  answerString});
     } catch (err) {
         console.log('error: ', err);
         return Promise.resolve({success: false, msg: err.message});
