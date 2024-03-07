@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 const PINECONE_UPSERT_ENTRIES_ENDPOINT = `https://entry-history-index-75ukjm4.svc.apw5-4e34-81fa.pinecone.io/vectors/upsert`;
-const PINECONE_QUERY_ENTRIES_ENDPOINT = `https://entry-history-index-75ukjm4.svc.apw5-4e34-81fa.pinecone.io/vectors/query`;
+const PINECONE_QUERY_ENTRIES_ENDPOINT = `https://entry-history-index-75ukjm4.svc.apw5-4e34-81fa.pinecone.io/query`;
 const PINECONE_UPSERT_CHATS_ENDPOINT = `https://chat-history-index-75ukjm4.svc.apw5-4e34-81fa.pinecone.io/vectors/upsert`;
-const PINECONE_QUERY_CHATS_ENDPOINT = `https://chat-history-index-75ukjm4.svc.apw5-4e34-81fa.pinecone.io/vectors/query`;
+const PINECONE_QUERY_CHATS_ENDPOINT = `https://chat-history-index-75ukjm4.svc.apw5-4e34-81fa.pinecone.io/query`;
 
 import { EXPO_PUBLIC_PINECONE_API_KEY } from '@env'
 import { EXPO_PUBLIC_OPENAI_API_KEY } from '@env'
