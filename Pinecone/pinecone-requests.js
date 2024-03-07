@@ -101,20 +101,35 @@ export async function upsertChatSessionsToPinecone(chats) {
 }
 
 function formatContext(topMatches) {
-    const contexts = topMatches.matches.map(match => match.metadata.description || 'No description available');
+    if (!topMatches || !Array.isArray(topMatches.matches)) {
+        console.log("Unexpected topMatches structure", topMatches);
+        return 'Data not available';
+    }
+
+    const contexts = topMatches.matches.map(match => match.metadata?.description || 'No description available');
     return contexts.join('\n---\n');
-  }
+}
 
 // currently just searches over journal entries. TO DO: update to search from chats and entries separately?
 export async function generateResponse(instruction_prompt, user_prompt, messages) {
     console.log("in generateResponse");
+// Simple Axios test to see if we can get a response from OpenAI. It works.
+    axios.post('https://api.openai.com/v1/chat/completions', {
+        model: "gpt-3.5-turbo",
+        messages: [{"role": "system", "content": "You are a helpful assistant."}]
+      }, {
+        headers: {
+          'Authorization': `Bearer ${EXPO_PUBLIC_OPENAI_API_KEY}`,
+          'Content-Type': 'application/json'
+        }
+      }).then(response => console.log(response.data.choices[0].message.content.trim()))
+        .catch(error => console.error(error));
 
     const sessionHistory = messages.map(msg => `${msg.role}: ${msg.content}`).join('\n');
-    console.log('Session History:', sessionHistory);
+    console.log('Session History received');
     const combinedText = `${sessionHistory}\n${user_prompt}`;
-    console.log(sessionHistory);
     const combinedVector = await getEmbeddings(combinedText); 
-    console.log("combinedVector");
+    console.log("combinedVector received");
     try {
       const topMatchesResponse = await axios.post(PINECONE_QUERY_ENTRIES_ENDPOINT, {
         topK: 3,
@@ -122,17 +137,20 @@ export async function generateResponse(instruction_prompt, user_prompt, messages
         includeMetadata: true
       }, {
         headers: {
-            'Api-Key': PINECONE_API_KEY, // Make sure PINECONE_API_KEY contains your actual API key
+            'Api-Key': EXPO_PUBLIC_PINECONE_API_KEY, // Make sure PINECONE_API_KEY contains your actual API key
             'Content-Type': 'application/json'
           }
       });
       console.log("topMatchesResponse received"); 
-      const topMatches = topMatchesResponse.data; 
-      const context = formatContext(topMatches); 
+      const topMatchesJSON = JSON.parse(topMatchesResponse.config.data);
+      const topMatches = topMatchesJSON.vector; 
+      console.log("topMatchesVector received");
+      const context = formatContext(topMatches); // need to fix later
+      console.log("context", context);
   
     // don't know if we need instruction prompt
       const fullPrompt = `Take the following instruction prompt, chat history, and RAG context from user journal entries to best answer the user prompt.\nSystem Prompt: ${instruction_prompt}\nSession History: ${sessionHistory}\nRAG Context: ${context}\nUser Prompt: ${user_prompt}`;
-      console.log('fullPrompt', fullPrompt);
+      console.log('fullPrompt passed in');
     // const rag_context_prompt = `take original instruction prompt from the beginning of this chat and the following context from relevant chat sessions to provide the best response to the following user prompt. RAG context:  ${context}`
       // Use openaiClient to make the POST request
     //   const response = await openaiClient.post('/chat/completions', {
@@ -141,19 +159,30 @@ export async function generateResponse(instruction_prompt, user_prompt, messages
     //       "role": "system",
     //       "content": fullPrompt
     //     }], 
-    console.log('entering openaiClient');
-        const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+        console.log('entering openaiClient');
+    //     const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+    //         model: "gpt-3.5-turbo",
+    //         messages: [{"role": "system",
+    //         "content": fullPrompt}], // your messages array here
+    //         }, {
+    //         headers: {
+    //             'Authorization': `Bearer ${EXPO_PUBLIC_OPENAI_API_KEY}`,
+    //             'Content-Type': 'application/json'
+    //         }
+    //         }).then(response => console.log(response.data));
+    //   console.log("openai response", response); 
+    //   console.log("rag response", response.data.choices[0].message.content.trim());
+        axios.post('https://api.openai.com/v1/chat/completions', {
             model: "gpt-3.5-turbo",
-            messages: [{"role": "system",
-            "content": "fullPrompt"}], // your messages array here
-            }, {
+            messages: [{"role": "system", "content": "You are a helpful assistant."}]
+        }, {
             headers: {
-                'Authorization': `Bearer ${EXPO_PUBLIC_OPENAI_API_KEY}`,
-                'Content-Type': 'application/json'
+            'Authorization': `Bearer ${EXPO_PUBLIC_OPENAI_API_KEY}`,
+            'Content-Type': 'application/json'
             }
-            }).then(response => console.log(response.data));
-      console.log("openai response", response); 
-      console.log("rag response", response.data.choices[0].message.content.trim());
+        }).then(response => console.log("Response", response.data.choices[0].message.content.trim()))
+            .catch(error => console.error(error));
+      
 
       // option 2: using existing messages but adds an extra message in the chat each time u want to do rag
     //   const updatedMessages = [
@@ -167,7 +196,7 @@ export async function generateResponse(instruction_prompt, user_prompt, messages
     //   });
   
       // Assuming the structure of the response aligns with OpenAI's API structure
-      return response.data.choices[0].message.content.trim();
+      //return response.data.choices[0].message.content.trim();
     } catch (error) {
       console.error("Error in generating response:", error);
       throw error;
