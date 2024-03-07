@@ -107,10 +107,11 @@ function formatContext(topMatches) {
 
 // currently just searches over journal entries. TO DO: update to search from chats and entries separately?
 export async function generateResponse(instruction_prompt, user_prompt, messages) {
+    console.log("in generateResponse");
+
     const sessionHistory = messages.map(msg => `${msg.role}: ${msg.content}`).join('\n');
     const combinedText = `${sessionHistory}\n${user_prompt}`;
     const combinedVector = await getEmbeddings(combinedText).data[0].embedding; 
-  
     try {
       const topMatchesResponse = await axios.post(PINECONE_QUERY_ENTRIES_ENDPOINT, {
         topK: 3,
@@ -131,6 +132,7 @@ export async function generateResponse(instruction_prompt, user_prompt, messages
           content: fullPrompt
         }]
       });
+      console.log("rag response", response.data.choices[0].message.content.trim());
 
       // option 2: using existing messages but adds an extra message in the chat each time u want to do rag
     //   const updatedMessages = [

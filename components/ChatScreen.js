@@ -16,12 +16,7 @@ export default function ChatScreen() {
     const route = useRoute();
     const { bot, entryText } = route.params;
     const [userInput, setUserInput] = useState('');
-    const userProfile = ExtractUserProfileFromFirebase(testUser);
-    const instructionPrompt = {
-        role: 'system',
-        content: `Context about user: ${userProfile}. Initial system instructions: ${bot === "Lyra" ? lyra_prompt : nimbus_prompt}`
-    };
-    const greetingPrompt = { role: 'system', content: `${bot === "Lyra" ? lyra_greeting : nimbus_greeting}` };
+    const [instructionPromptString, setInstructionPromptString] = useState("");
     const [chatHistory, setChatHistory] = useState([]);
 
     useEffect(() => {
@@ -31,12 +26,14 @@ export default function ChatScreen() {
                 role: 'system',
                 content: `Context about user: ${userProfile}. System instructions: ${bot === "Lyra" ? lyra_prompt : nimbus_prompt}`
             };
+            setInstructionPromptString(instructionPrompt.content);
             const greetingPrompt = { role: 'system', content: `${bot === "Lyra" ? lyra_greeting : nimbus_greeting}` };
             if (entryText) {
                 setUserInput(entryText);
                 setChatHistory([instructionPrompt]);
             }
             else {
+
                 setChatHistory([instructionPrompt, greetingPrompt]);
             }
         };
@@ -46,16 +43,12 @@ export default function ChatScreen() {
 
     const handleSend = async () => {
         if (!userInput.trim()) return; // Prevent sending empty messages
-        // Temporary array to hold the new message and response for appending
-        let newChatHistory = [...chatHistory, { role: 'user', content: userInput }];
-        const response = await apiCall(userInput, newChatHistory);
-
-        // const response = await apiRAGCall(instructionPrompt.content, userInput, newChatHistory);
+        // const response = await apiCall(userInput, chatHistory);
+        const response = await apiRAGCall(instructionPromptString, userInput, chatHistory);
         if (response.success && response.data.length > 0) {
-            // Append AI's response to the newChatHistory
-            const aiResponse = response.data[response.data.length - 1]; // Assuming the last response is from AI
-            newChatHistory.push(aiResponse);
-            console.log(newChatHistory);
+            const newMessages= response.data // append user prompt and gpt response
+            const newChatHistory = [...chatHistory, ...newMessages];
+            console.log("newChatHistory", newChatHistory);
             setChatHistory(newChatHistory);
             if (sessionID === "") {
                 const newSessionID = generateRandomSessionID(); // Implement this function to generate a unique ID
@@ -64,7 +57,7 @@ export default function ChatScreen() {
             }
             await writeChatHistoryToFirebase(testUser, sessionID, newChatHistory);
             setUserInput(''); // Clear input after sending
-            console.log('chatHistory', chatHistory)
+          
         } else {
             console.error(response.msg);
         }
@@ -72,7 +65,7 @@ export default function ChatScreen() {
 
     const handleBackPress = () => {
         setSessionID(""); // reset session ID
-        setChatHistory([instructionPrompt, greetingPrompt]); // reset chat history if starting fresh next time
+        setChatHistory([]); // reset chat history if starting fresh next time
         navigation.goBack();
     };
 
