@@ -113,18 +113,6 @@ function formatContext(topMatches) {
 // currently just searches over journal entries. TO DO: update to search from chats and entries separately?
 export async function generateResponse(instruction_prompt, user_prompt, messages) {
     console.log("in generateResponse");
-// Simple Axios test to see if we can get a response from OpenAI. It works.
-    axios.post('https://api.openai.com/v1/chat/completions', {
-        model: "gpt-3.5-turbo",
-        messages: [{"role": "system", "content": "You are a helpful assistant."}]
-      }, {
-        headers: {
-          'Authorization': `Bearer ${EXPO_PUBLIC_OPENAI_API_KEY}`,
-          'Content-Type': 'application/json'
-        }
-      }).then(response => console.log(response.data.choices[0].message.content.trim()))
-        .catch(error => console.error(error));
-
     const sessionHistory = messages.map(msg => `${msg.role}: ${msg.content}`).join('\n');
     console.log('Session History received');
     const combinedText = `${sessionHistory}\n${user_prompt}`;
@@ -172,17 +160,19 @@ export async function generateResponse(instruction_prompt, user_prompt, messages
     //         }).then(response => console.log(response.data));
     //   console.log("openai response", response); 
     //   console.log("rag response", response.data.choices[0].message.content.trim());
-        axios.post('https://api.openai.com/v1/chat/completions', {
+        const response = await axios.post('https://api.openai.com/v1/chat/completions', {
             model: "gpt-3.5-turbo",
-            messages: [{"role": "system", "content": "You are a helpful assistant."}]
+            messages: [{"role": "system", "content": fullPrompt}]
         }, {
             headers: {
             'Authorization': `Bearer ${EXPO_PUBLIC_OPENAI_API_KEY}`,
             'Content-Type': 'application/json'
             }
-        }).then(response => console.log("Response", response.data.choices[0].message.content.trim()))
-            .catch(error => console.error(error));
-      
+        });
+        const trimmedResponse = response.data.choices[0].message.content.trim();
+        console.log("Response:", trimmedResponse);
+        return trimmedResponse;
+
 
       // option 2: using existing messages but adds an extra message in the chat each time u want to do rag
     //   const updatedMessages = [
