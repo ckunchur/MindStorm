@@ -24,6 +24,7 @@ export const apiRAGCall = async (instruction_prompt, user_prompt, messages) => {
     return chatgptApiRAGCall(instruction_prompt, user_prompt, messages);
 }
 
+// messages includes previous messages (not current user prompt)
 const chatgptApiCall = async (prompt, messages) => {
     const body = {
         model: "gpt-3.5-turbo",
@@ -36,17 +37,17 @@ const chatgptApiCall = async (prompt, messages) => {
             role: 'user',
             content: prompt
         });
-        console.log("User prompt added");
     }
-
+    
     try {
         const res = await client.post(chatgptUrl, body);
-
         let answer = res.data.choices[0].message.content.trim();
-        // Append only the new assistant response to the existing messages
-        const updatedMessages = [...messages, { role: 'user', content: prompt }, { role: 'assistant', content: answer }];
-        console.log(updatedMessages);
-        return { success: true, data: updatedMessages };
+        // return user prompt and system response
+        const newMessages = [{ role: 'user', content: prompt }, { role: 'system', content: answer }];
+        
+        console.log(newMessages);
+        return { success: true, data: newMessages };
+
     } catch (err) {
         console.log('error: ', err);
         return { success: false, msg: err.message };
@@ -55,6 +56,8 @@ const chatgptApiCall = async (prompt, messages) => {
 
 // generate ChatGPT response using RAG
 export const chatgptApiRAGCall = async (instruction_prompt, user_prompt, messages) => {
+    console.log("In rag api call");
+
     const body = {
         model: "gpt-3.5-turbo",
         messages: [...messages]
@@ -71,9 +74,8 @@ export const chatgptApiRAGCall = async (instruction_prompt, user_prompt, message
     try {
         const answer = await generateResponse(instruction_prompt, user_prompt, messages)
         // Append only the new assistant response to the existing messages
-        const updatedMessages = [...messages, { role: 'user', content: user_prompt }, { role: 'assistant', content: answer }];
-        console.log(updatedMessages);
-        return { success: true, data: updatedMessages };
+        const newMessages = [{ role: 'user', content: user_prompt }, { role: 'system', content: answer }];
+        return { success: true, data:newMessages };
     } catch (err) {
         console.log('error: ', err);
         return { success: false, msg: err.message };
