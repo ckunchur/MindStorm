@@ -100,15 +100,30 @@ export async function upsertChatSessionsToPinecone(chats) {
     }
 }
 
-function formatContext(topMatches) {
-    if (!topMatches || !Array.isArray(topMatches.matches)) {
-        console.log("Unexpected topMatches structure", topMatches);
-        return 'Data not available';
-    }
+// function formatContext(topMatches) {
+//     if (!topMatches || !Array.isArray(topMatches.matches)) {
+//         console.log("Unexpected topMatches structure", topMatches);
+//         return 'Data not available';
+//     }
 
-    const contexts = topMatches.matches.map(match => match.metadata?.description || 'No description available');
+//     const contexts = topMatches.matches.map(match => match.metadata?.description || 'No description available');
+//     return contexts.join('\n---\n');
+// }
+
+function formatContext(topMatchesResponse) {
+    // Extract the matches array from the response data
+    const matches = topMatchesResponse.data.matches;
+  
+    // Map over the matches to extract the description from each match's metadata
+    // and handle cases where the description might not be available
+    const contexts = matches.map(match => 
+      match.metadata && match.metadata.description ? match.metadata.description : 'No description available'
+    );
+  
+    // Join the extracted descriptions into a single string with a separator
     return contexts.join('\n---\n');
-}
+  }
+  
 
 // currently just searches over journal entries. TO DO: update to search from chats and entries separately?
 export async function generateResponse(instruction_prompt, user_prompt, messages) {
