@@ -129,11 +129,11 @@ export async function generateResponse(instruction_prompt, user_prompt, messages
             'Content-Type': 'application/json'
           }
       });
-      console.log("topMatchesResponse received"); 
-      const topMatchesJSON = JSON.parse(topMatchesResponse.config.data);
-      const topMatches = topMatchesJSON.vector; 
-      console.log("topMatchesVector received");
-      const context = formatContext(topMatches); // need to fix later
+      console.log("topMatchesResponse", topMatchesResponse);
+    //   const topMatchesJSON = JSON.parse(topMatchesResponse.config.data);
+    //   const topMatches = topMatchesJSON.vector; 
+  
+      const context = formatContext(topMatchesResponse); // need to fix later
       console.log("context", context);
   
     // don't know if we need instruction prompt
@@ -145,21 +145,9 @@ export async function generateResponse(instruction_prompt, user_prompt, messages
     //     model: "gpt-3.5-turbo",
     //     messages: [{
     //       "role": "system",
-    //       "content": fullPrompt
+    //       "content": rag_context_prompt
     //     }], 
         console.log('entering openaiClient');
-    //     const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-    //         model: "gpt-3.5-turbo",
-    //         messages: [{"role": "system",
-    //         "content": fullPrompt}], // your messages array here
-    //         }, {
-    //         headers: {
-    //             'Authorization': `Bearer ${EXPO_PUBLIC_OPENAI_API_KEY}`,
-    //             'Content-Type': 'application/json'
-    //         }
-    //         }).then(response => console.log(response.data));
-    //   console.log("openai response", response); 
-    //   console.log("rag response", response.data.choices[0].message.content.trim());
         const response = await axios.post('https://api.openai.com/v1/chat/completions', {
             model: "gpt-3.5-turbo",
             messages: [{"role": "system", "content": fullPrompt}]
