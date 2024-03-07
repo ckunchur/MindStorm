@@ -2,16 +2,20 @@ import axios from 'axios';
 import { top_moods_topics_prompt, mood_weather_classification_prompt, chatbot_recommendation_prompt, lyra_prompt } from './prompts';
 import { ExtractUserProfileFromFirebase } from '../firebase/functions';
 import { generateResponse } from '../Pinecone/pinecone-requests';
-const OPENAI_API_KEY = process.env.EXPO_PUBLIC_OPENAI_API_KEY;
+
+// import { ExtractUserProfileFromFirebase } from './firebase'; // Import the ExtractUserProfileFromFirebase function
+import { EXPO_PUBLIC_OPENAI_API_KEY } from '@env'
+
+// const OPENAI_API_KEY = process.env.EXPO_PUBLIC_OPENAI_API_KEY
 
 
 const client = axios.create({
-  baseURL: 'https://api.openai.com/v1',
-  headers: {
-    "Authorization": `Bearer ${OPENAI_API_KEY}`,
-    "Content-Type": "application/json"
-  }
-});
+    baseURL: 'https://api.openai.com/v1',
+    headers: {
+      "Authorization": `Bearer ${EXPO_PUBLIC_OPENAI_API_KEY}`,
+      "Content-Type": "application/json"
+    }
+  });
 
 
 const chatgptUrl = 'https://api.openai.com/v1/chat/completions';
@@ -78,18 +82,21 @@ export const chatgptApiRAGCall = async (instruction_prompt, user_prompt, message
         model: "gpt-3.5-turbo",
         messages: [...messages]
     };
+   // console.log('body messages', body.messages);
     // If there's a user prompt, add it to the message list
-    if (prompt) {
+    if (user_prompt) { // Fix the variable name from 'prompt' to 'user_prompt'
         body.messages.push({
             role: 'user',
-            content: prompt
+            content: user_prompt // Fix the variable name from 'prompt' to 'user_prompt'
         });
         console.log("User prompt added");
     }
 
     try {
+        
         const answer = await generateResponse(instruction_prompt, user_prompt, messages)
         // Append only the new assistant response to the existing messages
+        console.log(answer);
         const newMessages = [{ role: 'user', content: user_prompt }, { role: 'system', content: answer }];
         return { success: true, data:newMessages };
     } catch (err) {
