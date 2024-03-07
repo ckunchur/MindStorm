@@ -1,16 +1,17 @@
 import axios from 'axios';
-const PINECONE_API_KEY = "f4dfdc42-9c5a-4ee4-8d61-fed389fdd47a";
+
 const PINECONE_UPSERT_ENTRIES_ENDPOINT = `https://entry-history-index-75ukjm4.svc.apw5-4e34-81fa.pinecone.io/vectors/upsert`;
 const PINECONE_QUERY_ENTRIES_ENDPOINT = `https://entry-history-index-75ukjm4.svc.apw5-4e34-81fa.pinecone.io/vectors/query`;
 const PINECONE_UPSERT_CHATS_ENDPOINT = `https://chat-history-index-75ukjm4.svc.apw5-4e34-81fa.pinecone.io/vectors/upsert`;
 const PINECONE_QUERY_CHATS_ENDPOINT = `https://chat-history-index-75ukjm4.svc.apw5-4e34-81fa.pinecone.io/vectors/query`;
 
-
+import { EXPO_PUBLIC_PINECONE_API_KEY } from '@env'
 import { EXPO_PUBLIC_OPENAI_API_KEY } from '@env'
 // const openaiApiKey = process.env.EXPO_PUBLIC_OPENAI_API_KEY;
 // const PINECONE_API_KEY = process.env.EXPO_PUBLIC_OPENAI_API_KEY;
 
 const chatgptUrl = 'https://api.openai.com/v1/chat/completions';
+const PINECONE_API_KEY = EXPO_PUBLIC_PINECONE_API_KEY;
 const openaiClient = axios.create({
     baseURL: 'https://api.openai.com/v1',
     headers: {
@@ -119,8 +120,13 @@ export async function generateResponse(instruction_prompt, user_prompt, messages
         topK: 3,
         vector: combinedVector,
         includeMetadata: true
+      }, {
+        headers: {
+            'Api-Key': PINECONE_API_KEY, // Make sure PINECONE_API_KEY contains your actual API key
+            'Content-Type': 'application/json'
+          }
       });
-      console.log("topMatchesResponse", topMatchesResponse); 
+      console.log("topMatchesResponse received"); 
       const topMatches = topMatchesResponse.data; 
       const context = formatContext(topMatches); 
   
@@ -135,16 +141,17 @@ export async function generateResponse(instruction_prompt, user_prompt, messages
     //       "role": "system",
     //       "content": fullPrompt
     //     }], 
+    console.log('entering openaiClient');
         const response = await axios.post('https://api.openai.com/v1/chat/completions', {
             model: "gpt-3.5-turbo",
             messages: [{"role": "system",
-            "content": fullPrompt}], // your messages array here
+            "content": "fullPrompt"}], // your messages array here
             }, {
             headers: {
-                'Authorization': `Bearer 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`,
+                'Authorization': `Bearer ${EXPO_PUBLIC_OPENAI_API_KEY}`,
                 'Content-Type': 'application/json'
             }
-            });
+            }).then(response => console.log(response.data));
       console.log("openai response", response); 
       console.log("rag response", response.data.choices[0].message.content.trim());
 
