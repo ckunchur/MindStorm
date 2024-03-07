@@ -1,7 +1,10 @@
 import axios from 'axios';
 import { top_moods_topics_prompt, mood_weather_classification_prompt, chatbot_recommendation_prompt, lyra_prompt } from './prompts';
 import { ExtractUserProfileFromFirebase } from '../firebase/functions';
+import { generateResponse } from '../Pinecone/pinecone-requests';
 const OPENAI_API_KEY = process.env.EXPO_PUBLIC_OPENAI_API_KEY;
+
+
 const client = axios.create({
   baseURL: 'https://api.openai.com/v1',
   headers: {
@@ -12,13 +15,14 @@ const client = axios.create({
 
 
 const chatgptUrl = 'https://api.openai.com/v1/chat/completions';
-const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2"; // hardcoded for now
 
 export const apiCall = async (prompt, messages) => {
     return chatgptApiCall(prompt, messages);
 }
-// Global variable to remember if the system prompt has already been added
-let systemPromptAdded = false;
+
+export const apiRAGCall = async (instruction_prompt, user_prompt, messages) => {
+    return chatgptApiRAGCall(instruction_prompt, user_prompt, messages);
+}
 
 const chatgptApiCall = async (prompt, messages) => {
     const userProfile = await ExtractUserProfileFromFirebase(testUser); // Ensure this function returns a string
@@ -65,6 +69,32 @@ const chatgptApiCall = async (prompt, messages) => {
     }
 }
 
+// generate ChatGPT response using RAG
+export const chatgptApiRAGCall = async (instruction_prompt, user_prompt, messages) => {
+    const body = {
+        model: "gpt-3.5-turbo",
+        messages: [...messages]
+    };
+    // If there's a user prompt, add it to the message list
+    if (prompt) {
+        body.messages.push({
+            role: 'user',
+            content: prompt
+        });
+        console.log("User prompt added");
+    }
+
+    try {
+        const answer = await generateResponse(instruction_prompt, user_prompt, messages)
+        // Append only the new assistant response to the existing messages
+        const updatedMessages = [...messages, { role: 'user', content: user_prompt }, { role: 'assistant', content: answer }];
+        console.log(updatedMessages);
+        return { success: true, data: updatedMessages };
+    } catch (err) {
+        console.log('error: ', err);
+        return { success: false, msg: err.message };
+    }
+}
 
 
 

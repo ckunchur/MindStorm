@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, ImageBackground, Dimensions, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { apiCall } from '../OpenAI/OpenAI';
+import { apiCall, apiRAGCall } from '../OpenAI/OpenAI';
 import { Ionicons } from '@expo/vector-icons';
 import { writeChatHistoryToFirebase, ExtractUserProfileFromFirebase, generateRandomSessionID } from '../firebase/functions';
 import { lyra_prompt, lyra_greeting, nimbus_greeting, nimbus_prompt } from '../OpenAI/prompts';
@@ -19,7 +19,7 @@ export default function ChatScreen() {
     const userProfile = ExtractUserProfileFromFirebase(testUser);
     const instructionPrompt = {
         role: 'system',
-        content: `Context about user: ${userProfile}. System instructions: ${bot === "Lyra" ? lyra_prompt : nimbus_prompt}`
+        content: `Context about user: ${userProfile}. Initial system instructions: ${bot === "Lyra" ? lyra_prompt : nimbus_prompt}`
     };
     const greetingPrompt = { role: 'system', content: `${bot === "Lyra" ? lyra_greeting : nimbus_greeting}` };
     const [chatHistory, setChatHistory] = useState([]);
@@ -49,6 +49,8 @@ export default function ChatScreen() {
         // Temporary array to hold the new message and response for appending
         let newChatHistory = [...chatHistory, { role: 'user', content: userInput }];
         const response = await apiCall(userInput, newChatHistory);
+
+        // const response = await apiRAGCall(instructionPrompt.content, userInput, newChatHistory);
         if (response.success && response.data.length > 0) {
             // Append AI's response to the newChatHistory
             const aiResponse = response.data[response.data.length - 1]; // Assuming the last response is from AI
@@ -148,7 +150,7 @@ const styles = StyleSheet.create({
     },
     chatContainer: {
         flex: 1,
-        marginTop: 100,
+        marginTop: 120,
     },
     bubble: {
         padding: 10,
