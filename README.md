@@ -5,7 +5,6 @@ MindStorm is an app designed to "help you find the calm in your storm" with the 
 - create `.env` file in root directory with the following:
   - EXPO_PUBLIC_OPENAI_API_KEY="{your key here}"
   - EXPO_PUBLIC_PINECONE_API_KEY="{your key here}"
-- `cd MindStorm-mobile `
 - run `npm install` 
 - run `npx expo start`
 
