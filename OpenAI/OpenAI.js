@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { top_moods_topics_prompt, mood_weather_classification_prompt, chatbot_recommendation_prompt, lyra_prompt } from './prompts';
+import { top_moods_topics_prompt, mood_weather_classification_prompt, chatbot_recommendation_prompt, lyra_prompt, weeklong_mood_weather_classification_prompt, weeklong_topic_classification_prompt, weeklong_summary_prompt} from './prompts';
 import { ExtractUserProfileFromFirebase } from '../firebase/functions';
 import { generateResponse } from '../Pinecone/pinecone-requests';
 
@@ -179,6 +179,54 @@ export const recommendTherapyChatbotWithChatGPT= async (text) => {
 
         let answerString = res.data.choices[0].message.content.trim();
         return Promise.resolve({success: true, data: answerString});
+    } catch (err) {
+        console.log('error: ', err);
+        return Promise.resolve({success: false, msg: err.message});
+    }
+}
+
+//weeklong summary prompts
+export const weeklongSummaryWithChatGPT= async (text) => {
+    let prompt = weeklong_summary_prompt;
+    try {
+        const res = await client.post(chatgptUrl, {
+            model: "gpt-3.5-turbo",
+            messages: [
+                {
+                    role: 'system',
+                    content: prompt
+                },
+                {
+                    role: 'user',
+                    content: text
+                }
+            ] 
+        });
+        let answerString = res.data.choices[0].message.content.trim();
+        return Promise.resolve({success: true, data:  answerString});
+    } catch (err) {
+        console.log('error: ', err);
+        return Promise.resolve({success: false, msg: err.message});
+    }
+}
+export const weeklongTopicClassificationWithChatGPT= async (text) => {
+    let prompt = weeklong_topic_classification_prompt;
+    try {
+        const res = await client.post(chatgptUrl, {
+            model: "gpt-3.5-turbo",
+            messages: [
+                {
+                    role: 'system',
+                    content: prompt
+                },
+                {
+                    role: 'user',
+                    content: text
+                }
+            ] 
+        });
+        let answerString = res.data.choices[0].message.content.trim();
+        return Promise.resolve({success: true, data:  answerString});
     } catch (err) {
         console.log('error: ', err);
         return Promise.resolve({success: false, msg: err.message});
