@@ -225,7 +225,6 @@ export const ExtractUserNameFromFirebase = async (userId) => {
     if (userDoc.exists()) {
       const userData = userDoc.data();
       userName = userData.name || 'an unspecified name'; // Directly assign to userName without const
-      console.log(userName); // This will log the fetched name
     } else {
       console.error('User not found');
     }
@@ -260,7 +259,7 @@ export const ExtractLastWeekEntriesFirebase = async (userId) => {
         }
       }
     });
-    console.log("Extracted entries data from the last week: ", entriesData);
+    // console.log("Extracted entries data from the last week: ", entriesData);
     return entriesData; // Return the array of entries data
   } catch (e) {
     console.error("Error extracting entries from Firestore: ", e);
