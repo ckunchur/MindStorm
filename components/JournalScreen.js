@@ -104,8 +104,8 @@ export default function JournalScreen() {
         timeStamp: serverTimestamp(), // Use Firestore's serverTimestamp for consistency
       });
   
-      // Perform weeklong analysis
-      await performWeeklongAnalysis(uid);
+      // Perform weeklong analysis (moved to journal summary page)
+      // await performWeeklongAnalysis(uid);
   
       // Navigate to the 'JournalSummary' screen after the weekly analysis is completed
       navigation.navigate('JournalSummary', {

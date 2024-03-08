@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Image, ImageBackground, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { journalEntries } from '../data/fakeEntries';
 import MoodPieChart from './DonutChart';
+import { collection, serverTimestamp, addDoc } from 'firebase/firestore';
+import { db } from '../firebaseConfig';
+import { weeklongSummaryWithChatGPT, weeklongTopicClassificationWithChatGPT, weeklongMoodClassificationWithChatGPT } from '../OpenAI/OpenAI';
+import { ExtractLastWeekEntriesFirebase } from '../firebase/functions';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -36,9 +40,57 @@ const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style
 const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText, style]}>{message}</Text>;
 
 export default function JournalSummary() {
-    const route = useRoute();
-    const { topTopics, topMoods, weatherMood, botRecommendation } = route.params;
-    const navigation = useNavigation();
+  const route = useRoute();
+  const { topTopics, topMoods, weatherMood, botRecommendation } = route.params;
+  const navigation = useNavigation();
+  const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2"; // hardcoded for now
+
+  useEffect(() => {
+    performWeeklongAnalysis(testUser);
+  }, []);
+
+  const performWeeklongAnalysis = async (uid) => {
+    const fetchedEntries = await ExtractLastWeekEntriesFirebase(uid);
+    if (fetchedEntries.length > 0) {
+      try {
+        const results = await Promise.all([
+          weeklongSummaryWithChatGPT(JSON.stringify(fetchedEntries)),
+          weeklongTopicClassificationWithChatGPT(JSON.stringify(fetchedEntries)),
+          weeklongMoodClassificationWithChatGPT(JSON.stringify(fetchedEntries)),
+        ]);
+        const [
+          weeklongSummaryWithResult,
+          weeklongTopicClassificationResult,
+          weeklongMoodClassificationResult,
+        ] = results;
+
+        console.log("Weeklong Summary Result:", weeklongSummaryWithResult);
+        console.log("Weeklong Topic Classification Result:", weeklongTopicClassificationResult);
+        console.log("Weeklong Mood Classification Result:", weeklongMoodClassificationResult);
+
+        // Extract the JSON string from the topic classification response
+        const topicJsonString = weeklongTopicClassificationResult.data.match(/```json\s*([\s\S]*?)\s*```/)?.[1];
+        const parsedTopicData = topicJsonString ? JSON.parse(topicJsonString.replace(/\\"/g, '"')) : [];
+
+        // Extract the JSON string from the mood classification response
+        const moodJsonString = weeklongMoodClassificationResult.data.match(/```json\s*([\s\S]*?)\s*```/)?.[1];
+        const parsedMoodData = moodJsonString ? JSON.parse(moodJsonString.replace(/\\"/g, '"')) : [];
+
+        // Firebase: Create a new entry in the "weeklyAnalysis" collection for the user
+        const weeklyAnalysisRef = collection(db, `users/${uid}/weeklyAnalysis`);
+        console.log("Weeklong Summary Data:", weeklongSummaryWithResult.data);
+        await addDoc(weeklyAnalysisRef, {
+          weeklongSummary: weeklongSummaryWithResult.data || "",
+          weeklongTopics: parsedTopicData,
+          weeklongMoods: parsedMoodData,
+          timeStamp: serverTimestamp(),
+        });
+      } catch (error) {
+        console.error('Error during weekly analysis:', error);
+        // Handle the error, show an error message, or take appropriate action
+      }
+    }
+  };
 
     const MoodImage = ({ mood }) => {
         return (
