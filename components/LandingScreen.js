@@ -11,7 +11,7 @@ export default function WelcomeScreen() {
 
   // const upsertChatsTest = async () => {
   //   try {
-  //     // Extract entries from Firebase
+  //     // Extract chats from Firebase
   //     const chats = await readChatHistoryFromFirebase(testUser);
   //     // Upsert chats into Pinecone
   //     const pineconeResponse = await upsertChatSessionsToPinecone(chats);

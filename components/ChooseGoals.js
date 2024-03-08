@@ -9,7 +9,7 @@ import { testUser } from "../firebase/functions";
 export default function ChooseGoalsScreen() {
   const navigation = useNavigation();
   const [selectedGoals, setSelectedGoals] = useState([]);
-  const [currentStruggles, setCurrentStruggles] = useState(null);
+  const [currentStruggles, setCurrentStruggles] = useState("");
 
   const GoalOption = ({ title, isSelected, onPress }) => (
     <TouchableOpacity onPress={onPress} style={[styles.goalOption, isSelected && styles.goalOptionSelected]}>
@@ -18,6 +18,7 @@ export default function ChooseGoalsScreen() {
   );
 
   const toggleGoal = (key) => {
+    console.log(selectedGoals);
     setSelectedGoals((prevSelectedGoals) => {
       // Check if the goal is already selected
       const index = prevSelectedGoals.indexOf(key);
@@ -32,6 +33,7 @@ export default function ChooseGoalsScreen() {
   };
 
   const handleContinue = async (uid) => {
+    console.log(currentStruggles);
     await updatePersonalGoals(uid, selectedGoals, currentStruggles);
     navigation.navigate('PersonalInfo')
   };

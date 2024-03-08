@@ -43,8 +43,17 @@ export default function ChatScreen() {
 
     const handleSend = async () => {
         if (!userInput.trim()) return; // Prevent sending empty messages
-        // const response = await apiCall(userInput, chatHistory);
-        const response = await apiRAGCall(instructionPromptString, userInput, chatHistory);
+        
+        console.log("chatHistory in rag call", chatHistory, userInput, instructionPromptString)
+        let response;
+        // don't need RAG for basic productivity bot
+        if (bot === "Nimbus") {
+            response = await apiCall(userInput, chatHistory);
+        }
+        else {
+            response = await apiRAGCall(instructionPromptString, userInput, chatHistory);
+        }
+        setUserInput(''); // Clear input after sending
         if (response.success && response.data.length > 0) {
             const newMessages= response.data // append user prompt and gpt response
             const newChatHistory = [...chatHistory, ...newMessages];
@@ -56,7 +65,7 @@ export default function ChatScreen() {
                 setSessionID(newSessionID);
             }
             await writeChatHistoryToFirebase(testUser, sessionID, newChatHistory);
-            setUserInput(''); // Clear input after sending
+           
           
         } else {
             console.error(response.msg);

@@ -13,6 +13,8 @@ import {
   updatePassword,
 } from 'firebase/auth';
 
+export const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2" // hardcoded for now
+
 export const updatePersonalInfo = async (uid, gender, age, relaxActivities, hobbies) => {
   try {
     const userDocRef = doc(db, `users`, uid);
@@ -41,8 +43,8 @@ export const updatePersonalGoals = async (uid, goals, struggles) => {
     // Create a reference to the user's personal goals document
     const userDocRef = doc(db, `users`, uid);
     let updateData = {};
-    if (goals.length > 0) updateData.goals = goals;
-    if (struggles !== null) updateData.struggles = struggles;
+    if (goals && goals.length > 0) updateData.goals = goals;
+    if (struggles && struggles.length > 0 ) updateData.struggles = struggles;
     if (Object.keys(updateData).length > 0) {
       await setDoc(userDocRef, updateData, { merge: true });
       console.log("Personal info updated successfully.");
@@ -50,7 +52,7 @@ export const updatePersonalGoals = async (uid, goals, struggles) => {
       console.log("No personal info fields to update.");
     }
   } catch (error) {
-    console.error("Error updating personal info: ", error);
+    console.error("Error updating personal goals and struggles: ", error);
   }
 };
 
@@ -215,6 +217,7 @@ export const ExtractUserProfileFromFirebase = async (userId) => {
 
 
 
+
 // Used in DataScreen.js page
 export const ExtractUserNameFromFirebase = async (userId) => {
   let userName = ''; // Declare userName to be used throughout the function
@@ -225,7 +228,6 @@ export const ExtractUserNameFromFirebase = async (userId) => {
     if (userDoc.exists()) {
       const userData = userDoc.data();
       userName = userData.name || 'an unspecified name'; // Directly assign to userName without const
-      console.log(userName); // This will log the fetched name
     } else {
       console.error('User not found');
     }
@@ -260,7 +262,7 @@ export const ExtractLastWeekEntriesFirebase = async (userId) => {
         }
       }
     });
-    console.log("Extracted entries data from the last week: ", entriesData);
+    // console.log("Extracted entries data from the last week: ", entriesData);
     return entriesData; // Return the array of entries data
   } catch (e) {
     console.error("Error extracting entries from Firestore: ", e);
