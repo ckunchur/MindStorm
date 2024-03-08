@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, ImageBackground, Dimensions, TouchableOpacity, TextInput, ScrollView } from 'react-native';
+import { StyleSheet, View, Image, Text, ImageBackground, Dimensions, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { apiCall, apiRAGCall } from '../OpenAI/OpenAI';
 import { Ionicons } from '@expo/vector-icons';
@@ -51,6 +51,8 @@ export default function ChatScreen() {
             response = await apiCall(userInput, chatHistory);
         }
         else {
+            // response = await apiCall(userInput, chatHistory);
+
             response = await apiRAGCall(instructionPromptString, userInput, chatHistory);
         }
         setUserInput(''); // Clear input after sending
@@ -88,7 +90,9 @@ export default function ChatScreen() {
                     {chatHistory.length < 2 ? null :
                         chatHistory.slice(1).map((msg, index) => (
                             <View key={index} style={[styles.bubble, msg.role === 'user' ? styles.userBubble : styles.aiBubble]}>
-                                <Text style={{ color: msg.role === 'user' ? '#ffffff' : '#000000' }}>{msg.content}</Text>
+                                {msg.role !== 'user' ?
+                                <Image source={bot === "Lyra" ? buddies[0].avatar : buddies[1].avatar} style={styles.botImage}></Image> : null}
+                                <Text style={[styles.bubbleText, { color: msg.role === 'user' ? '#ffffff' : '#000000' }]}>{msg.content}</Text>
                             </View>
                         ))}
                 </ScrollView>
@@ -109,6 +113,10 @@ export default function ChatScreen() {
 }
 
 const styles = StyleSheet.create({
+    bubbleText: {
+        maxWidth: '80%',
+        padding: 4
+    },
     container: {
         flex: 1,
         alignItems: 'center',
@@ -118,6 +126,14 @@ const styles = StyleSheet.create({
         width: windowWidth,
         height: windowHeight,
         padding: 20,
+    },
+    botImage: {
+        backgroundColor: 'black',
+        borderRadius: 12,
+        width: windowWidth * 0.08,
+        height: windowHeight * 0.04,
+        padding: 8,
+        marginRight: 4,
     },
     backButton: {
         position: 'absolute',
@@ -155,12 +171,17 @@ const styles = StyleSheet.create({
         marginTop: 120,
     },
     bubble: {
-        padding: 10,
+        display: 'flex',
+        flexDirection: 'row',
+        padding: 12,
         borderRadius: 20,
         marginBottom: 10,
-        maxWidth: '80%',
+        maxWidth: '95%',
+        display: 'flex',
+        flexDirection: 'row',
     },
     userBubble: {
+      
         alignSelf: 'flex-end',
         backgroundColor: '#007bff',
     },

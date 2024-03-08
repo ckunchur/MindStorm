@@ -2,26 +2,40 @@ import React from "react";
 import { View, StyleSheet, Text, Image, TouchableOpacity } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { ExtractEntriesFromFirebase, readChatHistoryFromFirebase, testUser } from "../firebase/functions";
-import { upsertChatSessionsToPinecone} from "../Pinecone/pinecone-requests";
+import { upsertChatSessionsToPinecone, upsertEntriesToPinecone} from "../Pinecone/pinecone-requests";
 const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style]}>{title}</Text>;
 const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText, style]}>{message}</Text>;
 
 export default function WelcomeScreen() {
   const navigation = useNavigation();
 
-  // const upsertChatsTest = async () => {
-  //   try {
-  //     // Extract chats from Firebase
-  //     const chats = await readChatHistoryFromFirebase(testUser);
-  //     // Upsert chats into Pinecone
-  //     const pineconeResponse = await upsertChatSessionsToPinecone(chats);
-  //     console.log("Entries upserted into Pinecone index:", pineconeResponse);
-  //     // Navigation happens after the async tasks are completed
-  //     navigation.navigate('ChooseGoals');
-  //   } catch (error) {
-  //     console.error('Error during test:', error);
-  //   }
-// };
+  const upsertChatsTest = async () => {
+    try {
+      // Extract chats from Firebase
+      const chats = await readChatHistoryFromFirebase(testUser);
+      // Upsert chats into Pinecone
+      const pineconeResponse = await upsertChatSessionsToPinecone(chats);
+      console.log("Entries upserted into Pinecone index:", pineconeResponse);
+      // Navigation happens after the async tasks are completed
+      navigation.navigate('ChooseGoals');
+    } catch (error) {
+      console.error('Error during test:', error);
+    }
+};
+
+const upsertEntriesTest = async () => {
+  try {
+    // Extract chats from Firebase
+    const entries = await ExtractEntriesFromFirebase(testUser);
+    // Upsert chats into Pinecone
+    const pineconeResponse = await upsertEntriesToPinecone(entries);
+    console.log("Entries upserted into Pinecone index:", pineconeResponse);
+    // Navigation happens after the async tasks are completed
+    navigation.navigate('ChooseGoals');
+  } catch (error) {
+    console.error('Error during test:', error);
+  }
+};
 
 return (
   <View style={styles.container}>

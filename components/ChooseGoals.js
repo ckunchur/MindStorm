@@ -12,7 +12,7 @@ export default function ChooseGoalsScreen() {
   const [currentStruggles, setCurrentStruggles] = useState("");
 
   const GoalOption = ({ title, isSelected, onPress }) => (
-    <TouchableOpacity onPress={onPress} style={[styles.goalOption, isSelected && styles.goalOptionSelected]}>
+    <TouchableOpacity onPress={onPress} style={[isSelected ? styles.goalOptionSelected : styles.goalOption]}>
       <Text style={[styles.goalOptionText, isSelected && styles.goalOptionTextSelected]}>{title}</Text>
     </TouchableOpacity>
   );
