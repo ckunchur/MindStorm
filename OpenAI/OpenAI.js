@@ -56,26 +56,7 @@ const chatgptApiCall = async (prompt, messages) => {
 
 // generate ChatGPT response using RAG
 export const chatgptApiRAGCall = async (instruction_prompt, user_prompt, messages) => {
-    console.log("In rag api call");
-
-    // const body = {
-    //     model: "gpt-3.5-turbo",
-    //     messages: [...messages]
-    // };
-    console.log(user_prompt);
-    // If there's a user prompt, add it to the message list
-    // if (user_prompt) {
-    //     body.messages.push({
-    //         role: 'user',
-    //         content: prompt
-    //     });
-    //     console.log("User prompt added");
-    // }
-    // console.log("read instruction prompt", instruction_prompt);
-    // console.log("read user prompt", user_prompt);
-    // console.log("read messages", messages);
-
-
+   
     try {
         const answer = await generateResponse(instruction_prompt, user_prompt, messages)
         // Append only the new assistant response to the existing messages
