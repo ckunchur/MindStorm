@@ -9,8 +9,6 @@ MindStorm is an app designed to "help you find the calm in your storm" with the 
 - run `npm install` 
 - run `npx expo start`
 
-If testing both frontend and backend at same time, run each in separate terminals. 
-
 ## Notes:
 - Login is currently not working (Sign up is!). Will be resolved ASAP!
 - We are currently not working on VoiceAssistant code (will not look updated from sprint 2)
