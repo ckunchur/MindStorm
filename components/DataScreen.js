@@ -5,7 +5,11 @@ import { useNavigation } from '@react-navigation/native';
 import DonutChart from './DonutChart';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-import { ExtractUserNameFromFirebase, ExtractLatestWeeklyAnalysisFromFirebase } from '../firebase/functions';
+import { ExtractUserNameFromFirebase, ExtractLastWeekEntriesFirebase, ExtractLatestWeeklyAnalysisFromFirebase } from '../firebase/functions';
+import { weeklongSummaryWithChatGPT, weeklongTopicClassificationWithChatGPT, weeklongMoodClassificationWithChatGPT } from '../OpenAI/OpenAI';
+import { collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs } from 'firebase/firestore';
+import { db } from '../firebaseConfig';
+
 
 const colors = ['#1a75ad', '#a47dff', '#335c9e', 'skyblue', '#ffb6c1'];
 
@@ -55,6 +59,63 @@ export default function DataScreen() {
     const [userName, setUserName] = useState('');
     const [weeklongSummary, setWeeklongSummary] = useState("");
     const [weeklongTopics, setWeeklongTopics] = useState([]);
+    const [weeklongMoods, setWeeklongMoods] = useState([]);
+
+    const performWeeklongAnalysis = async (uid) => {
+        console.log("Performing weeklong analysis for user ID:", uid);
+        const fetchedEntries = await ExtractLastWeekEntriesFirebase(uid);
+        // console.log("Fetched entries:", fetchedEntries);
+        if (fetchedEntries.length > 0) {
+            try {
+                const results = await Promise.all([
+                    weeklongSummaryWithChatGPT(JSON.stringify(fetchedEntries)),
+                    weeklongTopicClassificationWithChatGPT(JSON.stringify(fetchedEntries)),
+                    weeklongMoodClassificationWithChatGPT(JSON.stringify(fetchedEntries)),
+                ]);
+                const [
+                    weeklongSummaryWithResult,
+                    weeklongTopicClassificationResult,
+                    weeklongMoodClassificationResult,
+                ] = results;
+    
+                console.log("Weeklong summary result:", weeklongSummaryWithResult);
+                console.log("Weeklong topic classification result:", weeklongTopicClassificationResult);
+                console.log("Weeklong mood classification result:", weeklongMoodClassificationResult);
+    
+                // Extract the JSON string from the topic classification response
+                const topicJsonString = weeklongTopicClassificationResult.data.match(/```json\s*([\s\S]*?)\s*```/)[1];
+                const sanitizedTopicJsonString = topicJsonString.replace(/\\"/g, '"');
+                const parsedTopicData = JSON.parse(sanitizedTopicJsonString);
+    
+                // Extract the JSON string from the mood classification response
+                const moodJsonString = weeklongMoodClassificationResult.data.match(/```json\s*([\s\S]*?)\s*```/)[1];
+                const sanitizedMoodJsonString = moodJsonString.replace(/\\"/g, '"');
+                const parsedMoodData = JSON.parse(sanitizedMoodJsonString);
+    
+                // Firebase: Create a new entry in the "weeklyAnalysis" collection for the user
+                const weeklyAnalysisRef = collection(db, `users/${uid}/weeklyAnalysis`);
+                console.log("Weeklong summary data:", weeklongSummaryWithResult.data);
+                await addDoc(weeklyAnalysisRef, {
+                    weeklongSummary: weeklongSummaryWithResult.data,
+                    weeklongTopics: parsedTopicData,
+                    weeklongMoods: parsedMoodData,
+                    timeStamp: serverTimestamp(),
+                });
+    
+                console.log("Weekly analysis data stored in Firebase");
+    
+                // Update the state with the latest weekly analysis data
+                setWeeklongSummary(weeklongSummaryWithResult.data);
+                setWeeklongTopics(parsedTopicData);
+                setWeeklongMoods(parsedMoodData);
+            } catch (error) {
+                console.error('Error during weekly analysis:', error);
+                // Handle the error, show an error message, or take appropriate action
+            }
+        } else {
+            console.log("No entries found for weeklong analysis");
+        }
+    };
 
     useEffect(() => {
         const userId = "imIQfhTxJteweMhIh88zvRxq5NH2"; // hardcoded for now
@@ -71,20 +132,41 @@ export default function DataScreen() {
                 console.log("UserName not found or error fetching userName");
             }
 
-            // Fetch latest weekly analysis
-            console.log("Fetching latest weekly analysis...");
-            const fetchedWeeklyAnalysis = await ExtractLatestWeeklyAnalysisFromFirebase(userId);
-            if (fetchedWeeklyAnalysis) {
-                console.log("Fetched weekly analysis:", fetchedWeeklyAnalysis);
-                setWeeklongSummary(fetchedWeeklyAnalysis.weeklongSummary || "");
-                setWeeklongTopics(fetchedWeeklyAnalysis.weeklongTopics || []);
+            // Fetch the last weekly analysis from Firebase
+            const weeklyAnalysisRef = collection(db, `users/${userId}/weeklyAnalysis`);
+            const q = query(weeklyAnalysisRef, orderBy("timeStamp", "desc"), limit(1));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                const lastWeeklyAnalysis = querySnapshot.docs[0].data();
+                const lastTimestamp = lastWeeklyAnalysis.timeStamp.toDate();
+                const currentTime = new Date();
+                const fourHoursAgo = new Date(currentTime.getTime() - 4 * 60 * 60 * 1000);
+
+                console.log("Last weekly analysis timestamp:", lastTimestamp);
+                console.log("Current time:", currentTime);
+                console.log("Four hours ago:", fourHoursAgo);
+
+                if (lastTimestamp >= fourHoursAgo) {
+                    console.log("Using fetched weekly analysis data");
+                    // If the last timestamp is within the last four hours, use the fetched data
+                    setWeeklongSummary(lastWeeklyAnalysis.weeklongSummary);
+                    setWeeklongTopics(lastWeeklyAnalysis.weeklongTopics);
+                    setWeeklongMoods(lastWeeklyAnalysis.weeklongMoods);
+                } else {
+                    console.log("Last weekly analysis is older than four hours, rerunning analysis");
+                    // If the last timestamp is older than four hours, rerun the weekly analysis
+                    await performWeeklongAnalysis(userId);
+                }
             } else {
-                console.log("No weekly analysis found or error fetching weekly analysis");
+                console.log("No weekly analysis data found, running analysis");
+                // If no weekly analysis data is found, run the weekly analysis
+                await performWeeklongAnalysis(userId);
             }
         };
 
         fetchData();
-    }, []); // The empty dependency array ensures this effect runs only once when the component mounts
+    }, []);
 
     const MoodImage = ({ mood, date }) => {
         return (
@@ -101,49 +183,72 @@ export default function DataScreen() {
 
     return (
         <View style={styles.fullScreenContainer}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                <Ionicons name="arrow-back-circle-outline" color="#4A9BB4" size={48} />
-            </TouchableOpacity>
-            <ImageBackground
-                resizeMode="cover"
-                source={require('../assets/journal-background.png')}
-                style={styles.fullScreen}
-            >
-                <ScrollView contentContainerStyle={styles.scrollContainer}>
-                    <WelcomeTitle title={userName ? `Hi ${userName},` : "Emotional Report"} style={styles.title} />
-                    <WelcomeMessage message="Here is a summary of your key feelings and topics over time" style={styles.subheaderText} />
-                    
-                    {weeklongTopics.length > 0 ? (
-                        <>
-                            <Text style={styles.summarySubheading}>Your weather moods this week:</Text>
-                            <View style={styles.forecastView}>
-                                <View style={styles.moodRow}>
-                                    <MoodImage mood="Stormy" date="Today"></MoodImage>
-                                    <MoodImage mood="Rainy" date="03/02"></MoodImage>
-                                    <MoodImage mood="Cloudy" date="03/01"></MoodImage>
-                                    <MoodImage mood="Partly Cloudy" date="02/29"></MoodImage>
-                                    <MoodImage mood="Sunny" date="02/28"></MoodImage>
-                                </View>
-                            </View>
-                            <View style={styles.donutChartContainer}>
-                                <ChartRow title="Weekly Topics" sections={weeklongTopics} />
-                            </View>
-                            <Text style={styles.summarySubheading}>Here is a summary of your week:</Text>
-                            <View style={styles.controls}>
-                                {weeklongSummary && (
-                                    <View style={styles.predictedTextContainer}>
-                                        <Text style={styles.predictedText}>{weeklongSummary}</Text>
-                                    </View>
-                                )}
-                            </View>
-                        </>
-                    ) : (
-                        <Text style={styles.noDataText}>No weekly analysis data available.</Text>
-                    )}
-                </ScrollView>
-            </ImageBackground>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Ionicons name="arrow-back-circle-outline" color="#4A9BB4" size={48} />
+          </TouchableOpacity>
+          <ImageBackground
+            resizeMode="cover"
+            source={require('../assets/chat-lyra-background.png')}
+            style={styles.fullScreen}
+          >
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
+              <WelcomeTitle title={userName ? `Hi ${userName},` : "Your weekly summary"} style={styles.title} />
+              <WelcomeMessage message="Here is a summary of your key feelings and topics over time" style={styles.subheaderText} />
+
+              {/* Daily weather moods */}
+              <Text style={styles.summarySubheading}>Your weather moods this week:</Text>
+              <View style={styles.forecastView}>
+                <View style={styles.moodRow}>
+                  <MoodImage mood="Stormy" date="Today"></MoodImage>
+                  <MoodImage mood="Rainy" date="03/07"></MoodImage>
+                  <MoodImage mood="Cloudy" date="03/06"></MoodImage>
+                  <MoodImage mood="Partly Cloudy" date="03/05"></MoodImage>
+                  <MoodImage mood="Sunny" date="03/04"></MoodImage>
+                </View>
+              </View>
+
+              {/* Weeklong topics */}
+              {weeklongTopics.length > 0 ? (
+                <>
+                  <Text style={styles.summarySubheading}>Your brain real estate this week:</Text>
+                  <View style={styles.donutChartContainer}>
+                    <ChartRow title="" sections={weeklongTopics} />
+                  </View>
+                </>
+              ) : (
+                <Text style={styles.summarySubheading}></Text>
+              )}
+      
+              {/* Weeklong moods */}
+              {weeklongTopics.length > 0 ? (
+                <>
+                  <Text style={styles.summarySubheading}>Your overall moods week:</Text>
+                  <View style={styles.donutChartContainer}>
+                    <ChartRow title="" sections={weeklongMoods} />
+                  </View>
+                </>
+              ) : (
+                <Text style={styles.summarySubheading}></Text>
+              )}
+      
+              {/* Weeklong summary */}
+              {weeklongSummary ? (
+                <>
+                  <Text style={styles.summarySubheading}>Here is a summary of your week:</Text>
+                  <View style={styles.controls}>
+                    <View style={styles.predictedTextContainer}>
+                      <Text style={styles.predictedText}>{weeklongSummary}</Text>
+                    </View>
+                  </View>
+                </>
+              ) : (
+                <Text style={styles.summarySubheading}>No weekly summary available.</Text>
+              )}
+      
+            </ScrollView>
+          </ImageBackground>
         </View>
-    );
+      );
 }
 
 const styles = StyleSheet.create({
@@ -195,10 +300,10 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         alignItems: 'center',
         width: '100%',
-        marginTop: 20,
+        marginTop: 30,
     },
     title: {
-        color: "#4A9BB4",
+        color: "white",
         fontSize: 32,
         marginBottom: 16,
         fontWeight: "700",
@@ -219,7 +324,7 @@ const styles = StyleSheet.create({
     subheaderText: {
         textAlign: 'center',
         width: '80%',
-        color: "#4A9BB4",
+        color: "white",
         fontSize: 16,
         fontFamily: "Inter, sans-serif",
         marginBottom: 20,
@@ -233,37 +338,38 @@ const styles = StyleSheet.create({
     summarySubheading: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#4A9BB4',
-        textAlign: 'center',
+        color: 'white',
+        textAlign: 'left',
+        marginTop: 20,
+        marginBottom:-30
       },
     predictedTextContainer: {
         width: '90%',
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 24,
-        backgroundColor: "rgba(255, 255, 255, 0.4)",
-        padding: 16,
+        // backgroundColor: "rgba(255, 255, 255, 0.4)",
+        padding: 10,
         marginBottom: 20,
     },
     predictedText: {
         fontFamily: "Inter, sans-serif",
-        textAlign: 'center',
+        textAlign: 'left',
         color: 'white',
         fontSize: 16,
     },
     donutChartContainer: {
-        alignItems: 'center',
+        alignItems: 'right',
         justifyContent: 'center',
         marginTop: 20,
     },
     chartRowContainer: {
         alignItems: 'center',
         width: '100%',
-        marginBottom: 8,
         padding: 4,
+        marginLeft: 30,
         borderRadius: 16,
-        marginTop: 8,
-        backgroundColor: 'rgba(0, 255, 255, 0.2)',
+        // backgroundColor: 'rgba(0, 255, 255, 0.2)',
         display: 'flex',
         flexDirection: 'row'
     },

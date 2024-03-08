@@ -3,7 +3,7 @@ import { View, StyleSheet, ImageBackground, Text, TextInput, Alert, TouchableOpa
 import { useNavigation } from '@react-navigation/native';
 import { collection, serverTimestamp, addDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
-import { topMoodsAndTopicsWithChatGPT, moodWeatherClassificationWithChatGPT, recommendTherapyChatbotWithChatGPT, weeklongSummaryWithChatGPT, weeklongTopicClassificationWithChatGPT } from '../OpenAI/OpenAI';
+import { topMoodsAndTopicsWithChatGPT, moodWeatherClassificationWithChatGPT, recommendTherapyChatbotWithChatGPT, weeklongSummaryWithChatGPT, weeklongTopicClassificationWithChatGPT, weeklongMoodClassificationWithChatGPT } from '../OpenAI/OpenAI';
 import { ExtractLastWeekEntriesFirebase } from '../firebase/functions';
 
 const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style]}>{title}</Text>;
@@ -12,14 +12,55 @@ const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText,
 export default function JournalScreen() {
   const navigation = useNavigation();
   const [entryText, setEntryText] = useState("");
-  const [topTopics, setTopTopics] = useState("");
-  const [topMoods, setTopMoods] = useState("");
+  const [topTopics, setTopTopics] = useState([]);
+  const [topMoods, setTopMoods] = useState([]);
   const [weatherMood, setWeatherMood] = useState("");
   const [botRecommendation, setBotRecommendation] = useState("");
 
-
   const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2" // hardcoded for now
 
+  const performWeeklongAnalysis = async (uid) => {
+    const fetchedEntries = await ExtractLastWeekEntriesFirebase(uid);
+    if (fetchedEntries.length > 0) {
+      try {
+        const results = await Promise.all([
+          weeklongSummaryWithChatGPT(JSON.stringify(fetchedEntries)),
+          weeklongTopicClassificationWithChatGPT(JSON.stringify(fetchedEntries)),
+          weeklongMoodClassificationWithChatGPT(JSON.stringify(fetchedEntries)),
+        ]);
+        const [
+          weeklongSummaryWithResult,
+          weeklongTopicClassificationResult,
+          weeklongMoodClassificationResult,
+        ] = results;
+  
+        console.log("Weeklong Summary Result:", weeklongSummaryWithResult);
+        console.log("Weeklong Topic Classification Result:", weeklongTopicClassificationResult);
+        console.log("Weeklong Mood Classification Result:", weeklongMoodClassificationResult);
+  
+        // Extract the JSON string from the topic classification response
+        const topicJsonString = weeklongTopicClassificationResult.data.match(/```json\s*([\s\S]*?)\s*```/)?.[1];
+        const parsedTopicData = topicJsonString ? JSON.parse(topicJsonString.replace(/\\"/g, '"')) : [];
+  
+        // Extract the JSON string from the mood classification response
+        const moodJsonString = weeklongMoodClassificationResult.data.match(/```json\s*([\s\S]*?)\s*```/)?.[1];
+        const parsedMoodData = moodJsonString ? JSON.parse(moodJsonString.replace(/\\"/g, '"')) : [];
+  
+        // Firebase: Create a new entry in the "weeklyAnalysis" collection for the user
+        const weeklyAnalysisRef = collection(db, `users/${uid}/weeklyAnalysis`);
+        console.log("Weeklong Summary Data:", weeklongSummaryWithResult.data);
+        await addDoc(weeklyAnalysisRef, {
+          weeklongSummary: weeklongSummaryWithResult.data || "",
+          weeklongTopics: parsedTopicData,
+          weeklongMoods: parsedMoodData,
+          timeStamp: serverTimestamp(),
+        });
+      } catch (error) {
+        console.error('Error during weekly analysis:', error);
+        // Handle the error, show an error message, or take appropriate action
+      }
+    }
+  };
 
   const handleEntrySubmit = async (uid) => {
     if (!uid) {
@@ -30,81 +71,58 @@ export default function JournalScreen() {
       Alert.alert("Error", "Entry text cannot be empty.");
       return;
     }
-
+  
     try {
       // Run OpenAI API calls FOR JOURNAL SUMMARY
-        const results = await Promise.all([
+      const results = await Promise.all([
         topMoodsAndTopicsWithChatGPT(entryText),
         moodWeatherClassificationWithChatGPT(entryText),
         recommendTherapyChatbotWithChatGPT(entryText),
       ]);
       // Update state with results from API calls FOR JOURNAL SUMMARY
       const [topMoodsAndTopicsResult, moodWeatherClassificationResult, recommendTherapyChatbotResult] = results;
-      setTopTopics(topMoodsAndTopicsResult.data.topics);
-      setTopMoods(topMoodsAndTopicsResult.data.moods);
-      setWeatherMood(moodWeatherClassificationResult.data);
-      setBotRecommendation(recommendTherapyChatbotResult.data);
-
-         // Firebase: Create a new entry in the "entries" collection for the user
-         const entriesRef = collection(db, `users/${uid}/entries`);
-         await addDoc(entriesRef, {
-           entryText: entryText,
-           topTopics: topMoodsAndTopicsResult.data.topics,
-           topMoods: topMoodsAndTopicsResult.data.moods,
-           weatherMood: moodWeatherClassificationResult.data,
-           botRecommendation: recommendTherapyChatbotResult.data,
-           timeStamp: serverTimestamp(), // Use Firestore's serverTimestamp for consistency
-         });
-   
-         // Perform weekly analysis
-         const fetchedEntries = await ExtractLastWeekEntriesFirebase(uid);
-         if (fetchedEntries.length > 0) {
-           try {
-             const results = await Promise.all([
-               weeklongSummaryWithChatGPT(JSON.stringify(fetchedEntries)),
-               weeklongTopicClassificationWithChatGPT(JSON.stringify(fetchedEntries)),
-             ]);
-             const [weeklongSummaryWithResult, weeklongTopicClassificationResult] = results;
-   
-             // Extract the JSON string from the response
-             const jsonString = weeklongTopicClassificationResult.data.match(/```json\s*([\s\S]*?)\s*```/)[1];
-             const sanitizedJsonString = jsonString.replace(/\\"/g, '"');
-             const parsedData = JSON.parse(sanitizedJsonString);
-   
-             // Firebase: Create a new entry in the "weeklyAnalysis" collection for the user
-             const weeklyAnalysisRef = collection(db, `users/${uid}/weeklyAnalysis`);
-             await addDoc(weeklyAnalysisRef, {
-               weeklongSummary: weeklongSummaryWithResult.data,
-               weeklongTopics: parsedData,
-               timeStamp: serverTimestamp(),
-             });
-           } catch (error) {
-             console.error('Error during weekly analysis:', error);
-             // Handle the error, show an error message, or take appropriate action
-           }
-         }
-   
-         Alert.alert("Entry Saved", "Your entry has been successfully saved", [
-           {
-             text: "OK", onPress: () =>
-               navigation.navigate('JournalSummary', {
-                 topTopics: topMoodsAndTopicsResult.data.topics,
-                 topMoods: topMoodsAndTopicsResult.data.moods,
-                 weatherMood: moodWeatherClassificationResult.data,
-                 botRecommendation: recommendTherapyChatbotResult.data,
-               })
-           }
-         ]);
-         setEntryText(""); // Clear the input field after successful submission
-       } catch (error) {
-         console.error("Error submitting entry: ", error);
-         Alert.alert("Submission Failed", "Failed to save your entry. Please try again.");
-       }
-     };
-
+      console.log("Top Moods and Topics Result:", topMoodsAndTopicsResult);
+      console.log("Mood Weather Classification Result:", moodWeatherClassificationResult);
+      console.log("Recommend Therapy Chatbot Result:", recommendTherapyChatbotResult);
+      
+      const topTopics = topMoodsAndTopicsResult.success && Array.isArray(topMoodsAndTopicsResult.data) ? topMoodsAndTopicsResult.data[0] || [] : [];
+      const topMoods = topMoodsAndTopicsResult.success && Array.isArray(topMoodsAndTopicsResult.data) ? topMoodsAndTopicsResult.data[1] || [] : [];
+      
+      setTopTopics(topTopics);
+      setTopMoods(topMoods);
+      setWeatherMood(moodWeatherClassificationResult.success ? moodWeatherClassificationResult.data : "");
+      setBotRecommendation(recommendTherapyChatbotResult.success ? recommendTherapyChatbotResult.data : "");
+  
+      // Firebase: Create a new entry in the "entries" collection for the user
+      const entriesRef = collection(db, `users/${uid}/entries`);
+      await addDoc(entriesRef, {
+        entryText: entryText,
+        topTopics: topTopics,
+        topMoods: topMoods,
+        weatherMood: moodWeatherClassificationResult.success ? moodWeatherClassificationResult.data : "",
+        botRecommendation: recommendTherapyChatbotResult.success ? recommendTherapyChatbotResult.data : "",
+        timeStamp: serverTimestamp(), // Use Firestore's serverTimestamp for consistency
+      });
+  
+      // Perform weeklong analysis (moved to journal summary page)
+      // await performWeeklongAnalysis(uid);
+  
+      // Navigate to the 'JournalSummary' screen after the weekly analysis is completed
+      navigation.navigate('JournalSummary', {
+        topTopics: topTopics,
+        topMoods: topMoods,
+        weatherMood: moodWeatherClassificationResult.success ? moodWeatherClassificationResult.data : "",
+        botRecommendation: recommendTherapyChatbotResult.success ? recommendTherapyChatbotResult.data : "",
+      });
+  
+      setEntryText(""); // Clear the input field after successful submission
+    } catch (error) {
+      console.error("Error submitting entry: ", error);
+      Alert.alert("Submission Failed", "Failed to save your entry. Please try again.");
+    }
+  };
   return (
     <View style={styles.fullScreenContainer}>
-
       <ImageBackground
         resizeMode="cover"
         source={require('../assets/journal-background.png')}
@@ -121,9 +139,6 @@ export default function JournalScreen() {
           placeholderTextColor="grey"
           multiline={true}
         />
-
-
-
 
         <TouchableOpacity style={styles.continueButton} onPress={() => handleEntrySubmit(testUser)}>
           <Text style={styles.continueButtonText}>Submit</Text>
