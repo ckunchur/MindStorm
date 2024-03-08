@@ -1,16 +1,11 @@
 # MindStorm-mobile
 MindStorm is an app designed to "help you find the calm in your storm" with the goal of empowering users to navigate their mental challenges. Currently, we are focused on helping users with stress/anxiety and productivity, offering 2 chatbots ("Lyra" and "Nimbus") for immediate guidance. MindStorm also has space for free journaling for quick mental insights. Data analysis is performed across chat history and journal entries, allowing users to track their mood and writing content over time. 
 
-## How to run FastAPI backend 
-FastAPI backend is currently being used solely for RAG and chat. We will move the journal analysis functions over as well.
-- `cd mindstorm-app/FastAPI` 
-- Make a .env file with API keys
-- Set up a virtual environment
-- `pip install -r requirements.txt`
-- run `uvicorn main:app --host 0.0.0.0 --reload`
-
-## How to run React Native frontend 
-- `cd mindstorm-app/React`
+## How to run app
+- create `.env` file in root directory with the following:
+  - EXPO_PUBLIC_OPENAI_API_KEY="{your key here}"
+  - EXPO_PUBLIC_PINECONE_API_KEY="{your key here}"
+- `cd MindStorm-mobile `
 - run `npm install` 
 - run `npx expo start`
 
