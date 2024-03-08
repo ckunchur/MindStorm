@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-import { View, StyleSheet, ImageBackground, Text, TextInput, Alert, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ImageBackground, Text, TextInput, Alert, TouchableOpacity, TouchableWithoutFeedback, Keyboard, } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { collection, serverTimestamp, addDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
@@ -66,27 +66,29 @@ export default function JournalScreen() {
   };
 
   return (
-    <View style={styles.fullScreenContainer}>
-      <ImageBackground
-        resizeMode="cover"
-        source={require('../assets/journal-background.png')}
-        style={styles.fullScreen}
-      >
-        <Text style={styles.title}>What's on your mind?</Text>
-        <Text style={styles.subheaderText}>This is your mind space. Write down anything you wish!</Text>
-        <TextInput
-          placeholder="Start writing here"
-          value={entryText}
-          onChangeText={setEntryText}
-          style={styles.input}
-          placeholderTextColor="grey"
-          multiline={true}
-        />
-        <TouchableOpacity style={styles.continueButton} onPress={() => handleEntrySubmit(testUser)}>
-          <Text style={styles.continueButtonText}>Submit</Text>
-        </TouchableOpacity>
-      </ImageBackground>
-    </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={styles.fullScreenContainer}>
+        <ImageBackground
+          resizeMode="cover"
+          source={require('../assets/journal-background.png')}
+          style={styles.fullScreen}
+        >
+          <Text style={styles.title}>What's on your mind?</Text>
+          <Text style={styles.subheaderText}>This is your mind space. Write down anything you wish!</Text>
+          <TextInput
+            placeholder="Start writing here"
+            value={entryText}
+            onChangeText={setEntryText}
+            style={styles.input}
+            placeholderTextColor="grey"
+            multiline={true}
+          />
+          <TouchableOpacity style={styles.continueButton} onPress={() => handleEntrySubmit(testUser)}>
+            <Text style={styles.continueButtonText}>Submit</Text>
+          </TouchableOpacity>
+        </ImageBackground>
+      </View>
+    </TouchableWithoutFeedback>
   )
 };
 
