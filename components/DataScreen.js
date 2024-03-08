@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import DonutChart from './DonutChart';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-import { ExtractUserNameFromFirebase, ExtractLastWeekEntriesFirebase, ExtractLatestWeeklyAnalysisFromFirebase } from '../firebase/functions';
+import { testUser, ExtractUserNameFromFirebase, ExtractLastWeekEntriesFirebase, ExtractLatestWeeklyAnalysisFromFirebase } from '../firebase/functions';
 import { weeklongSummaryWithChatGPT, weeklongTopicClassificationWithChatGPT, weeklongMoodClassificationWithChatGPT } from '../OpenAI/OpenAI';
 import { collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
@@ -118,13 +118,12 @@ export default function DataScreen() {
     };
 
     useEffect(() => {
-        const userId = "imIQfhTxJteweMhIh88zvRxq5NH2"; // hardcoded for now
 
         const fetchData = async () => {
-            console.log("Fetching data for user ID:", userId);
+            console.log("Fetching data for user ID:", testUser);
             
             // Fetch user name
-            const fetchedUserName = await ExtractUserNameFromFirebase(userId);
+            const fetchedUserName = await ExtractUserNameFromFirebase(testUser);
             if (fetchedUserName) {
                 setUserName(fetchedUserName);
                 console.log("User's name:", fetchedUserName);
@@ -133,7 +132,7 @@ export default function DataScreen() {
             }
 
             // Fetch the last weekly analysis from Firebase
-            const weeklyAnalysisRef = collection(db, `users/${userId}/weeklyAnalysis`);
+            const weeklyAnalysisRef = collection(db, `users/${testUser}/weeklyAnalysis`);
             const q = query(weeklyAnalysisRef, orderBy("timeStamp", "desc"), limit(1));
             const querySnapshot = await getDocs(q);
 
@@ -156,12 +155,12 @@ export default function DataScreen() {
                 } else {
                     console.log("Last weekly analysis is older than four hours, rerunning analysis");
                     // If the last timestamp is older than four hours, rerun the weekly analysis
-                    await performWeeklongAnalysis(userId);
+                    await performWeeklongAnalysis(testUser);
                 }
             } else {
                 console.log("No weekly analysis data found, running analysis");
                 // If no weekly analysis data is found, run the weekly analysis
-                await performWeeklongAnalysis(userId);
+                await performWeeklongAnalysis(testUser);
             }
         };
 
@@ -184,11 +183,11 @@ export default function DataScreen() {
     return (
         <View style={styles.fullScreenContainer}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Ionicons name="arrow-back-circle-outline" color="#4A9BB4" size={48} />
+            <Ionicons name="arrow-back-circle-outline" color="white" size={48} />
           </TouchableOpacity>
           <ImageBackground
             resizeMode="cover"
-            source={require('../assets/chat-lyra-background.png')}
+            source={require('../assets/data-screen-background.png')}
             style={styles.fullScreen}
           >
             <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -222,7 +221,7 @@ export default function DataScreen() {
               {/* Weeklong moods */}
               {weeklongTopics.length > 0 ? (
                 <>
-                  <Text style={styles.summarySubheading}>Your overall moods week:</Text>
+                  <Text style={styles.summarySubheading}>Your overall moods this week:</Text>
                   <View style={styles.donutChartContainer}>
                     <ChartRow title="" sections={weeklongMoods} />
                   </View>
@@ -234,8 +233,8 @@ export default function DataScreen() {
               {/* Weeklong summary */}
               {weeklongSummary ? (
                 <>
-                  <Text style={styles.summarySubheading}>Here is a summary of your week:</Text>
-                  <View style={styles.controls}>
+                  <Text style={styles.summarySubheading}>Weekly Reflections</Text>
+                  <View style={styles.reflections}>
                     <View style={styles.predictedTextContainer}>
                       <Text style={styles.predictedText}>{weeklongSummary}</Text>
                     </View>
@@ -334,6 +333,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginTop: 40,
         width: '100%',
+    },
+    reflections: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 40,
+        borderRadius: 24,
+        backgroundColor: 'rgba(125, 125, 125, 0.4)',
+        // width: '100%',
     },
     summarySubheading: {
         fontSize: 18,

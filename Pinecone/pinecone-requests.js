@@ -1,17 +1,14 @@
 import axios from 'axios';
-
 const PINECONE_UPSERT_ENTRIES_ENDPOINT = `https://entry-history-index-75ukjm4.svc.apw5-4e34-81fa.pinecone.io/vectors/upsert`;
 const PINECONE_QUERY_ENTRIES_ENDPOINT = `https://entry-history-index-75ukjm4.svc.apw5-4e34-81fa.pinecone.io/query`;
 const PINECONE_UPSERT_CHATS_ENDPOINT = `https://chat-history-index-75ukjm4.svc.apw5-4e34-81fa.pinecone.io/vectors/upsert`;
 const PINECONE_QUERY_CHATS_ENDPOINT = `https://chat-history-index-75ukjm4.svc.apw5-4e34-81fa.pinecone.io/query`;
 
-import { EXPO_PUBLIC_PINECONE_API_KEY } from '@env'
-import { EXPO_PUBLIC_OPENAI_API_KEY } from '@env'
-// const openaiApiKey = process.env.EXPO_PUBLIC_OPENAI_API_KEY;
-// const PINECONE_API_KEY = process.env.EXPO_PUBLIC_OPENAI_API_KEY;
 
-const chatgptUrl = 'https://api.openai.com/v1/chat/completions';
+import { EXPO_PUBLIC_PINECONE_API_KEY } from '@env'
 const PINECONE_API_KEY = EXPO_PUBLIC_PINECONE_API_KEY;
+const EXPO_PUBLIC_OPENAI_API_KEY = process.env.EXPO_PUBLIC_OPENAI_API_KEY;
+
 const openaiClient = axios.create({
     baseURL: 'https://api.openai.com/v1',
     headers: {
@@ -68,9 +65,11 @@ export async function upsertEntriesToPinecone(entries) {
 
 
 
+
+
 export async function upsertChatSessionsToPinecone(chats) {
     const vectorRecords = await Promise.all(chats.map(async chat => {
-        const vectorValues = await getEmbeddings(chat.messages); // extract just vector values
+        const vectorValues = await getEmbeddings(chat.messages); 
         return {
             "id": chat.id,
             "values": vectorValues,
@@ -100,16 +99,6 @@ export async function upsertChatSessionsToPinecone(chats) {
     }
 }
 
-// function formatContext(topMatches) {
-//     if (!topMatches || !Array.isArray(topMatches.matches)) {
-//         console.log("Unexpected topMatches structure", topMatches);
-//         return 'Data not available';
-//     }
-
-//     const contexts = topMatches.matches.map(match => match.metadata?.description || 'No description available');
-//     return contexts.join('\n---\n');
-// }
-
 function formatContext(topMatchesResponse) {
     // Extract the matches array from the response data
     const matches = topMatchesResponse.data.matches;
@@ -122,60 +111,51 @@ function formatContext(topMatchesResponse) {
   
     // Join the extracted descriptions into a single string with a separator
     return contexts.join('\n---\n');
-  }
-  
+}
 
 // currently just searches over journal entries. TO DO: update to search from chats and entries separately?
 export async function generateResponse(instruction_prompt, user_prompt, messages) {
-    console.log("in generateResponse");
+    // console.log("in generateResponse");
+    // console.log("read instruction prompt", instruction_prompt);
+    // console.log("read user prompt", user_prompt);
+    // console.log("read messages", messages);
+
     const sessionHistory = messages.map(msg => `${msg.role}: ${msg.content}`).join('\n');
-    console.log('Session History received');
     const combinedText = `${sessionHistory}\n${user_prompt}`;
     const combinedVector = await getEmbeddings(combinedText); 
-    console.log("combinedVector received");
+
+    console.log("Combined vector", combinedVector);
     try {
       const topMatchesResponse = await axios.post(PINECONE_QUERY_ENTRIES_ENDPOINT, {
         topK: 3,
         vector: combinedVector,
         includeMetadata: true
-      }, {
+      },  {
         headers: {
-            'Api-Key': EXPO_PUBLIC_PINECONE_API_KEY, // Make sure PINECONE_API_KEY contains your actual API key
-            'Content-Type': 'application/json'
-          }
-      });
-      console.log("topMatchesResponse", topMatchesResponse);
-    //   const topMatchesJSON = JSON.parse(topMatchesResponse.config.data);
-    //   const topMatches = topMatchesJSON.vector; 
-  
-      const context = formatContext(topMatchesResponse); // need to fix later
-      console.log("context", context);
-  
+        'Api-Key': PINECONE_API_KEY , // Make sure PINECONE_API_KEY contains your actual API key
+        'Content-Type': 'application/json'
+      }
+    });
+    console.log("topMatchesResponse", topMatchesResponse);
+
+    const context = formatContext(topMatchesResponse); 
+    console.log("context", context);
+
     // don't know if we need instruction prompt
       const fullPrompt = `Take the following instruction prompt, chat history, and RAG context from user journal entries to best answer the user prompt.\nSystem Prompt: ${instruction_prompt}\nSession History: ${sessionHistory}\nRAG Context: ${context}\nUser Prompt: ${user_prompt}`;
-      console.log('fullPrompt passed in');
     // const rag_context_prompt = `take original instruction prompt from the beginning of this chat and the following context from relevant chat sessions to provide the best response to the following user prompt. RAG context:  ${context}`
       // Use openaiClient to make the POST request
-    //   const response = await openaiClient.post('/chat/completions', {
-    //     model: "gpt-3.5-turbo",
-    //     messages: [{
-    //       "role": "system",
-    //       "content": rag_context_prompt
-    //     }], 
-        console.log('entering openaiClient');
-        const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-            model: "gpt-3.5-turbo",
-            messages: [{"role": "system", "content": fullPrompt}]
-        }, {
-            headers: {
-            'Authorization': `Bearer ${EXPO_PUBLIC_OPENAI_API_KEY}`,
-            'Content-Type': 'application/json'
-            }
-        });
-        const trimmedResponse = response.data.choices[0].message.content.trim();
-        console.log("Response:", trimmedResponse);
-        return trimmedResponse;
-
+      console.log('entering openaiClient');
+      const response = await openaiClient.post('/chat/completions', {
+        model: "gpt-3.5-turbo",
+        messages: [{
+          role: "system",
+          content: fullPrompt
+        }]
+      });
+      const trimmedResponse = response.data.choices[0].message.content.trim();
+      console.log("Response:", trimmedResponse);
+      return trimmedResponse;
 
       // option 2: using existing messages but adds an extra message in the chat each time u want to do rag
     //   const updatedMessages = [
@@ -189,7 +169,6 @@ export async function generateResponse(instruction_prompt, user_prompt, messages
     //   });
   
       // Assuming the structure of the response aligns with OpenAI's API structure
-      //return response.data.choices[0].message.content.trim();
     } catch (error) {
       console.error("Error in generating response:", error);
       throw error;
