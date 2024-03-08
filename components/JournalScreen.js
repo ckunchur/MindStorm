@@ -12,8 +12,8 @@ const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText,
 export default function JournalScreen() {
   const navigation = useNavigation();
   const [entryText, setEntryText] = useState("");
-  const [topTopics, setTopTopics] = useState("");
-  const [topMoods, setTopMoods] = useState("");
+  const [topTopics, setTopTopics] = useState([]);
+  const [topMoods, setTopMoods] = useState([]);
   const [weatherMood, setWeatherMood] = useState("");
   const [botRecommendation, setBotRecommendation] = useState("");
 
@@ -34,21 +34,23 @@ export default function JournalScreen() {
           weeklongMoodClassificationResult,
         ] = results;
   
+        console.log("Weeklong Summary Result:", weeklongSummaryWithResult);
+        console.log("Weeklong Topic Classification Result:", weeklongTopicClassificationResult);
+        console.log("Weeklong Mood Classification Result:", weeklongMoodClassificationResult);
+  
         // Extract the JSON string from the topic classification response
-        const topicJsonString = weeklongTopicClassificationResult.data.match(/```json\s*([\s\S]*?)\s*```/)[1];
-        const sanitizedTopicJsonString = topicJsonString.replace(/\\"/g, '"');
-        const parsedTopicData = JSON.parse(sanitizedTopicJsonString);
+        const topicJsonString = weeklongTopicClassificationResult.data.match(/```json\s*([\s\S]*?)\s*```/)?.[1];
+        const parsedTopicData = topicJsonString ? JSON.parse(topicJsonString.replace(/\\"/g, '"')) : [];
   
         // Extract the JSON string from the mood classification response
-        const moodJsonString = weeklongMoodClassificationResult.data.match(/```json\s*([\s\S]*?)\s*```/)[1];
-        const sanitizedMoodJsonString = moodJsonString.replace(/\\"/g, '"');
-        const parsedMoodData = JSON.parse(sanitizedMoodJsonString);
+        const moodJsonString = weeklongMoodClassificationResult.data.match(/```json\s*([\s\S]*?)\s*```/)?.[1];
+        const parsedMoodData = moodJsonString ? JSON.parse(moodJsonString.replace(/\\"/g, '"')) : [];
   
         // Firebase: Create a new entry in the "weeklyAnalysis" collection for the user
         const weeklyAnalysisRef = collection(db, `users/${uid}/weeklyAnalysis`);
-        console.log(weeklongSummaryWithResult.data);
+        console.log("Weeklong Summary Data:", weeklongSummaryWithResult.data);
         await addDoc(weeklyAnalysisRef, {
-          weeklongSummary: weeklongSummaryWithResult.data,
+          weeklongSummary: weeklongSummaryWithResult.data || "",
           weeklongTopics: parsedTopicData,
           weeklongMoods: parsedMoodData,
           timeStamp: serverTimestamp(),
@@ -79,19 +81,26 @@ export default function JournalScreen() {
       ]);
       // Update state with results from API calls FOR JOURNAL SUMMARY
       const [topMoodsAndTopicsResult, moodWeatherClassificationResult, recommendTherapyChatbotResult] = results;
-      setTopTopics(topMoodsAndTopicsResult.data.topics);
-      setTopMoods(topMoodsAndTopicsResult.data.moods);
-      setWeatherMood(moodWeatherClassificationResult.data);
-      setBotRecommendation(recommendTherapyChatbotResult.data);
+      console.log("Top Moods and Topics Result:", topMoodsAndTopicsResult);
+      console.log("Mood Weather Classification Result:", moodWeatherClassificationResult);
+      console.log("Recommend Therapy Chatbot Result:", recommendTherapyChatbotResult);
+      
+      const topTopics = topMoodsAndTopicsResult.success && Array.isArray(topMoodsAndTopicsResult.data) ? topMoodsAndTopicsResult.data[0] || [] : [];
+      const topMoods = topMoodsAndTopicsResult.success && Array.isArray(topMoodsAndTopicsResult.data) ? topMoodsAndTopicsResult.data[1] || [] : [];
+      
+      setTopTopics(topTopics);
+      setTopMoods(topMoods);
+      setWeatherMood(moodWeatherClassificationResult.success ? moodWeatherClassificationResult.data : "");
+      setBotRecommendation(recommendTherapyChatbotResult.success ? recommendTherapyChatbotResult.data : "");
   
       // Firebase: Create a new entry in the "entries" collection for the user
       const entriesRef = collection(db, `users/${uid}/entries`);
       await addDoc(entriesRef, {
         entryText: entryText,
-        topTopics: topMoodsAndTopicsResult.data.topics,
-        topMoods: topMoodsAndTopicsResult.data.moods,
-        weatherMood: moodWeatherClassificationResult.data,
-        botRecommendation: recommendTherapyChatbotResult.data,
+        topTopics: topTopics,
+        topMoods: topMoods,
+        weatherMood: moodWeatherClassificationResult.success ? moodWeatherClassificationResult.data : "",
+        botRecommendation: recommendTherapyChatbotResult.success ? recommendTherapyChatbotResult.data : "",
         timeStamp: serverTimestamp(), // Use Firestore's serverTimestamp for consistency
       });
   
@@ -100,10 +109,10 @@ export default function JournalScreen() {
   
       // Navigate to the 'JournalSummary' screen after the weekly analysis is completed
       navigation.navigate('JournalSummary', {
-        topTopics: topMoodsAndTopicsResult.data.topics,
-        topMoods: topMoodsAndTopicsResult.data.moods,
-        weatherMood: moodWeatherClassificationResult.data,
-        botRecommendation: recommendTherapyChatbotResult.data,
+        topTopics: topTopics,
+        topMoods: topMoods,
+        weatherMood: moodWeatherClassificationResult.success ? moodWeatherClassificationResult.data : "",
+        botRecommendation: recommendTherapyChatbotResult.success ? recommendTherapyChatbotResult.data : "",
       });
   
       setEntryText(""); // Clear the input field after successful submission
@@ -112,7 +121,6 @@ export default function JournalScreen() {
       Alert.alert("Submission Failed", "Failed to save your entry. Please try again.");
     }
   };
-
   return (
     <View style={styles.fullScreenContainer}>
       <ImageBackground

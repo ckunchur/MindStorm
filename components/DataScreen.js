@@ -200,10 +200,10 @@ export default function DataScreen() {
               <View style={styles.forecastView}>
                 <View style={styles.moodRow}>
                   <MoodImage mood="Stormy" date="Today"></MoodImage>
-                  <MoodImage mood="Rainy" date="03/02"></MoodImage>
-                  <MoodImage mood="Cloudy" date="03/01"></MoodImage>
-                  <MoodImage mood="Partly Cloudy" date="02/29"></MoodImage>
-                  <MoodImage mood="Sunny" date="02/28"></MoodImage>
+                  <MoodImage mood="Rainy" date="03/07"></MoodImage>
+                  <MoodImage mood="Cloudy" date="03/06"></MoodImage>
+                  <MoodImage mood="Partly Cloudy" date="03/05"></MoodImage>
+                  <MoodImage mood="Sunny" date="03/04"></MoodImage>
                 </View>
               </View>
 
