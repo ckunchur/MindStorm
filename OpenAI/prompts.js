@@ -17,10 +17,26 @@ export const lyra_greeting = "Hi I'm Lyra, your friendly guide through the stres
 
 
 // Weeklong summary promptss for datascreen.js
-export const weeklong_mood_weather_classification_prompt = 
-  "You will be given a dictionary of weeklong journal entries. Based on the tone and mood of the writing, classify the content as one of the following (decreasing in severity): Stormy, Rainy, Cloudy, Partly Cloudy, or Sunny in percentages. Stormy represents upsetting or turbulent thoughts. Cloudy represents a mix of negative and positive emotions, with notes of confusion. Partly cloudy is also a mix of negative and positive, but more neutral. Rainy is associated with sad feelings. Sunny represents a very cheerful and overall positive journal entry.\n\n" + 
-  "The output should just be a single string in the form: Stormy: {stormy percentage}%, Rainy {rainy percentage}%, Cloudy: {cloudy percentage}%, Partly Cloudy: {partly cloudy percentage}%, or Sunny: {sunny percentage}%.";
-
+export const weeklong_mood_classification_prompt = "You will be given a dictionary of weeklong journal entries. Based on the tone, mood, frequency, and timestamp of the entries, classify the content into the following categories (decreasing in severity): Stormy, Rainy, Cloudy, Partly Cloudy, or Sunny. Provide the percentages for each category.\n\n" +
+  "- Stormy represents upsetting or turbulent thoughts.\n" +
+  "- Cloudy represents a mix of negative and positive emotions, with notes of confusion.\n" +
+  "- Partly Cloudy is also a mix of negative and positive, but more neutral.\n" +
+  "- Rainy is associated with sad feelings.\n" +
+  "- Sunny represents a very cheerful and overall positive journal entry.\n\n" +
+  "The output should be a JSON array of objects. Each object represents a mood category with the following properties:\n" +
+  "- label: The mood category (string)\n" +
+  "- percentage: The percentage of journal entries that fit into this category (number)\n\n" +
+  "Example output:\n" +
+  "```json\n" +
+  "[\n" +
+  "  { \"label\": \"Stormy\", \"percentage\": 10 },\n" +
+  "  { \"label\": \"Rainy\", \"percentage\": 20 },\n" +
+  "  { \"label\": \"Cloudy\", \"percentage\": 25 },\n" +
+  "  { \"label\": \"Partly Cloudy\", \"percentage\": 25 },\n" +
+  "  { \"label\": \"Sunny\", \"percentage\": 20 }\n" +
+  "]\n" +
+  "```\n" +
+  "Replace the percentage values with the corresponding values based on the analysis of the journal entries. The percentages should add up to 100.";
 export const weeklong_summary_prompt = 
   "You will be given a dictionary of weeklong journal entries. Please give a summary to the user in of the most important things from that week in dot points in a gentle tone.";
 

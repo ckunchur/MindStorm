@@ -3,7 +3,7 @@ import { View, StyleSheet, ImageBackground, Text, TextInput, Alert, TouchableOpa
 import { useNavigation } from '@react-navigation/native';
 import { collection, serverTimestamp, addDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
-import { topMoodsAndTopicsWithChatGPT, moodWeatherClassificationWithChatGPT, recommendTherapyChatbotWithChatGPT, weeklongSummaryWithChatGPT, weeklongTopicClassificationWithChatGPT } from '../OpenAI/OpenAI';
+import { topMoodsAndTopicsWithChatGPT, moodWeatherClassificationWithChatGPT, recommendTherapyChatbotWithChatGPT, weeklongSummaryWithChatGPT, weeklongTopicClassificationWithChatGPT, weeklongMoodClassificationWithChatGPT } from '../OpenAI/OpenAI';
 import { ExtractLastWeekEntriesFirebase } from '../firebase/functions';
 
 const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style]}>{title}</Text>;
@@ -26,20 +26,31 @@ export default function JournalScreen() {
         const results = await Promise.all([
           weeklongSummaryWithChatGPT(JSON.stringify(fetchedEntries)),
           weeklongTopicClassificationWithChatGPT(JSON.stringify(fetchedEntries)),
+          weeklongMoodClassificationWithChatGPT(JSON.stringify(fetchedEntries)),
         ]);
-        const [weeklongSummaryWithResult, weeklongTopicClassificationResult] = results;
-
-        // Extract the JSON string from the response
-        const jsonString = weeklongTopicClassificationResult.data.match(/```json\s*([\s\S]*?)\s*```/)[1];
-        const sanitizedJsonString = jsonString.replace(/\\"/g, '"');
-        const parsedData = JSON.parse(sanitizedJsonString);
-
+        const [
+          weeklongSummaryWithResult,
+          weeklongTopicClassificationResult,
+          weeklongMoodClassificationResult,
+        ] = results;
+  
+        // Extract the JSON string from the topic classification response
+        const topicJsonString = weeklongTopicClassificationResult.data.match(/```json\s*([\s\S]*?)\s*```/)[1];
+        const sanitizedTopicJsonString = topicJsonString.replace(/\\"/g, '"');
+        const parsedTopicData = JSON.parse(sanitizedTopicJsonString);
+  
+        // Extract the JSON string from the mood classification response
+        const moodJsonString = weeklongMoodClassificationResult.data.match(/```json\s*([\s\S]*?)\s*```/)[1];
+        const sanitizedMoodJsonString = moodJsonString.replace(/\\"/g, '"');
+        const parsedMoodData = JSON.parse(sanitizedMoodJsonString);
+  
         // Firebase: Create a new entry in the "weeklyAnalysis" collection for the user
         const weeklyAnalysisRef = collection(db, `users/${uid}/weeklyAnalysis`);
         console.log(weeklongSummaryWithResult.data);
         await addDoc(weeklyAnalysisRef, {
           weeklongSummary: weeklongSummaryWithResult.data,
-          weeklongTopics: parsedData,
+          weeklongTopics: parsedTopicData,
+          weeklongMoods: parsedMoodData,
           timeStamp: serverTimestamp(),
         });
       } catch (error) {
@@ -58,7 +69,7 @@ export default function JournalScreen() {
       Alert.alert("Error", "Entry text cannot be empty.");
       return;
     }
-
+  
     try {
       // Run OpenAI API calls FOR JOURNAL SUMMARY
       const results = await Promise.all([
@@ -72,7 +83,7 @@ export default function JournalScreen() {
       setTopMoods(topMoodsAndTopicsResult.data.moods);
       setWeatherMood(moodWeatherClassificationResult.data);
       setBotRecommendation(recommendTherapyChatbotResult.data);
-
+  
       // Firebase: Create a new entry in the "entries" collection for the user
       const entriesRef = collection(db, `users/${uid}/entries`);
       await addDoc(entriesRef, {
@@ -83,20 +94,18 @@ export default function JournalScreen() {
         botRecommendation: recommendTherapyChatbotResult.data,
         timeStamp: serverTimestamp(), // Use Firestore's serverTimestamp for consistency
       });
-
-      Alert.alert("Entry Saved", "Your entry has been successfully saved", [
-        {
-          text: "OK", onPress: () => {
-            navigation.navigate('JournalSummary', {
-              topTopics: topMoodsAndTopicsResult.data.topics,
-              topMoods: topMoodsAndTopicsResult.data.moods,
-              weatherMood: moodWeatherClassificationResult.data,
-              botRecommendation: recommendTherapyChatbotResult.data,
-            });
-            performWeeklongAnalysis(uid); // Call the weeklong analysis function after navigating
-          }
-        }
-      ]);
+  
+      // Perform weeklong analysis
+      await performWeeklongAnalysis(uid);
+  
+      // Navigate to the 'JournalSummary' screen after the weekly analysis is completed
+      navigation.navigate('JournalSummary', {
+        topTopics: topMoodsAndTopicsResult.data.topics,
+        topMoods: topMoodsAndTopicsResult.data.moods,
+        weatherMood: moodWeatherClassificationResult.data,
+        botRecommendation: recommendTherapyChatbotResult.data,
+      });
+  
       setEntryText(""); // Clear the input field after successful submission
     } catch (error) {
       console.error("Error submitting entry: ", error);

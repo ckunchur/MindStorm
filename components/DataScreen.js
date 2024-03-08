@@ -55,6 +55,7 @@ export default function DataScreen() {
     const [userName, setUserName] = useState('');
     const [weeklongSummary, setWeeklongSummary] = useState("");
     const [weeklongTopics, setWeeklongTopics] = useState([]);
+    const [weeklongMoods, setWeeklongMoods] = useState([]);
 
     useEffect(() => {
         const userId = "imIQfhTxJteweMhIh88zvRxq5NH2"; // hardcoded for now
@@ -78,6 +79,8 @@ export default function DataScreen() {
                 console.log("Fetched weekly analysis:", fetchedWeeklyAnalysis);
                 setWeeklongSummary(fetchedWeeklyAnalysis.weeklongSummary || "");
                 setWeeklongTopics(fetchedWeeklyAnalysis.weeklongTopics || []);
+                setWeeklongMoods(fetchedWeeklyAnalysis.weeklongMoods || []);
+                console.log(weeklongMoods)
             } else {
                 console.log("No weekly analysis found or error fetching weekly analysis");
             }
@@ -101,50 +104,72 @@ export default function DataScreen() {
 
     return (
         <View style={styles.fullScreenContainer}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                <Ionicons name="arrow-back-circle-outline" color="#4A9BB4" size={48} />
-            </TouchableOpacity>
-            <ImageBackground
-                resizeMode="cover"
-                source={require('../assets/chat-lyra-background.png')}
-                style={styles.fullScreen}
-            >
-                <ScrollView contentContainerStyle={styles.scrollContainer}>
-                    <WelcomeTitle title={userName ? `Hi ${userName},` : "Emotional Report"} style={styles.title} />
-                    <WelcomeMessage message="Here is a summary of your key feelings and topics over time" style={styles.subheaderText} />
-                    
-                    {weeklongTopics.length > 0 ? (
-                        <>
-                            <Text style={styles.summarySubheading}>Your weather moods this week:</Text>
-                            <View style={styles.forecastView}>
-                                <View style={styles.moodRow}>
-                                    <MoodImage mood="Stormy" date="Today"></MoodImage>
-                                    <MoodImage mood="Rainy" date="03/02"></MoodImage>
-                                    <MoodImage mood="Cloudy" date="03/01"></MoodImage>
-                                    <MoodImage mood="Partly Cloudy" date="02/29"></MoodImage>
-                                    <MoodImage mood="Sunny" date="02/28"></MoodImage>
-                                </View>
-                            </View>
-                            <Text style={styles.summarySubheading}>Your brain real estate this week:</Text>
-                            <View style={styles.donutChartContainer}>
-                                <ChartRow title="" sections={weeklongTopics} />
-                            </View>
-                            <Text style={styles.summarySubheading}>Here is a summary of your week:</Text>
-                            <View style={styles.controls}>
-                                {weeklongSummary && (
-                                    <View style={styles.predictedTextContainer}>
-                                        <Text style={styles.predictedText}>{weeklongSummary}</Text>
-                                    </View>
-                                )}
-                            </View>
-                        </>
-                    ) : (
-                        <Text style={styles.noDataText}>No weekly analysis data available.</Text>
-                    )}
-                </ScrollView>
-            </ImageBackground>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Ionicons name="arrow-back-circle-outline" color="#4A9BB4" size={48} />
+          </TouchableOpacity>
+          <ImageBackground
+            resizeMode="cover"
+            source={require('../assets/chat-lyra-background.png')}
+            style={styles.fullScreen}
+          >
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
+              <WelcomeTitle title={userName ? `Hi ${userName},` : "Your weekly summary"} style={styles.title} />
+              <WelcomeMessage message="Here is a summary of your key feelings and topics over time" style={styles.subheaderText} />
+
+              {/* Daily weather moods */}
+              <Text style={styles.summarySubheading}>Your weather moods this week:</Text>
+              <View style={styles.forecastView}>
+                <View style={styles.moodRow}>
+                  <MoodImage mood="Stormy" date="Today"></MoodImage>
+                  <MoodImage mood="Rainy" date="03/02"></MoodImage>
+                  <MoodImage mood="Cloudy" date="03/01"></MoodImage>
+                  <MoodImage mood="Partly Cloudy" date="02/29"></MoodImage>
+                  <MoodImage mood="Sunny" date="02/28"></MoodImage>
+                </View>
+              </View>
+
+              {/* Weeklong topics */}
+              {weeklongTopics.length > 0 ? (
+                <>
+                  <Text style={styles.summarySubheading}>Your brain real estate this week:</Text>
+                  <View style={styles.donutChartContainer}>
+                    <ChartRow title="" sections={weeklongTopics} />
+                  </View>
+                </>
+              ) : (
+                <Text style={styles.noDataText}>No weekly topic data available.</Text>
+              )}
+      
+              {/* Weeklong moods */}
+              {weeklongTopics.length > 0 ? (
+                <>
+                  <Text style={styles.summarySubheading}>Your overall moods week:</Text>
+                  <View style={styles.donutChartContainer}>
+                    <ChartRow title="" sections={weeklongMoods} />
+                  </View>
+                </>
+              ) : (
+                <Text style={styles.noDataText}>No weekly topic data available.</Text>
+              )}
+      
+              {/* Weeklong summary */}
+              {weeklongSummary ? (
+                <>
+                  <Text style={styles.summarySubheading}>Here is a summary of your week:</Text>
+                  <View style={styles.controls}>
+                    <View style={styles.predictedTextContainer}>
+                      <Text style={styles.predictedText}>{weeklongSummary}</Text>
+                    </View>
+                  </View>
+                </>
+              ) : (
+                <Text style={styles.noDataText}>No weekly summary available.</Text>
+              )}
+      
+            </ScrollView>
+          </ImageBackground>
         </View>
-    );
+      );
 }
 
 const styles = StyleSheet.create({
