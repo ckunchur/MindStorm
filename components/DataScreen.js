@@ -106,7 +106,7 @@ export default function DataScreen() {
             </TouchableOpacity>
             <ImageBackground
                 resizeMode="cover"
-                source={require('../assets/journal-background.png')}
+                source={require('../assets/chat-lyra-background.png')}
                 style={styles.fullScreen}
             >
                 <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -125,8 +125,9 @@ export default function DataScreen() {
                                     <MoodImage mood="Sunny" date="02/28"></MoodImage>
                                 </View>
                             </View>
+                            <Text style={styles.summarySubheading}>Your brain real estate this week:</Text>
                             <View style={styles.donutChartContainer}>
-                                <ChartRow title="Weekly Topics" sections={weeklongTopics} />
+                                <ChartRow title="" sections={weeklongTopics} />
                             </View>
                             <Text style={styles.summarySubheading}>Here is a summary of your week:</Text>
                             <View style={styles.controls}>
@@ -195,10 +196,10 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         alignItems: 'center',
         width: '100%',
-        marginTop: 20,
+        marginTop: 30,
     },
     title: {
-        color: "#4A9BB4",
+        color: "white",
         fontSize: 32,
         marginBottom: 16,
         fontWeight: "700",
@@ -219,7 +220,7 @@ const styles = StyleSheet.create({
     subheaderText: {
         textAlign: 'center',
         width: '80%',
-        color: "#4A9BB4",
+        color: "white",
         fontSize: 16,
         fontFamily: "Inter, sans-serif",
         marginBottom: 20,
@@ -233,37 +234,38 @@ const styles = StyleSheet.create({
     summarySubheading: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#4A9BB4',
-        textAlign: 'center',
+        color: 'white',
+        textAlign: 'left',
+        marginTop: 20,
+        marginBottom:-30
       },
     predictedTextContainer: {
         width: '90%',
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 24,
-        backgroundColor: "rgba(255, 255, 255, 0.4)",
-        padding: 16,
+        // backgroundColor: "rgba(255, 255, 255, 0.4)",
+        padding: 10,
         marginBottom: 20,
     },
     predictedText: {
         fontFamily: "Inter, sans-serif",
-        textAlign: 'center',
+        textAlign: 'left',
         color: 'white',
         fontSize: 16,
     },
     donutChartContainer: {
-        alignItems: 'center',
+        alignItems: 'right',
         justifyContent: 'center',
         marginTop: 20,
     },
     chartRowContainer: {
         alignItems: 'center',
         width: '100%',
-        marginBottom: 8,
         padding: 4,
+        marginLeft: 30,
         borderRadius: 16,
-        marginTop: 8,
-        backgroundColor: 'rgba(0, 255, 255, 0.2)',
+        // backgroundColor: 'rgba(0, 255, 255, 0.2)',
         display: 'flex',
         flexDirection: 'row'
     },

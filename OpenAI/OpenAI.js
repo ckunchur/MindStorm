@@ -4,10 +4,10 @@ import { ExtractUserProfileFromFirebase } from '../firebase/functions';
 import { generateResponse } from '../Pinecone/pinecone-requests';
 
 // import { ExtractUserProfileFromFirebase } from './firebase'; // Import the ExtractUserProfileFromFirebase function
-import { EXPO_PUBLIC_OPENAI_API_KEY } from '@env'
+// import { EXPO_PUBLIC_OPENAI_API_KEY } from '@env'
 
-// const OPENAI_API_KEY = process.env.EXPO_PUBLIC_OPENAI_API_KEY
-
+const EXPO_PUBLIC_OPENAI_API_KEY = process.env.EXPO_PUBLIC_OPENAI_API_KEY
+console.log(EXPO_PUBLIC_OPENAI_API_KEY);
 
 const client = axios.create({
     baseURL: 'https://api.openai.com/v1',
