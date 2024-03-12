@@ -82,7 +82,12 @@ export default function ChatScreen() {
 
     return (
         <View style={styles.container}>
-            <ImageBackground source={bot === "Lyra" ? buddies[0].chatBackground : buddies[1].chatBackground} style={styles.bgImage}>
+            {/* <ImageBackground source={bot === "Lyra" ? buddies[0].chatBackground : buddies[1].chatBackground} style={styles.bgImage}> */}
+            <ImageBackground
+                    resizeMode="cover"
+                    source={require('../assets/gradient3.jpeg')}
+                    style={styles.fullScreen}
+                >
                 <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
                     <Ionicons name="arrow-back-circle-outline" color="white" size={48} />
                 </TouchableOpacity>
@@ -117,6 +122,11 @@ const styles = StyleSheet.create({
         maxWidth: '80%',
         padding: 4
     },
+    fullScreen: {
+        flex: 1, // Make the background image fill the whole screen
+        width: '100%',
+        height: '100%',
+      },
     container: {
         flex: 1,
         alignItems: 'center',

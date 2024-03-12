@@ -85,7 +85,7 @@ export default function App() {
               } else if (route.name === 'Insights') {
                 iconName = focused ? 'bar-chart' : 'bar-chart-outline';
               }
-              return <Ionicons name={iconName} size={32} color="#4A9BB4" />;
+              return <Ionicons name={iconName} size={32} color="#857bc9" />;
             },
           })}
           tabBarOptions={{

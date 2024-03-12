@@ -4,11 +4,24 @@ import { useNavigation } from '@react-navigation/native';
 import { collection, serverTimestamp, addDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { topMoodsAndTopicsWithChatGPT, moodWeatherClassificationWithChatGPT, recommendTherapyChatbotWithChatGPT } from '../OpenAI/OpenAI';
+import { useFonts } from 'expo-font';
 
 const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style]}>{title}</Text>;
 const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText, style]}>{message}</Text>;
 
 export default function JournalScreen() {
+  const [loaded] = useFonts({
+    'Inter-Thin': require('../assets/fonts/Inter-Thin.ttf'),
+    'Inter-ExtraLight': require('../assets/fonts/Inter-ExtraLight.ttf'),
+    'Inter-Light': require('../assets/fonts/Inter-Light.ttf'),
+    'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
+    'Inter-Medium': require('../assets/fonts/Inter-Medium.ttf'),
+    'Inter-SemiBold': require('../assets/fonts/Inter-SemiBold.ttf'),
+    'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
+    'Inter-ExtraBold': require('../assets/fonts/Inter-ExtraBold.ttf'),
+    'Inter-Black': require('../assets/fonts/Inter-Black.ttf'),
+  });
+
   const navigation = useNavigation();
   const [entryText, setEntryText] = useState("");
   const [topTopics, setTopTopics] = useState([]);
@@ -78,7 +91,7 @@ export default function JournalScreen() {
     <View style={styles.fullScreenContainer}>
       <ImageBackground
         resizeMode="cover"
-        source={require('../assets/journal-background.png')}
+        source={require('../assets/gradient3.jpeg')}
         style={styles.fullScreen}
       >
         <WelcomeTitle title="What's on your mind?" style={styles.title} />
@@ -114,18 +127,18 @@ const styles = StyleSheet.create({
   title: {
     position: 'absolute',
     top: 80,
-    color: "#4A9BB4",
+    color: "#857bc9",
     fontSize: 32,
     marginBottom: 16,
     fontWeight: "700",
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "Inter-Regular",
   },
   subheaderText: {
     position: 'absolute',
     top: 120,
     textAlign: 'center',
     width: '60%',
-    color: "#4A9BB4",
+    color: "#857bc9",
     fontSize: 16,
     fontFamily: "Inter, sans-serif",
     marginBottom: 50, // Adjust the value as needed
@@ -162,7 +175,7 @@ const styles = StyleSheet.create({
     position: "relative",
     width: "100%",
     maxWidth: 327,
-    color: "#4A9BB4",
+    color: "#857bc9",
     textAlign: "center",
     marginTop: 36,
     padding: 18,
@@ -171,7 +184,7 @@ const styles = StyleSheet.create({
     fontFamily: "Inter, sans-serif",
   },
   continueButtonText: {
-    color: "#4A9BB4",
+    color: "#857bc9",
     fontWeight: 'bold'
   },
 });
