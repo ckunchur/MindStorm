@@ -12,7 +12,6 @@ import { db } from '../firebaseConfig';
 import { useGlobalFonts } from '../styles/globalFonts';
 import { COLORS, IMAGES} from '../styles/globalStyles';
 
-
 const colors = ['#d7a8ff', '#ffdbe8', '#99a6f7', '#ffdbfb', '#dbfffd'];
 
 const ChartRow = ({ title, sections }) => {
@@ -202,29 +201,22 @@ export default function DataScreen() {
               <WelcomeMessage message="Here is a summary of your key feelings and topics over time" style={styles.subheaderText} />
 
               {/* Daily weather moods */}
-              <Text style={styles.summarySubheading}>Your daily weather moods this month:</Text>
-              {/* <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                <View style={styles.moodRow}>
-                  <MoodImage mood="Stormy" date="Today"></MoodImage>
-                  <MoodImage mood="Rainy" date={new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' })}></MoodImage>
-                  <MoodImage mood="Cloudy" date={new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' })}></MoodImage>
-                  <MoodImage mood="Partly Cloudy" date={new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' })}></MoodImage>
-                  <MoodImage mood="Sunny" date={new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' })}></MoodImage>
-                  <MoodImage mood="Stormy" date={new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' })}></MoodImage>
-                  <MoodImage mood="Rainy" date={new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' })}></MoodImage>
-                </View>
-              </ScrollView> */}
+              <Text style={styles.summarySubheading}>Your weather moods this week:</Text>
+              <Text style={styles.summarySubsubheading}>Click on a day to view past entries</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <View style={styles.moodRow}>
-                  {[...Array(31)].map((_, index) => {
-                    const date = new Date();
-                    date.setDate(date.getDate() - index);
-                    const formattedDate = date.toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' });
-                    const mood = ["Rainy", "Cloudy", "Partly Cloudy", "Sunny"][index % 4];
-                    return <MoodImage key={index} mood={mood} date={formattedDate}></MoodImage>;
-                  })}
-                </View>
+                <TouchableOpacity onPress={() => navigation.navigate('ViewPastEntries')}>
+                  <View style={styles.moodRow}>
+                    {[...Array(31)].map((_, index) => {
+                      const date = new Date();
+                      date.setDate(date.getDate() - index);
+                      const formattedDate = date.toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' });
+                      const mood = ["Rainy", "Cloudy", "Partly Cloudy", "Sunny"][index % 4];
+                      return <MoodImage key={index} mood={mood} date={formattedDate}></MoodImage>;
+                    })}
+                  </View>
+                </TouchableOpacity>
               </ScrollView>
+
 
               {/* Weeklong topics */}
               {weeklongTopics.length > 0 ? (
@@ -320,7 +312,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         alignItems: 'center',
         width: '100%',
-        marginTop: 30,
+        marginTop: 5,
         marginLeft:10,
     },
     title: {
@@ -368,8 +360,16 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: COLORS.mindstormGrey,
         textAlign: 'left',
-        marginTop: 20,
-        marginBottom:-30,
+        marginTop: 3,
+        marginBottom:3,
+        fontFamily: "Inter-Regular"
+      },
+      summarySubsubheading: {
+        fontSize: 14,
+        color: COLORS.mindstormGrey,
+        textAlign: 'left',
+        marginTop: 3,
+        marginBottom:3,
         fontFamily: "Inter-Regular"
       },
     predictedTextContainer: {
