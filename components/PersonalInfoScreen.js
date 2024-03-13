@@ -1,9 +1,14 @@
 import { React, useState } from "react";
-import { View, StyleSheet, ImageBackground, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ImageBackground, Text, TextInput, TouchableOpacity, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons'; // Import Ionicons
+import { Ionicons } from '@expo/vector-icons';
 import { updatePersonalInfo } from "../firebase/functions";
-import { genders,ageGroups } from "../data/optionSettings";
+import { genders, ageGroups } from "../data/optionSettings";
+import { useGlobalFonts } from '../styles/globalFonts';
+import { COLORS, IMAGES } from '../styles/globalStyles';
+
+const { width, height } = Dimensions.get('window');
+
 const Chip = ({ label, selected, onSelect }) => (
   <TouchableOpacity
     style={[styles.chip, selected && styles.chipSelected]}
@@ -13,7 +18,7 @@ const Chip = ({ label, selected, onSelect }) => (
   </TouchableOpacity>
 );
 
-const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2"
+const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2";
 
 export default function PersonalInfoScreen({ setOnboardingComplete }) {
   const navigation = useNavigation();
@@ -21,7 +26,11 @@ export default function PersonalInfoScreen({ setOnboardingComplete }) {
   const [selectedAge, setSelectedAge] = useState(null);
   const [relaxActivities, setRelaxActivities] = useState(null);
   const [hobbies, setHobbies] = useState(null);
+  const fontsLoaded = useGlobalFonts();
 
+  if (!fontsLoaded) {
+    return null;
+  }
 
   const handleContinue = async (uid) => {
     console.log(selectedAge, selectedGender, hobbies, relaxActivities);
@@ -32,20 +41,19 @@ export default function PersonalInfoScreen({ setOnboardingComplete }) {
   return (
     <View style={styles.fullScreenContainer}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Ionicons name="arrow-back-circle-outline" color="white" size={48} />
+        <Ionicons name="arrow-back-circle-outline" color={COLORS.mindstormLightGrey} size={48} />
       </TouchableOpacity>
       <ImageBackground
         resizeMode="cover"
-        source={require('../assets/onboarding-background.png')}
+        source={IMAGES.gradientbg}
         style={styles.fullScreen}
       >
         <Text style={styles.title}>Who are you?</Text>
-        <Text style={styles.subheaderText}> Want to start off with more personalized results? 
-        Answer some optional questions about yourself. </Text>
-        {/* Gender Chips */}
-        <Text style={styles.chipHeader}>
-          Gender
+        <Text style={styles.subheaderText}>
+          Optional information to help us cater to your needs
         </Text>
+        {/* Gender Chips */}
+        <Text style={styles.chipHeader}>Gender</Text>
         <View style={styles.chipContainer}>
           {genders.map((gender) => (
             <Chip
@@ -57,9 +65,7 @@ export default function PersonalInfoScreen({ setOnboardingComplete }) {
           ))}
         </View>
         {/* Age Chips */}
-        <Text style={styles.chipHeader}>
-          Age
-        </Text>
+        <Text style={styles.chipHeader}>Age</Text>
         <View style={styles.chipContainer}>
           {ageGroups.map((age) => (
             <Chip
@@ -70,12 +76,8 @@ export default function PersonalInfoScreen({ setOnboardingComplete }) {
             />
           ))}
         </View>
-        <Text style={styles.chipHeader}>
-          How do you relax?
-        </Text>
-        <Text style={{ color: 'white' }}>
-          Ex: meditating, going for a walk, etc.
-        </Text>
+        <Text style={styles.inputHeader}>How do you relax?</Text>
+        <Text style={styles.inputSubtext}>Ex: meditating, going for a walk, etc.</Text>
         <TextInput
           placeholder="Listening to bird sounds"
           value={relaxActivities}
@@ -83,12 +85,8 @@ export default function PersonalInfoScreen({ setOnboardingComplete }) {
           style={styles.input}
           placeholderTextColor="grey"
         />
-        <Text style={styles.chipHeader}>
-          Any current hobbies?
-        </Text>
-        <Text style={{ color: 'white' }}>
-          Ex: swimming, baking, reading sci-fi
-        </Text>
+        <Text style={styles.inputHeader}>Any current hobbies?</Text>
+        <Text style={styles.inputSubtext}>Ex: swimming, baking, reading sci-fi</Text>
         <TextInput
           placeholder="Baking muffins"
           value={hobbies}
@@ -107,122 +105,135 @@ export default function PersonalInfoScreen({ setOnboardingComplete }) {
         </TouchableOpacity>
       </ImageBackground>
     </View>
-  )
-};
+  );
+}
 
 const styles = StyleSheet.create({
   backButton: {
     position: 'absolute',
-    top: 80,
-    left: 20,
+    top: height * 0.08,
+    left: width * 0.05,
     zIndex: 10,
   },
-  input: {
-    height: 40,
-    width: '80%',
-    backgroundColor: 'rgba(255, 255, 255, 0.6)',
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginVertical: 10,
-    color: 'grey',
+  inputHeader: {
+    color: COLORS.mindstormGrey,
+    fontSize: width * 0.04,
+    marginTop: height * 0.01,
+    fontFamily: "Inter-Medium",
   },
-
+  inputSubtext: {
+    color: COLORS.mindstormLightGrey,
+    fontSize: width * 0.035,
+    fontFamily: "Inter-Regular",
+    marginTop: height * 0.01,
+    marginBottom: height * 0.01,
+  },
+  input: {
+    height: height * 0.06,
+    width: '100%',
+    backgroundColor: COLORS.transcluscentWhite,
+    borderRadius: 5,
+    paddingHorizontal: width * 0.03,
+    marginVertical: height * 0.01,
+    color: 'grey',
+    fontFamily: "Inter-Regular",
+  },
   fullScreenContainer: {
     flex: 1,
   },
   fullScreen: {
-    flex: 1, 
+    flex: 1,
     justifyContent: 'center',
-    alignItems: 'center', 
-
+    alignItems: 'center',
+    paddingHorizontal: width * 0.05,
   },
   title: {
-    color: "white",
-    fontSize: 32,
+    color: COLORS.mindstormGrey,
+    fontSize: width * 0.08,
     fontWeight: "700",
-    fontFamily: "Inter, sans-serif",
-    marginTop: 72,
+    fontFamily: "Inter-Medium",
+    marginTop: height * 0.07,
+    textAlign: 'center',
   },
   subheaderText: {
-    color: "white",
-    fontSize: 16,
-    fontFamily: "Inter, sans-serif",
-    marginBottom: 50,
+    color: COLORS.mindstormGrey,
+    fontSize: width * 0.04,
+    fontFamily: "Inter-Regular",
+    marginTop: height * 0.01,
+    // marginBottom: height * 0.02,
+    textAlign: 'center',
   },
-
   chipHeader: {
-    color: "white",
-    fontWeight: 'bold',
-    fontSize: 16,
-    fontFamily: "Inter, sans-serif",
+    color: COLORS.mindstormGrey,
+    fontSize: width * 0.04,
+    fontFamily: "Inter-Medium",
+    marginTop: height * 0.01,
   },
   chipText: {
-    color: "#7887DA",
+    color: COLORS.mindstormPurple,
     fontWeight: 'bold',
-    zIndex: 10
+    fontFamily: "Inter-Medium",
   },
   chipContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 10,
-    width: '80%'
+    marginTop: height * 0.01,
+    width: '100%',
   },
   chip: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    margin: 4,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    paddingVertical: height * 0.015,
+    paddingHorizontal: width * 0.04,
+    margin: width * 0.01,
+    backgroundColor: COLORS.transcluscentWhite,
     borderRadius: 20,
-    zIndex: 9
   },
   chipSelected: {
-    backgroundColor: 'rgba(255, 255, 255, 1)',
+    backgroundColor: 'white',
     borderWidth: 4,
     borderColor: "#BCC6FC",
-
   },
-
   paginationContainer: {
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
     display: "flex",
-    marginTop: 48,
+    marginTop: height * 0.01,
     flexDirection: "row",
-    gap: 8,
+    gap: width * 0.02,
   },
   paginationActive: {
     borderRadius: 100,
     backgroundColor: "#FF90D3",
-    height: 8,
-    width: 8,
+    height: width * 0.02,
+    width: width * 0.02,
   },
   paginationInactive: {
     borderRadius: 100,
     backgroundColor: "#E3E5E5",
-    height: 8,
-    width: 8,
+    height: width * 0.02,
+    width: width * 0.02,
   },
   continueButton: {
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 48,
-    backgroundColor: "#FFF",
+    backgroundColor: COLORS.mindstormLightPurple,
     position: "relative",
     width: "100%",
-    maxWidth: 327,
-    color: "#4A9BB4",
+    maxWidth: width * 0.8,
     textAlign: "center",
-    marginTop: 48,
-    padding: 18,
-    fontSize: 16,
+    marginTop: height * 0.02,
+    padding: height * 0.02,
+    fontSize: width * 0.04,
     fontWeight: "700",
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "Inter-Medium",
   },
   continueButtonText: {
-    color: "#4A9BB4",
-    fontWeight: 'bold'
+    color: "white",
+    fontWeight: 'bold',
+    fontFamily: "Inter-Medium",
+    paddingVertical: 5,
   },
 });

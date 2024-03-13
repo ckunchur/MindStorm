@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   inputHeader: {
-    color: COLORS.mindstormLightGrey,
+    color: COLORS.mindstormGrey,
     fontSize: width * 0.04,
     marginTop: height * 0.01,
     fontFamily: "Inter-Medium",
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     fontFamily: "Inter-Regular",
   },
   title: {
-    color: COLORS.mindstormLightGrey,
+    color: COLORS.mindstormGrey,
     fontSize: width * 0.08,
     fontWeight: "700",
     fontFamily: "Inter-Medium",
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   subheaderText: {
-    color: COLORS.mindstormLightGrey,
+    color: COLORS.mindstormGrey,
     fontSize: width * 0.04,
     fontFamily: "Inter-Regular",
     marginTop: height * 0.02,
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 48,
-    backgroundColor: "#FFF",
+    backgroundColor: COLORS.mindstormLightPurple,
     position: "relative",
     width: "100%",
     maxWidth: width * 0.8,
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     fontFamily: "Inter-Medium",
   },
   continueButtonText: {
-    color: COLORS.mindstormPurple,
+    color: "white",
     fontWeight: 'bold',
     fontFamily: "Inter-Medium",
     paddingVertical: 5,
