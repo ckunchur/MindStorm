@@ -8,6 +8,9 @@ import { collection, serverTimestamp, addDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { weeklongSummaryWithChatGPT, weeklongTopicClassificationWithChatGPT, weeklongMoodClassificationWithChatGPT } from '../OpenAI/OpenAI';
 import { ExtractLastWeekEntriesFirebase } from '../firebase/functions';
+import { useGlobalFonts } from '../styles/globalFonts';
+import { COLORS, IMAGES } from '../styles/globalStyles';
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -21,8 +24,7 @@ const ChipsRow = ({ title, items }) => {
                         <TouchableOpacity key={index} style={styles.chip}>
                             <Text style={styles.chipText}>{item}</Text>
                         </TouchableOpacity>
-                    ))}
-                </View>
+                    ))}                </View>
             </ScrollView>
         </View>
     );
@@ -40,14 +42,20 @@ const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style
 const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText, style]}>{message}</Text>;
 
 export default function JournalSummary() {
-  const route = useRoute();
-  const { topTopics, topMoods, weatherMood, botRecommendation } = route.params;
-  const navigation = useNavigation();
-  const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2"; // hardcoded for now
+    const fontsLoaded = useGlobalFonts();
+    if (!fontsLoaded) {
+        return null;
+    }
 
-  useEffect(() => {
-    performWeeklongAnalysis(testUser);
-  }, []);
+    const route = useRoute();
+    const { topTopics, topMoods, weatherMood, botRecommendation } = route.params;
+    const navigation = useNavigation();
+    const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2"; // hardcoded for now
+
+    useEffect(() => {
+        performWeeklongAnalysis(testUser);
+    }, []);
+
 
   const performWeeklongAnalysis = async (uid) => {
     const fetchedEntries = await ExtractLastWeekEntriesFirebase(uid);
@@ -96,7 +104,7 @@ export default function JournalSummary() {
         return (
             <Image
                 source={weather_moods[mood]}
-                style={mood === weatherMood ? styles.selectedMoodImage : styles.moodImage}
+                style={mood === weatherMood ? [styles.selectedMoodImage, { tintColor: COLORS.mindstormGrey }]: [styles.moodImage ,{ tintColor: COLORS.mindstormLightGrey }]}
                 resizeMode="contain"
             ></Image>
         );
@@ -115,11 +123,11 @@ export default function JournalSummary() {
     return (
         <View style={styles.fullScreenContainer}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                <Ionicons name="arrow-back-circle-outline" color="#4A9BB4" size={48} />
+                <Ionicons name="arrow-back-circle-outline" color={COLORS.mindstormLightGrey} size={48} />
             </TouchableOpacity>
             <ImageBackground
                 resizeMode="cover"
-                source={require('../assets/journal-background.png')}
+                source={IMAGES.gradientbg}
                 style={styles.fullScreen}
             >
                 <WelcomeTitle title="Mood Forecast" style={styles.title} />
@@ -149,34 +157,18 @@ export default function JournalSummary() {
                             <ChipsRow title="Detected Topics" items={topTopics} />
                         )}
                     </View>
-                    {!isValidBotRecommendation(botRecommendation) && (
-                        <View style={styles.predictedTextContainer}>
-                            <Text style={styles.predictedText}>
-                                Based on your entry, we think Lyra would be a good buddy to talk to!
-                            </Text>
-                            <Image source={require('../assets/lyra.png')}></Image>
-                            <TouchableOpacity
-                                style={styles.chatButton}
-                                onPress={() => navigation.navigate('ChatScreen')}
-                            >
-                                <Text style={[styles.chatButtonText]}>Chat with Lyra</Text>
-                            </TouchableOpacity>
-                        </View>
-                    )}
-                    {isValidBotRecommendation(botRecommendation) && (
-                        <View style={styles.predictedTextContainer}>
-                            <Text style={styles.predictedText}>
-                                Based on your entry, we think {botRecommendation} would be a good buddy to talk to!
-                            </Text>
-                            <Image source={require('../assets/lyra.png')}></Image>
-                            <TouchableOpacity
-                                style={styles.chatButton}
-                                onPress={() => navigation.navigate('ChatScreen')}
-                            >
-                                <Text style={[styles.chatButtonText]}>Chat with {botRecommendation}</Text>
-                            </TouchableOpacity>
-                        </View>
-                    )}
+                    <TouchableOpacity
+                        style={styles.predictedTextContainer}
+                        onPress={() => navigation.navigate('ChatScreen', { botName: isValidBotRecommendation(botRecommendation) ? botRecommendation : 'Lyra' })}
+                    >
+                        <Text style={styles.predictedText}>
+                            Based on your entry, we think {isValidBotRecommendation(botRecommendation) ? botRecommendation : 'Lyra'} would be a good buddy to talk to!
+                        </Text>
+                        <Image style={styles.buddyImage} source={require('../assets/beancloud.png')}></Image>
+                        <Text style={[styles.chatButtonText]}>
+                            Chat with {isValidBotRecommendation(botRecommendation) ? botRecommendation : 'Lyra'}
+                        </Text>
+                    </TouchableOpacity>
                 </View>
             </ImageBackground>
         </View>
@@ -185,43 +177,48 @@ export default function JournalSummary() {
 
 const styles = StyleSheet.create({
     fullScreenContainer: {
-        flex: 1, // Make the container fill the whole screen
+        flex: 1,
     },
     fullScreen: {
-        flex: 1, // Make the background image fill the whole screen
-        justifyContent: 'center', // Center the children vertically
-        alignItems: 'center', // Center the children horizontally
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     container: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
         padding: 24,
-        backgroundColor: 'blue'
+        backgroundColor: COLORS.mindstormGrey,
     },
     backButton: {
         position: 'absolute',
-        top: 80, // Adjusted to be below status bar
+        top: 80,
         left: 20,
-        zIndex: 10, // Ensure the back button is above the chat bubbles
-    },
-    moodImage:{
+        zIndex: 10
+        },
+    moodImage: {
         width: 35,
         marginRight: 8,
-        opacity: 0.5
+        opacity: 0.5,
     },
-    selectedMoodImage:{
+    selectedMoodImage: {
         width: 48,
         marginRight: 8,
-        },
+    },
     moodRow: {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         height: '30%',
     },
+    buddyImage:{
+        width: 150,
+        height:  150,
+        marginVertical:20
+    },
     noDataText: {
-        color: 'white',
+        color: COLORS.mindstormGrey,
         fontSize: 16,
         textAlign: 'center',
         marginTop: 20,
@@ -229,85 +226,84 @@ const styles = StyleSheet.create({
     title: {
         position: 'absolute',
         top: 100,
-        color: "#4A9BB4",
+        color: COLORS.mindstormGrey,
         fontSize: 32,
         marginBottom: 16,
-        fontWeight: "700",
-        fontFamily: "Inter, sans-serif",
+        fontFamily: "Inter-Medium",
     },
     forecastView: {
         display: 'flex',
         flexDirection: 'column',
         position: 'absolute',
         top: 196,
-        padding: '8',
+        padding: 8,
         alignItems: 'center',
         justifyContent: 'center',
     },
     forecasttitle: {
         fontSize: 22,
-        fontWeight: 'bold',
-        marginBottom: 10,
-        color: 'white'
+        fontFamily: "Inter-Medium",
+        marginTop:5,
+        marginBottom: 20,
+        color: COLORS.mindstormGrey,
     },
     subheaderText: {
         position: 'absolute',
         top: 140,
         textAlign: 'center',
         width: '80%',
-        color: "#4A9BB4",
+        color: COLORS.mindstormGrey,
         fontSize: 16,
-        fontFamily: "Inter, sans-serif",
-        marginBottom: 120, // Adjust the value as needed
+        fontFamily: "Inter-Regular",
+        marginTop: 20,
+        marginBottom: 120,
     },
     controls: {
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 260
+        marginTop: 260,
     },
     bgImage: {
         width: windowWidth,
         height: windowHeight * 1.02,
         alignItems: 'center',
         justifyContent: 'center',
-
     },
     heading: {
         fontSize: 24,
-        fontWeight: 'bold',
+        fontFamily: "Inter-Medium",
         marginBottom: 8,
-        color: 'white',
+        color: COLORS.mindstormGrey,
         textAlign: 'center',
     },
     subheading: {
         fontSize: 18,
-        color: 'white',
+        color: COLORS.mindstormGrey,
         textAlign: 'center',
         marginBottom: 16,
+        fontFamily: "Inter-Medium",
     },
-
     predictedTextContainer: {
-        width: '80%', // Adjust the width as needed
+        width: '80%',
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 24,
-        backgroundColor: "rgba(255, 255, 255, 0.4)",
+        backgroundColor: COLORS.transcluscentWhite,
         padding: 8,
         textAlign: "center",
-        fontFamily: "Inter, sans-serif",
+        fontFamily: "Inter-Regular",
     },
     predictedText: {
-        fontFamily: "Inter, sans-serif",
+        fontFamily: "Inter-Regular",
         textAlign: 'center',
-        color: 'white',
+        color: COLORS.mindstormGrey,
         fontSize: 16,
+        margin:20
     },
-  
     chipsContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#E5E5E5',
-
+        backgroundColor: COLORS.transcluscentWhite,
     },
     chipsRowContainer: {
         alignItems: 'center',
@@ -317,20 +313,18 @@ const styles = StyleSheet.create({
     },
     chipsHeading: {
         fontSize: 18,
-        fontWeight: 'bold',
+        fontFamily: "Inter-Bold",
         marginBottom: 10,
         marginLeft: 20,
-        color: 'white',
-
+        color: COLORS.mindstormGrey,
     },
     chipsContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
         paddingHorizontal: 20,
-
     },
     chip: {
-        backgroundColor: '#1F7D9B',
+        backgroundColor: COLORS.mindstormTeal,
         paddingHorizontal: 16,
         paddingVertical: 8,
         borderRadius: 20,
@@ -338,38 +332,35 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     addButton: {
-        backgroundColor: '#4A9BB4',
+        backgroundColor: COLORS.mindstormTeal,
     },
     chipText: {
-        color: 'white',
+        color: COLORS.mindstormGrey,
         textAlign: 'center',
     },
-
     chatButtonText: {
-        fontWeight: 'bold',
+        fontFamily: "Inter-Medium",
         fontSize: 16,
-        color: '#7887DA',
+        color: COLORS.mindstormPurple,
         textAlign: 'center',
-        marginLeft: 8
+        margin: 18,
     },
     chatButton: {
-
         zIndex: 10,
         backgroundColor: 'white',
         margin: 8,
         padding: 8,
         borderColor: 'white',
-        borderRadius: 99999,
-        width: windowWidth * 0.5
+        borderRadius: 16,
+        width: windowWidth * 0.5,
     },
     buttonRow: {
         flexDirection: 'row',
         position: 'absolute',
-        bottom: 100, // Adjusted to be below status bar
+        bottom: 100,
         right: 12,
         flexDirection: "row",
         alignItems: 'center',
         justifyContent: 'center',
-
-    }
+    },
 });
