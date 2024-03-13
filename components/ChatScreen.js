@@ -10,8 +10,14 @@ import { testUser } from '../firebase/functions';
 import { buddies } from '../data/optionSettings';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+import { useGlobalFonts } from '../styles/globalFonts';
+import { COLORS } from '../styles/globalStyles';
 
 export default function ChatScreen() {
+    const fontsLoaded = useGlobalFonts();
+    if (!fontsLoaded) {
+      return null;
+    }
     const navigation = useNavigation();
     const route = useRoute();
     const { bot, entryText } = route.params;
@@ -83,13 +89,9 @@ export default function ChatScreen() {
     return (
         <View style={styles.container}>
             {/* <ImageBackground source={bot === "Lyra" ? buddies[0].chatBackground : buddies[1].chatBackground} style={styles.bgImage}> */}
-            <ImageBackground
-                    resizeMode="cover"
-                    source={require('../assets/gradient3.jpeg')}
-                    style={styles.fullScreen}
-                >
+            <ImageBackground source={require('../assets/gradient3.jpeg')} style={styles.bgImage}>
                 <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
-                    <Ionicons name="arrow-back-circle-outline" color="white" size={48} />
+                    <Ionicons name="arrow-back-circle-outline" color={COLORS.mindstormPurple} size={48} />
                 </TouchableOpacity>
                 <ScrollView style={styles.chatContainer}>
                     {chatHistory.length < 2 ? null :
@@ -109,7 +111,7 @@ export default function ChatScreen() {
                         placeholder="Type your message..."
                     />
                     <TouchableOpacity onPress={handleSend}>
-                        <Ionicons name="send-outline" color="white" size={36} />
+                        <Ionicons name="send" color={COLORS.mindstormPurple} size={36} />
                     </TouchableOpacity>
                 </View>
             </ImageBackground>
@@ -120,13 +122,9 @@ export default function ChatScreen() {
 const styles = StyleSheet.create({
     bubbleText: {
         maxWidth: '80%',
-        padding: 4
+        padding: 4,
+        fontFamily: "Inter-Regular"
     },
-    fullScreen: {
-        flex: 1, // Make the background image fill the whole screen
-        width: '100%',
-        height: '100%',
-      },
     container: {
         flex: 1,
         alignItems: 'center',
@@ -165,9 +163,10 @@ const styles = StyleSheet.create({
         borderRadius: 24,
         paddingHorizontal: 10,
         backgroundColor: "#FFF",
+        fontFamily: "Inter-Regular"
     },
     sendButton: {
-        backgroundColor: '#007bff',
+        backgroundColor: COLORS.mindstormPurple,
         paddingHorizontal: 20,
         paddingVertical: 10,
         borderRadius: 5,
@@ -175,6 +174,7 @@ const styles = StyleSheet.create({
     },
     sendButtonText: {
         color: '#ffffff',
+        fontFamily: "Inter-Regular"
     },
     chatContainer: {
         flex: 1,
@@ -191,9 +191,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     userBubble: {
-      
         alignSelf: 'flex-end',
-        backgroundColor: '#007bff',
+        backgroundColor: COLORS.mindstormPurple,
     },
     aiBubble: {
         alignSelf: 'flex-start',

@@ -4,23 +4,17 @@ import { useNavigation } from '@react-navigation/native';
 import { collection, serverTimestamp, addDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { topMoodsAndTopicsWithChatGPT, moodWeatherClassificationWithChatGPT, recommendTherapyChatbotWithChatGPT } from '../OpenAI/OpenAI';
-import { useFonts } from 'expo-font';
+import { useGlobalFonts } from '../styles/globalFonts';
+import { COLORS } from '../styles/globalStyles';
 
 const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style]}>{title}</Text>;
 const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText, style]}>{message}</Text>;
 
 export default function JournalScreen() {
-  const [loaded] = useFonts({
-    'Inter-Thin': require('../assets/fonts/Inter-Thin.ttf'),
-    'Inter-ExtraLight': require('../assets/fonts/Inter-ExtraLight.ttf'),
-    'Inter-Light': require('../assets/fonts/Inter-Light.ttf'),
-    'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
-    'Inter-Medium': require('../assets/fonts/Inter-Medium.ttf'),
-    'Inter-SemiBold': require('../assets/fonts/Inter-SemiBold.ttf'),
-    'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
-    'Inter-ExtraBold': require('../assets/fonts/Inter-ExtraBold.ttf'),
-    'Inter-Black': require('../assets/fonts/Inter-Black.ttf'),
-  });
+  const fontsLoaded = useGlobalFonts();
+  if (!fontsLoaded) {
+    return null;
+  }
 
   const navigation = useNavigation();
   const [entryText, setEntryText] = useState("");
@@ -127,38 +121,38 @@ const styles = StyleSheet.create({
   title: {
     position: 'absolute',
     top: 80,
-    color: "#857bc9",
+    color: COLORS.mindstormPurple,
     fontSize: 32,
     marginBottom: 16,
     fontWeight: "700",
-    fontFamily: "Inter-Regular",
+    fontFamily: "Inter-SemiBold",
   },
   subheaderText: {
     position: 'absolute',
-    top: 120,
+    top: 130,
     textAlign: 'center',
     width: '60%',
-    color: "#857bc9",
+    color: COLORS.mindstormPurple,
     fontSize: 16,
-    fontFamily: "Inter, sans-serif",
-    marginBottom: 50, // Adjust the value as needed
+    fontFamily:"Inter-Regular",
+    // marginBottom: 50, // Adjust the value as needed
   },
 
   inputSubheader: {
     color: "white",
     fontSize: 16,
-    fontFamily: "Inter, sans-serif",
+    fontFamily:"Inter-Regular",
   },
   inputHeader: {
     color: "white",
     fontWeight: 'bold',
     fontSize: 18,
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "Inter-Regular",
   },
 
   input: {
-    marginTop: 220,
-    height: '50%',
+    marginTop: 180,
+    height: '55%',
     width: '80%',
     backgroundColor: 'rgba(255, 255, 255, 0.6)',
     borderRadius: 5,
@@ -175,16 +169,16 @@ const styles = StyleSheet.create({
     position: "relative",
     width: "100%",
     maxWidth: 327,
-    color: "#857bc9",
+    color: COLORS.mindstormPurple,
     textAlign: "center",
     marginTop: 36,
     padding: 18,
     fontSize: 16,
     fontWeight: "700",
-    fontFamily: "Inter, sans-serif",
+    fontFamily:"Inter-Regular",
   },
   continueButtonText: {
-    color: "#857bc9",
+    color: COLORS.mindstormPurple,
     fontWeight: 'bold'
   },
 });
