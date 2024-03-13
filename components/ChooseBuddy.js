@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
         fontSize: 32,
         marginBottom: 16,
         textAlign: 'center',
+        fontFamily: "Inter-Regular"
     },
     subheaderText: {
         textAlign: 'center',
@@ -108,7 +109,7 @@ const styles = StyleSheet.create({
     buddyImage:{
         width: 0.55 * windowWidth,
         height:  0.55 * windowWidth,
-        marginBottom:10
+        marginBottom:20
     },
     bgImage: {
         width: windowWidth,

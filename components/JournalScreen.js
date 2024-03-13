@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-import { View, StyleSheet, ImageBackground, Text, TextInput, Alert, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ImageBackground, Text, TextInput, Alert, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, TouchableWithoutFeedback,Keyboard} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { collection, serverTimestamp, addDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
@@ -81,31 +81,44 @@ export default function JournalScreen() {
     }
   };
   return (
-    <View style={styles.fullScreenContainer}>
-      <ImageBackground
-        resizeMode="cover"
-        source={IMAGES.gradientbg}
-        style={styles.fullScreen}
-      >
-        <WelcomeTitle title="What's on your mind?" style={styles.title} />
-        <WelcomeMessage message="This is your mind space. Write down anything you wish!" style={styles.subheaderText} />
+    <KeyboardAvoidingView
+      style={styles.fullScreenContainer}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ImageBackground
+            resizeMode="cover"
+            source={IMAGES.gradientbg}
+            style={styles.fullScreen}
+          >
+            <WelcomeTitle title="What's on your mind?" style={styles.title} />
+            <WelcomeMessage
+              message="This is your mind space. Write down anything you wish!"
+              style={styles.subheaderText}
+            />
 
-        <TextInput
-          placeholder="Start writing here"
-          value={entryText}
-          onChangeText={setEntryText}
-          style={styles.input}
-          placeholderTextColor="grey"
-          multiline={true}
-        />
+            <TextInput
+              placeholder="Start writing here"
+              value={entryText}
+              onChangeText={setEntryText}
+              style={styles.input}
+              placeholderTextColor="grey"
+              multiline={true}
+            />
 
-        <TouchableOpacity style={styles.continueButton} onPress={() => handleEntrySubmit(testUser)}>
-          <Text style={styles.continueButtonText}>Submit</Text>
-        </TouchableOpacity>
-      </ImageBackground>
-    </View>
-  )
-};
+            <TouchableOpacity
+              style={styles.continueButton}
+              onPress={() => handleEntrySubmit(testUser)}
+            >
+              <Text style={styles.continueButtonText}>Submit</Text>
+            </TouchableOpacity>
+          </ImageBackground>
+        </TouchableWithoutFeedback>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+}
 
 const styles = StyleSheet.create({
 
@@ -117,6 +130,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center', // Center the children vertically
     alignItems: 'center', // Center the children horizontally
   },
+  scrollContainer: {
+    flexGrow: 1,
+  },
   title: {
     position: 'absolute',
     top: 100,
@@ -124,7 +140,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     marginBottom: 30,
     fontWeight: "700",
-    fontFamily: "Inter-Regular",
+    fontFamily: "Inter-Medium",
   },
   subheaderText: {
     position: 'absolute',
@@ -134,7 +150,6 @@ const styles = StyleSheet.create({
     color: COLORS.mindstormGrey,
     fontSize: 16,
     fontFamily:"Inter-Regular",
-    // marginBottom: 50, // Adjust the value as needed
   },
 
   inputSubheader: {
@@ -150,7 +165,7 @@ const styles = StyleSheet.create({
   },
 
   input: {
-    marginTop: 180,
+    marginTop: 190,
     height: '55%',
     width: '80%',
     backgroundColor: COLORS.transcluscentWhite,
@@ -164,7 +179,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 48,
-    backgroundColor: "#FFF",
+    backgroundColor: COLORS.mindstormLightPurple,
     position: "relative",
     width: "100%",
     maxWidth: 327,
@@ -177,7 +192,7 @@ const styles = StyleSheet.create({
     fontFamily:"Inter-Regular",
   },
   continueButtonText: {
-    color: COLORS.mindstormGrey,
-    fontWeight: 'bold'
+    color: "white",
+    fontFamily: "Inter-Medium"
   },
 });
