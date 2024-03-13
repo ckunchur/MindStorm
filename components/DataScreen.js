@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Image, ImageBackg
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import DonutChart from './DonutChart';
+import PieChart from './PieChart';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import { testUser, ExtractUserNameFromFirebase, ExtractLastWeekEntriesFirebase, ExtractLatestWeeklyAnalysisFromFirebase } from '../firebase/functions';
@@ -225,9 +226,12 @@ export default function DataScreen() {
               {weeklongTopics.length > 0 && (
                 <>
                   <Text style={styles.summarySubheading}>Your brain real estate this week:</Text>
-                  <Text style={styles.summarySubsubheading}>You've been spending your thoughts on... </Text>
-                  <View style={styles.donutChartContainer}>
-                    <ChartRow title="" sections={weeklongTopics} />
+                  <Text style={styles.summarySubsubheading}>You've been spending your thoughts on...</Text>
+                  <View style={styles.pieChartContainer}>
+                    <PieChart size={200} sections={weeklongTopics.map((topic, index) => ({
+                      ...topic,
+                      color: colors[index % colors.length],
+                    }))} />
                   </View>
                 </>
               )}
@@ -324,6 +328,11 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontFamily: "Inter-Medium",
     textAlign: 'center',
+  },
+  pieChartContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
   },
   forecastView: {
     alignItems: 'center',
