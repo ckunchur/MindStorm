@@ -13,36 +13,7 @@ import { db } from '../firebaseConfig';
 import { useGlobalFonts } from '../styles/globalFonts';
 import { COLORS, IMAGES} from '../styles/globalStyles';
 
-const colors = ['#d7a8ff', '#ffdbe8', '#99a6f7', '#ffdbfb', '#dbfffd'];
-
-const ChartRow = ({ title, sections }) => {
-  return (
-    <View style={styles.chartRowContainer}>
-      <DonutChart
-        size={160}
-        strokeWidth={25}
-        sections={sections.map((item, index) => ({
-          ...item,
-          color: colors[index % colors.length],
-        }))}
-      />
-
-      <ScrollView vertical showsHorizontalScrollIndicator={false}>
-        <Text style={styles.chipsHeading}>{title}</Text>
-        <View style={styles.chipsContainer}>
-          {sections.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[styles.chip, { backgroundColor: colors[index % colors.length] }]}
-            >
-              <Text style={styles.chipText}>{item.label} ({item.percentage}%)</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </ScrollView>
-    </View>
-  );
-};
+const colors = COLORS.fivecolourPastelRainbowList;
 
 const weather_moods = {
   "Stormy": require("../assets/stormy-mood.png"),
@@ -332,7 +303,8 @@ const styles = StyleSheet.create({
   pieChartContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 20,
+    marginTop: 5,
+    marginBottom:20, 
   },
   forecastView: {
     alignItems: 'center',
