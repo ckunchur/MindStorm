@@ -10,12 +10,10 @@ export default function PieChart({ size, sections }) {
   const getPath = (percentage, startAngle) => {
     const endAngle = startAngle + (percentage / 100) * 360;
     const largeArcFlag = percentage > 50 ? 1 : 0;
-
     const startX = size / 2 + radius * Math.cos((startAngle * Math.PI) / 180);
     const startY = size / 2 + radius * Math.sin((startAngle * Math.PI) / 180);
     const endX = size / 2 + radius * Math.cos((endAngle * Math.PI) / 180);
     const endY = size / 2 + radius * Math.sin((endAngle * Math.PI) / 180);
-
     return `M${size / 2},${size / 2} L${startX},${startY} A${radius},${radius} 0 ${largeArcFlag},1 ${endX},${endY} Z`;
   };
 
@@ -58,7 +56,8 @@ const styles = StyleSheet.create({
   },
   legendContainer: {
     marginTop: 20,
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    padding: 5,
   },
   legendItem: {
     flexDirection: 'row',
@@ -74,5 +73,6 @@ const styles = StyleSheet.create({
   legendLabel: {
     fontSize: 16,
     color: COLORS.mindstormGrey,
+    textAlign: 'left',
   },
 });

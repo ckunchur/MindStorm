@@ -42,7 +42,7 @@ export const weeklong_mood_classification_prompt = "You will be given a dictiona
   "```\n" +
   "Replace the percentage values with the corresponding values based on the analysis of the journal entries. The percentages should add up to 100.";
 export const weeklong_summary_prompt = 
-  "You will be given a dictionary of weeklong journal entries. Please give a summary to the user in of the most important things from that week in dot points in a gentle tone.";
+  "You will be given a dictionary of weeklong journal entries. Please give a short paragraph summary to the user in of the most important things from that week in dot points in a gentle tone.";
 
   export const weeklong_topic_classification_prompt = "You will be given a dictionary of weeklong journal entries. Classify the topic five topics and give a percentage for their predicted importance to the user. \n\n" +
   "The output should be a JSON array of objects, where each object represents a topic and has the following properties: \n" +
@@ -50,3 +50,5 @@ export const weeklong_summary_prompt =
   "- percentage: The percentage of importance (number) \n\n" +
   "Example output: \n" +
   "[{ \"label\": \"Topic 1\", \"percentage\": 30 }, { \"label\": \"Topic 2\", \"percentage\": 25 }, ...]";
+
+  // export const weeklong_topic_classification_prompt = "You will be given a dictionary of weeklong journal entries. Classify the top five topics and give a percentage for their predicted importance to the user. For each topic, provide a one-sentence summary. \\n\\n" + "The output should be a JSON array of objects, where each object represents a topic and has the following properties: \\n" + "- label: The topic label (string) \\n" + "- percentage: The percentage of importance (number) \\n" + "- summary: A one-sentence summary of the topic (string) \\n\\n" + "Example output: \\n" + "[{ \"label\": \"Topic 1\", \"percentage\": 30, \"summary\": \"One-sentence summary of Topic 1\" }, { \"label\": \"Topic 2\", \"percentage\": 25, \"summary\": \"One-sentence summary of Topic 2\" }, ...]";

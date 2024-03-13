@@ -305,6 +305,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 5,
     marginBottom:20, 
+    marginHorizontal:30,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    backgroundColor: COLORS.transcluscentWhite,
+    borderRadius: 8,
   },
   forecastView: {
     alignItems: 'center',
