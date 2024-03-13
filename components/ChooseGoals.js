@@ -1,15 +1,24 @@
-import {React, useState} from "react";
-import { View, StyleSheet, ImageBackground, Text, TextInput, TouchableOpacity } from 'react-native';
+import React, { useState } from "react";
+import { View, StyleSheet, ImageBackground, Text, TextInput, TouchableOpacity, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { updatePersonalGoals } from "../firebase/functions";
-import { Ionicons } from '@expo/vector-icons'; 
+import { Ionicons } from '@expo/vector-icons';
 import { goalOptions } from "../data/optionSettings";
 import { testUser } from "../firebase/functions";
+import { useGlobalFonts } from '../styles/globalFonts';
+import { COLORS, IMAGES } from '../styles/globalStyles';
+
+const { width, height } = Dimensions.get('window');
 
 export default function ChooseGoalsScreen() {
   const navigation = useNavigation();
   const [selectedGoals, setSelectedGoals] = useState([]);
   const [currentStruggles, setCurrentStruggles] = useState("");
+  const fontsLoaded = useGlobalFonts();
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   const GoalOption = ({ title, isSelected, onPress }) => (
     <TouchableOpacity onPress={onPress} style={[isSelected ? styles.goalOptionSelected : styles.goalOption]}>
@@ -20,13 +29,10 @@ export default function ChooseGoalsScreen() {
   const toggleGoal = (key) => {
     console.log(selectedGoals);
     setSelectedGoals((prevSelectedGoals) => {
-      // Check if the goal is already selected
       const index = prevSelectedGoals.indexOf(key);
       if (index > -1) {
-        // If the goal is already selected, remove it from the array
         return prevSelectedGoals.filter((_, i) => i !== index);
       } else {
-        // If the goal is not selected, add it to the array
         return [...prevSelectedGoals, key];
       }
     });
@@ -35,37 +41,33 @@ export default function ChooseGoalsScreen() {
   const handleContinue = async (uid) => {
     console.log(currentStruggles);
     await updatePersonalGoals(uid, selectedGoals, currentStruggles);
-    navigation.navigate('PersonalInfo')
+    navigation.navigate('PersonalInfo');
   };
 
-  return(
+  return (
     <View style={styles.fullScreenContainer}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Ionicons name="arrow-back-circle-outline" color="white" size={48} />
+        <Ionicons name="arrow-back-circle-outline" color={COLORS.mindstormLightGrey} size={48} />
       </TouchableOpacity>
       <ImageBackground
         resizeMode="cover"
-        source={require('../assets/onboarding-background.png')}
+        source={IMAGES.gradientbg}
         style={styles.fullScreen}
-      > 
-        <Text style={styles.title}>What are your goals?</Text> 
-        <Text style={styles.subheaderText}> No pressure! You can always change these later. </Text> 
+      >
+        <Text style={styles.title}>What are your goals?</Text>
+        <Text style={styles.subheaderText}>No pressure! You can always change these later.</Text>
         <View style={styles.goalsContainer}>
           {goalOptions.map((option) => (
-            <GoalOption 
-            key={option.key}
-            title={option.title}
-            isSelected={!!selectedGoals[option.key]}
-            onPress={() => toggleGoal(option.key)}
-             />
+            <GoalOption
+              key={option.key}
+              title={option.title}
+              isSelected={!!selectedGoals[option.key]}
+              onPress={() => toggleGoal(option.key)}
+            />
           ))}
         </View>
-        <Text style={styles.inputHeader}>
-         Anything currently bothering you?
-        </Text>
-        <Text style={{ color: 'white' }}>
-          Ex: recent breakup, struggling in school, etc
-        </Text>
+        <Text style={styles.inputHeader}>Anything currently bothering you?</Text>
+        <Text style={styles.inputSubtext}>Ex: recent breakup, struggling in school, etc</Text>
         <TextInput
           placeholder="Uncertain about my post-graduation plans"
           value={currentStruggles}
@@ -79,116 +81,122 @@ export default function ChooseGoalsScreen() {
           <View style={styles.paginationInactive} />
           <View style={styles.paginationInactive} />
         </View>
-        <TouchableOpacity style={styles.continueButton} 
-        onPress={() => handleContinue(testUser)}
-        >
+        <TouchableOpacity style={styles.continueButton} onPress={() => handleContinue(testUser)}>
           <Text style={styles.continueButtonText}>Continue</Text>
         </TouchableOpacity>
       </ImageBackground>
     </View>
-  )
-};
+  );
+}
 
 const styles = StyleSheet.create({
   backButton: {
     position: 'absolute',
-    top: 80, 
-    left: 20,
-    zIndex: 10, 
+    top: height * 0.08,
+    left: width * 0.05,
+    zIndex: 10,
   },
- inputHeader: {
-    color: "white",
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginTop: 12,
-    fontFamily: "Inter, sans-serif",
+  inputHeader: {
+    color: COLORS.mindstormLightGrey,
+    fontSize: width * 0.04,
+    marginTop: height * 0.01,
+    fontFamily: "Inter-Medium",
+  },
+  inputSubtext: {
+    color: COLORS.mindstormLightGrey,
+    fontSize: width * 0.035,
+    fontFamily: "Inter-Regular",
+    marginTop: height * 0.01,
+    marginBottom: height * 0.01,
   },
   fullScreenContainer: {
-    flex: 1, 
+    flex: 1,
   },
   fullScreen: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center', 
+    alignItems: 'center',
+    paddingHorizontal: width * 0.05,
   },
   input: {
-    height: 50,
-    width: '80%',
-    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    height: height * 0.06,
+    width: '100%',
+    backgroundColor: COLORS.transcluscentWhite,
     borderRadius: 5,
-    paddingHorizontal: 10,
-    marginVertical: 10,
+    paddingHorizontal: width * 0.03,
+    marginVertical: height * 0.01,
     color: 'grey',
-    
+    fontFamily: "Inter-Regular",
   },
   title: {
-    color: "white",
-    fontSize: 32,
+    color: COLORS.mindstormLightGrey,
+    fontSize: width * 0.08,
     fontWeight: "700",
-    fontFamily: "Inter, sans-serif",
-    marginTop: 108, 
+    fontFamily: "Inter-Medium",
+    marginTop: height * 0.07,
+    textAlign: 'center',
   },
   subheaderText: {
-    color: "white",
-    fontSize: 16,
-    fontFamily: "Inter, sans-serif",
-    marginBottom: 24, 
+    color: COLORS.mindstormLightGrey,
+    fontSize: width * 0.04,
+    fontFamily: "Inter-Regular",
+    marginTop: height * 0.02,
+    marginBottom: height * 0.02,
+    textAlign: 'center',
   },
   goalsContainer: {
-    width: '90%', 
-    justifyContent: 'space-around', // distribute space evenly around the GoalOption components
+    width: '100%',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    flexDirection: 'row', 
-    flexWrap: 'wrap', // allow wrapping of children
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   goalOption: {
-    width: '80%', 
+    width: '85%',
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 24,
-    backgroundColor: "rgba(255, 255, 255, 0.8)",
-    padding: 28,
-    margin: 8, 
+    backgroundColor: COLORS.transcluscentWhite,
+    padding: width * 0.06,
+    margin: width * 0.02,
     textAlign: "center",
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "Inter-Regular",
   },
   goalOptionText: {
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "Inter-Regular",
     textAlign: 'center',
     color: '#7887DA',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: width * 0.04,
   },
-
   goalOptionSelected: {
-    backgroundColor: "white", 
+    backgroundColor: "white",
     borderWidth: 4,
     borderColor: "#BCC6FC",
-
   },
   goalOptionTextSelected: {
-   fontWeight: "bold", 
+    fontWeight: "bold",
   },
   paginationContainer: {
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
     display: "flex",
-    marginTop: 32,
+    marginTop: height * 0.01,
     flexDirection: "row",
-    gap: 8,
+    gap: width * 0.02,
   },
   paginationActive: {
     borderRadius: 100,
     backgroundColor: "#FF90D3",
-    height: 8,
-    width: 8,
+    height: width * 0.02,
+    width: width * 0.02,
   },
   paginationInactive: {
     borderRadius: 100,
     backgroundColor: "#E3E5E5",
-    height: 8,
-    width: 8,
+    height: width * 0.02,
+    width: width * 0.02,
   },
   continueButton: {
     justifyContent: "center",
@@ -197,17 +205,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     position: "relative",
     width: "100%",
-    maxWidth: 327,
+    maxWidth: width * 0.8,
     color: "#4A9BB4",
     textAlign: "center",
-    marginTop: 24,
-    padding: 18,
-    fontSize: 16,
+    marginTop: height * 0.03,
+    padding: height * 0.02,
+    fontSize: width * 0.04,
     fontWeight: "700",
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "Inter-Medium",
   },
   continueButtonText: {
-    color: "#4A9BB4",
-    fontWeight: 'bold'
+    color: COLORS.mindstormPurple,
+    fontWeight: 'bold',
+    fontFamily: "Inter-Medium",
+    paddingVertical: 5,
   },
 });
