@@ -37,7 +37,9 @@ export default function ChatScreen() {
             let weeklyAnalysisSummaryPrompt = "";
             if (latestWeeklyAnalysis) {
                 // Format the weekly analysis as needed, for example:
-                weeklyAnalysisSummaryPrompt = `Here's your latest weekly analysis: ${latestWeeklyAnalysis.summary} (from ${new Date(latestWeeklyAnalysis.timeStamp.seconds * 1000).toLocaleDateString()})`;
+                console.log("Weekly analysis")
+                console.log(latestWeeklyAnalysis.weeklongSummary)
+                weeklyAnalysisSummaryPrompt = `Here's your latest weekly analysis: ${latestWeeklyAnalysis.weeklongSummary} (from ${new Date(latestWeeklyAnalysis.timeStamp.seconds * 1000).toLocaleDateString()})`;
             } else {
                 weeklyAnalysisSummaryPrompt = "It seems like we don't have a weekly analysis for you yet.";
             }
