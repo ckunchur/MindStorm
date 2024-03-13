@@ -5,17 +5,12 @@ import { collection, serverTimestamp, addDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { topMoodsAndTopicsWithChatGPT, moodWeatherClassificationWithChatGPT, recommendTherapyChatbotWithChatGPT } from '../OpenAI/OpenAI';
 import { useGlobalFonts } from '../styles/globalFonts';
-import { COLORS } from '../styles/globalStyles';
+import { COLORS, IMAGES} from '../styles/globalStyles';
 
 const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style]}>{title}</Text>;
 const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText, style]}>{message}</Text>;
 
 export default function JournalScreen() {
-  const fontsLoaded = useGlobalFonts();
-  if (!fontsLoaded) {
-    return null;
-  }
-
   const navigation = useNavigation();
   const [entryText, setEntryText] = useState("");
   const [topTopics, setTopTopics] = useState([]);
@@ -23,6 +18,10 @@ export default function JournalScreen() {
   const [weatherMood, setWeatherMood] = useState("");
   const [botRecommendation, setBotRecommendation] = useState("");
 
+  const fontsLoaded = useGlobalFonts();
+  if (!fontsLoaded) {
+    return null;
+  }
   const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2" // hardcoded for now
 
   const handleEntrySubmit = async (uid) => {
@@ -85,7 +84,7 @@ export default function JournalScreen() {
     <View style={styles.fullScreenContainer}>
       <ImageBackground
         resizeMode="cover"
-        source={require('../assets/gradient3.jpeg')}
+        source={IMAGES.gradientbg}
         style={styles.fullScreen}
       >
         <WelcomeTitle title="What's on your mind?" style={styles.title} />
@@ -121,7 +120,7 @@ const styles = StyleSheet.create({
   title: {
     position: 'absolute',
     top: 80,
-    color: COLORS.mindstormPurple,
+    color: COLORS.mindstormGrey,
     fontSize: 32,
     marginBottom: 16,
     fontWeight: "700",
@@ -132,7 +131,7 @@ const styles = StyleSheet.create({
     top: 130,
     textAlign: 'center',
     width: '60%',
-    color: COLORS.mindstormPurple,
+    color: COLORS.mindstormGrey,
     fontSize: 16,
     fontFamily:"Inter-Regular",
     // marginBottom: 50, // Adjust the value as needed
@@ -154,7 +153,7 @@ const styles = StyleSheet.create({
     marginTop: 180,
     height: '55%',
     width: '80%',
-    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    backgroundColor: COLORS.transcluscentWhite,
     borderRadius: 5,
     paddingHorizontal: 10,
     color: 'grey',
@@ -178,7 +177,7 @@ const styles = StyleSheet.create({
     fontFamily:"Inter-Regular",
   },
   continueButtonText: {
-    color: COLORS.mindstormPurple,
+    color: COLORS.mindstormGrey,
     fontWeight: 'bold'
   },
 });

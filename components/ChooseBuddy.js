@@ -12,13 +12,21 @@ import Carousel from 'react-native-snap-carousel';
 import { useNavigation } from '@react-navigation/native'; 
 import { Ionicons } from '@expo/vector-icons';
 import { buddies } from '../data/optionSettings';
+import { useGlobalFonts } from '../styles/globalFonts';
+import { COLORS, IMAGES} from '../styles/globalStyles';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 export default function ChooseYourBuddy() {
+    const fontsLoaded = useGlobalFonts();
+    if (!fontsLoaded) {
+      return null;
+    }    
+    
     const [activeSlide, setActiveSlide] = useState(0);
     const navigation = useNavigation(); 
+
 
     const renderCarouselItem = ({ item, index }) => {
         return (
@@ -43,7 +51,8 @@ export default function ChooseYourBuddy() {
         <View style={styles.container}>
             <ImageBackground
                 resizeMode="cover"
-                source={buddies[activeSlide].chooseBackground}
+                // source={buddies[activeSlide].chooseBackground}
+                source={IMAGES.gradientbg}
                 style={styles.fullScreen}
             >
                 <Text style={styles.title}> {buddies[activeSlide].speciality}</Text>
@@ -88,19 +97,17 @@ const styles = StyleSheet.create({
     title: {
         position: 'absolute',
         top: 80,
-        color: "#4A9BB4",
+        color: COLORS.mindstormGrey,
         fontSize: 32,
         marginBottom: 16,
         fontWeight: "700",
     },
     subheaderText: {
         textAlign: 'center',
-        color: "white",
+        color: COLORS.mindstormPurple,
         fontSize: 20,
         fontWeight: 'bold',
-
     },
-
     bgImage: {
         width: windowWidth,
         height: windowHeight * 1.02,
@@ -110,15 +117,15 @@ const styles = StyleSheet.create({
     },
     heading: {
         fontSize: 24,
-        fontWeight: 'bold',
+        fontFamily: 'Inter-SemiBold',
         marginBottom: 8,
-        color: 'white',
+        color: COLORS.mindstormPurple,
         paddingTop: 60,
         textAlign: 'center',
     },
     subheading: {
         fontSize: 18,
-        color: 'white',
+        color:COLORS.mindstormPurple,
         textAlign: 'center',
         marginBottom: 16,
         fontWeight: 'bold'
@@ -128,18 +135,17 @@ const styles = StyleSheet.create({
         borderRadius: 32,
         padding: 20,
         margin: 16,
-        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+        backgroundColor: COLORS.transcluscentWhite,
     },
     descriptionText: {
-        color: 'white',
+        color: COLORS.mindstormGrey,
         textAlign: 'center',
         marginBottom: '20',
         fontSize: 16
     },
-
     customizeButtonText: {
         fontWeight: 'bold',
-        color: '#4A9BB4',
+        color: COLORS.mindstormGrey,
         textAlign: 'center',
         marginLeft: 4
     },

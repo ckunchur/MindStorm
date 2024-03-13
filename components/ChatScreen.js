@@ -91,7 +91,7 @@ export default function ChatScreen() {
             {/* <ImageBackground source={bot === "Lyra" ? buddies[0].chatBackground : buddies[1].chatBackground} style={styles.bgImage}> */}
             <ImageBackground source={require('../assets/gradient3.jpeg')} style={styles.bgImage}>
                 <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
-                    <Ionicons name="arrow-back-circle-outline" color={COLORS.mindstormPurple} size={48} />
+                    <Ionicons name="arrow-back-circle-outline" color={COLORS.mindstormLightGrey} size={48} />
                 </TouchableOpacity>
                 <ScrollView style={styles.chatContainer}>
                     {chatHistory.length < 2 ? null :
@@ -111,7 +111,7 @@ export default function ChatScreen() {
                         placeholder="Type your message..."
                     />
                     <TouchableOpacity onPress={handleSend}>
-                        <Ionicons name="send" color={COLORS.mindstormPurple} size={36} />
+                        <Ionicons name="send" color={COLORS.mindstormLightGrey} size={36} />
                     </TouchableOpacity>
                 </View>
             </ImageBackground>
@@ -166,7 +166,6 @@ const styles = StyleSheet.create({
         fontFamily: "Inter-Regular"
     },
     sendButton: {
-        backgroundColor: COLORS.mindstormPurple,
         paddingHorizontal: 20,
         paddingVertical: 10,
         borderRadius: 5,
