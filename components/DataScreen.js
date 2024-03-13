@@ -202,16 +202,29 @@ export default function DataScreen() {
               <WelcomeMessage message="Here is a summary of your key feelings and topics over time" style={styles.subheaderText} />
 
               {/* Daily weather moods */}
-              <Text style={styles.summarySubheading}>Your weather moods this week:</Text>
-              <View style={styles.forecastView}>
+              <Text style={styles.summarySubheading}>Your daily weather moods this month:</Text>
+              {/* <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                 <View style={styles.moodRow}>
                   <MoodImage mood="Stormy" date="Today"></MoodImage>
-                  <MoodImage mood="Rainy" date="03/07"></MoodImage>
-                  <MoodImage mood="Cloudy" date="03/06"></MoodImage>
-                  <MoodImage mood="Partly Cloudy" date="03/05"></MoodImage>
-                  <MoodImage mood="Sunny" date="03/04"></MoodImage>
+                  <MoodImage mood="Rainy" date={new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' })}></MoodImage>
+                  <MoodImage mood="Cloudy" date={new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' })}></MoodImage>
+                  <MoodImage mood="Partly Cloudy" date={new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' })}></MoodImage>
+                  <MoodImage mood="Sunny" date={new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' })}></MoodImage>
+                  <MoodImage mood="Stormy" date={new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' })}></MoodImage>
+                  <MoodImage mood="Rainy" date={new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' })}></MoodImage>
                 </View>
-              </View>
+              </ScrollView> */}
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <View style={styles.moodRow}>
+                  {[...Array(31)].map((_, index) => {
+                    const date = new Date();
+                    date.setDate(date.getDate() - index);
+                    const formattedDate = date.toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' });
+                    const mood = ["Rainy", "Cloudy", "Partly Cloudy", "Sunny"][index % 4];
+                    return <MoodImage key={index} mood={mood} date={formattedDate}></MoodImage>;
+                  })}
+                </View>
+              </ScrollView>
 
               {/* Weeklong topics */}
               {weeklongTopics.length > 0 ? (
@@ -308,6 +321,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '100%',
         marginTop: 30,
+        marginLeft:10,
     },
     title: {
         color: COLORS.mindstormGrey,
