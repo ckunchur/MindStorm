@@ -12,6 +12,7 @@ import { collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs } f
 import { db } from '../firebaseConfig';
 import { useGlobalFonts } from '../styles/globalFonts';
 import { COLORS, IMAGES} from '../styles/globalStyles';
+import { LineChart } from 'react-native-chart-kit';
 
 const colors = COLORS.fivecolourPastelRainbowList;
 
@@ -20,9 +21,17 @@ const weather_moods = {
   "Rainy": require("../assets/rainy-mood.png"),
   "Cloudy": require("../assets/cloudy-mood.png"),
   "Partly Cloudy": require("../assets/partial-cloudy-mood.png"),
-  "Cloudy": require("../assets/cloudy-mood.png"),
   "Sunny": require("../assets/sunny-mood.png"),
 }
+const monthlyMoods = [
+  "Partly Cloudy", "Cloudy", "Cloudy", "Partly Cloudy", "Partly Cloudy", // 5 days
+  "Rainy", "Cloudy", "Partly Cloudy", "Cloudy", "Partly Cloudy", // 10 days
+  "Cloudy", "Sunny", "Partly Cloudy", "Cloudy", "Partly Cloudy", // 15 days
+  "Cloudy", "Partly Cloudy", "Rainy", "Cloudy", "Partly Cloudy", // 20 days
+  "Cloudy", "Partly Cloudy", "Cloudy", "Sunny", "Partly Cloudy", // 25 days
+  "Cloudy", "Partly Cloudy", "Cloudy", "Partly Cloudy", "Cloudy", "Partly Cloudy" // 31 days
+];
+
 
 const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style]}>{title}</Text>;
 const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText, style]}>{message}</Text>;
@@ -193,6 +202,85 @@ export default function DataScreen() {
                 </View>
               </ScrollView>
 
+              {/* Monthly mood line graph */}
+              <Text style={styles.summarySubheading}>Your monthly mood trend:</Text>
+              <Text style={styles.summarySubsubheading}>0 (bottom) is Stormy -> 4 (top) is Sunny</Text>
+              <View style={styles.lineGraphContainer}>
+              <LineChart
+                  data={{
+                    labels: monthlyMoods.map((_, index) => {
+                      if (index === 0 || index === monthlyMoods.length - 1) {
+                        const date = new Date();
+                        date.setDate(date.getDate() - (monthlyMoods.length - 1 - index));
+                        return date.toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' });
+                      }
+                      return '';
+                    }),
+                    datasets: [
+                      {
+                        data: monthlyMoods.map((mood) => {
+                          switch (mood) {
+                            case 'Stormy':
+                              return 0;
+                            case 'Rainy':
+                              return 1;
+                            case 'Cloudy':
+                              return 2;
+                            case 'Partly Cloudy':
+                              return 3;
+                            case 'Sunny':
+                              return 4;
+                            default:
+                              return 0;
+                          }
+                        }),
+                      },
+                    ],
+                  }}
+                  withVerticalLines = {false}
+                  width={windowWidth - 40} // Make sure you have defined windowWidth
+                  height={200}
+                  yAxisLabel=""
+                  yAxisSuffix=""
+                  chartConfig={{
+                    backgroundGradientFrom: COLORS.transcluscentWhite,
+                    backgroundGradientTo: COLORS.transcluscentWhite,
+                    fillShadowGradient: COLORS.mindstormLightPurple, // Example light blue color
+                    fillShadowGradientOpacity: 0.3,
+                    color: (opacity = 1) => COLORS.mindstormPurple,
+                    labelColor: (opacity = 1) => COLORS.mindstormGrey,
+                    style: {
+                      borderRadius: 16,
+                    },
+                    withVerticalLines: false // This line removes vertical gridlines
+                  }}
+                  bezier
+                  style={{
+                    marginHorizontal:5,
+                    marginVertical: 8,
+                    paddingRight: 20,
+                    borderRadius: 16,
+                  }}
+                  // Ylabel didn't work and maybe unless you could get the mood images to show up, maybe it is better without it
+                  // formatYLabel={(value) => {
+                  //   switch (value) {
+                  //     case 0:
+                  //       return 'Stormy';
+                  //     case 1:
+                  //       return 'Rainy';
+                  //     case 2:
+                  //       return 'Cloudy';
+                  //     case 3:
+                  //       return 'Partly Cloudy';
+                  //     case 4:
+                  //       return 'Sunny';
+                  //     default:
+                  //       return '';
+                  //   }
+                  // }}
+                />
+              </View>
+
               {/* Weeklong topics */}
               {weeklongTopics.length > 0 && (
                 <>
@@ -264,6 +352,17 @@ const styles = StyleSheet.create({
     top: 60,
     left: 20,
     zIndex: 10,
+  },
+  lineGraphContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
+    marginBottom: 20,
+    // paddingHorizontal: 10,
+    paddingVertical: 5,
+    backgroundColor: COLORS.transcluscentWhite,
+    borderRadius: 8,
+    marginHorizontal:10
   },
   moodWeatherView: {
     alignItems: 'center',
