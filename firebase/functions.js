@@ -197,13 +197,14 @@ export const ExtractUserProfileFromFirebase = async (userId) => {
 
     if (userDoc.exists()) {
       const userData = userDoc.data();
+      const name = userData.name || 'an unspecified name';
       const age = userData.age || 'an unspecified age';
       const gender = userData.gender || 'unspecified gender';
       const hobbies = userData.hobbies || '';
       const goals = userData.goals ? userData.goals.join(", ") : '';
       const struggles = userData.struggles || '';
 
-      userProfileString = `User is ${age} and ${gender}, with hobbies ${hobbies}, and goals ${goals}, and struggles ${struggles}.`;
+      userProfileString = `${name} is ${age} and ${gender}, with hobbies ${hobbies}, and goals ${goals}, and struggles ${struggles}.`;
       console.log(userProfileString);
     } else {
       console.error('User not found');

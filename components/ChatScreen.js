@@ -3,8 +3,8 @@ import { StyleSheet, View, Image, Text, ImageBackground, Dimensions, TouchableOp
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { apiCall, apiRAGCall } from '../OpenAI/OpenAI';
 import { Ionicons } from '@expo/vector-icons';
-import { writeChatHistoryToFirebase, ExtractUserProfileFromFirebase, generateRandomSessionID } from '../firebase/functions';
-import { lyra_prompt, lyra_greeting, nimbus_greeting, nimbus_prompt } from '../OpenAI/prompts';
+import { writeChatHistoryToFirebase, ExtractUserProfileFromFirebase, generateRandomSessionID , ExtractLatestWeeklyAnalysisFromFirebase} from '../firebase/functions';
+import { lyra_prompt, lyra_greeting, nimbus_greeting, nimbus_prompt, fletchie_prompt, fletchie_greeting} from '../OpenAI/prompts';
 import { testUser } from '../firebase/functions';
 import { buddies } from '../data/optionSettings';
 const windowWidth = Dimensions.get('window').width;
@@ -24,20 +24,57 @@ export default function ChatScreen() {
     const [instructionPromptString, setInstructionPromptString] = useState("");
     const [chatHistory, setChatHistory] = useState([]);
 
+    // Chat instructions based on bot
     useEffect(() => {
         const initializeChatHistory = async () => {
             const userProfile = await ExtractUserProfileFromFirebase(testUser);
+            // Fetch the latest weekly analysis for the user
+            const latestWeeklyAnalysis = await ExtractLatestWeeklyAnalysisFromFirebase(testUser);
+            let instructionPromptContent = "";
+            let greetingPromptContent = "";
+    
+            // Prepare the latest weekly analysis for inclusion in the prompt
+            let weeklyAnalysisSummaryPrompt = "";
+            if (latestWeeklyAnalysis) {
+                // Format the weekly analysis as needed, for example:
+                weeklyAnalysisSummaryPrompt = `Here's your latest weekly analysis: ${latestWeeklyAnalysis.summary} (from ${new Date(latestWeeklyAnalysis.timeStamp.seconds * 1000).toLocaleDateString()})`;
+            } else {
+                weeklyAnalysisSummaryPrompt = "It seems like we don't have a weekly analysis for you yet.";
+            }
+    
+            console.log("user profile");
+            console.log(userProfile);
+            // Setting instruction and greeting prompts based on the bot name
+            switch (bot) {
+                case "Lyra":
+                    instructionPromptContent = `Context about user: ${userProfile}. System instructions: ${lyra_prompt}`;
+                    greetingPromptContent = lyra_greeting;
+                    break;
+                case "Nimbus":
+                    instructionPromptContent = `Context about user: ${userProfile}. System instructions: ${nimbus_prompt}`;
+                    greetingPromptContent = nimbus_greeting;
+                    break;
+                case "Fletchie": // Adjusted case for Fletchie to include weekly analysis summary
+                    instructionPromptContent = `Context about user: ${userProfile}. ${weeklyAnalysisSummaryPrompt} System instructions: ${fletchie_prompt}. Make sure to use the user's name if available.`;
+                    greetingPromptContent = fletchie_greeting;
+                    break;
+                // Additional cases for other bots can be added here
+            }
             const instructionPrompt = {
                 role: 'system',
-                content: `Context about user: ${userProfile}. System instructions: ${bot === "Lyra" ? lyra_prompt : nimbus_prompt}`
+                content: instructionPromptContent,
             };
             setInstructionPromptString(instructionPrompt.content);
-            const greetingPrompt = { role: 'system', content: `${bot === "Lyra" ? lyra_greeting : nimbus_greeting}` };
+    
+            const greetingPrompt = { 
+                role: 'system', 
+                content: greetingPromptContent,
+            };
+    
             if (entryText) {
                 setUserInput(entryText);
                 setChatHistory([instructionPrompt]);
-            }
-            else {
+            } else {
                 setChatHistory([instructionPrompt, greetingPrompt]);
             }
         };
