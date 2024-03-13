@@ -173,18 +173,24 @@ export default function DataScreen() {
         fetchData();
     }, []);
 
-    const MoodImage = ({ mood, date }) => {
-        return (
-            <View style={styles.moodWeatherView}>
-                <Image
-                    source={weather_moods[mood]}
-                    style={[styles.moodImage, { tintColor: COLORS.mindstormGrey }]}
-                    resizeMode="contain"
-                ></Image>
-                <Text style={styles.moodWeatherText}>{date}</Text>
-            </View>
-        )
-    }
+    const MoodImage = ({ mood, date, onPress }) => {
+      return (
+        <TouchableOpacity onPress={onPress}>
+          <View style={styles.moodWeatherView}>
+            <Image
+              source={weather_moods[mood]}
+              style={[styles.moodImage, { tintColor: COLORS.mindstormGrey }]}
+              resizeMode="contain"
+            ></Image>
+            <Text style={styles.moodWeatherText}>{date}</Text>
+          </View>
+        </TouchableOpacity>
+      );
+    };
+
+    const handleViewPastEntries = (selectedDate) => {
+      navigation.navigate('ViewPastEntries', { selectedDate });
+    };
 
     return (
         <View style={styles.fullScreenContainer}>
@@ -201,22 +207,26 @@ export default function DataScreen() {
               <WelcomeMessage message="Here is a summary of your key feelings and topics over time" style={styles.subheaderText} />
 
               {/* Daily weather moods */}
-              <Text style={styles.summarySubheading}>Your weather moods this week:</Text>
+              <Text style={styles.summarySubheading}>Your daily weather moods this month:</Text>
               <Text style={styles.summarySubsubheading}>Click on a day to view past entries</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <TouchableOpacity onPress={() => navigation.navigate('ViewPastEntries')}>
-                  <View style={styles.moodRow}>
-                    {[...Array(31)].map((_, index) => {
-                      const date = new Date();
-                      date.setDate(date.getDate() - index);
-                      const formattedDate = date.toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' });
-                      const mood = ["Rainy", "Cloudy", "Partly Cloudy", "Sunny"][index % 4];
-                      return <MoodImage key={index} mood={mood} date={formattedDate}></MoodImage>;
-                    })}
-                  </View>
-                </TouchableOpacity>
+                <View style={styles.moodRow}>
+                  {[...Array(31)].map((_, index) => {
+                    const date = new Date();
+                    date.setDate(date.getDate() - index);
+                    const formattedDate = date.toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' });
+                    const mood = ["Rainy", "Cloudy", "Partly Cloudy", "Sunny"][index % 4];
+                    return (
+                      <MoodImage
+                        key={index}
+                        mood={mood}
+                        date={formattedDate}
+                        onPress={() => handleViewPastEntries(date)}
+                      />
+                    );
+                  })}
+                </View>
               </ScrollView>
-
 
               {/* Weeklong topics */}
               {weeklongTopics.length > 0 ? (
@@ -362,7 +372,7 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         marginTop: 3,
         marginBottom:3,
-        fontFamily: "Inter-Regular"
+        fontFamily: "Inter-Medium"
       },
       summarySubsubheading: {
         fontSize: 14,
