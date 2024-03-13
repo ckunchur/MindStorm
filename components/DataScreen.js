@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
         fontSize: 32,
         marginBottom: 16,
         fontWeight: "700",
-        fontFamily: "Inter-Regular",
+        fontFamily: "Inter-Medium",
         textAlign: 'center',
     },
     forecastView: {
