@@ -13,7 +13,7 @@ import { useGlobalFonts } from '../styles/globalFonts';
 import { COLORS, IMAGES} from '../styles/globalStyles';
 
 
-const colors = ['#d7a8ff', '#ffdbe8', '#e0dbff', '#ffdbfb', '#dbfffd'];
+const colors = ['#d7a8ff', '#ffdbe8', '#99a6f7', '#ffdbfb', '#dbfffd'];
 
 const ChartRow = ({ title, sections }) => {
     return (
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
         fontSize: 32,
         marginBottom: 16,
         fontWeight: "700",
-        fontFamily: "Inter-Bold",
+        fontFamily: "Inter-Regular",
         textAlign: 'center',
     },
     forecastView: {
@@ -356,7 +356,7 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         marginTop: 20,
         marginBottom:-30,
-        fontFamily: "Inter-SemiBold"
+        fontFamily: "Inter-Regular"
       },
     predictedTextContainer: {
         width: '90%',
@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     chipText: {
-        color: COLORS.mindstormLightGrey,
+        color: COLORS.mindstormGrey,
         textAlign: 'center',
     },
 });

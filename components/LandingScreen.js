@@ -1,13 +1,20 @@
 import React from "react";
-import { View, StyleSheet, Text, Image, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Text, Image, TouchableOpacity , ImageBackground} from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { ExtractEntriesFromFirebase, readChatHistoryFromFirebase, testUser } from "../firebase/functions";
 import { upsertChatSessionsToPinecone, upsertEntriesToPinecone} from "../Pinecone/pinecone-requests";
 const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style]}>{title}</Text>;
 const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText, style]}>{message}</Text>;
+import { useGlobalFonts } from '../styles/globalFonts';
+import { COLORS, IMAGES} from '../styles/globalStyles';
+
 
 export default function WelcomeScreen() {
   const navigation = useNavigation();
+  const fontsLoaded = useGlobalFonts();
+  if (!fontsLoaded) {
+    return null;
+  }   
 
   const upsertChatsTest = async () => {
     try {
@@ -38,7 +45,14 @@ const upsertEntriesTest = async () => {
 };
 
 return (
+
+<ImageBackground
+            resizeMode="cover"
+            source={IMAGES.gradientbg}
+            style={styles.fullScreen}
+          >
   <View style={styles.container}>
+
     <WelcomeTitle title="Welcome to MindStorm" style={styles.blueTitle} />
     <WelcomeMessage message="Learn how to find the calm in your storm" style={styles.greyMessage} />
     <Image 
@@ -55,19 +69,23 @@ return (
       <TouchableOpacity onPress={() => navigation.navigate('LogInScreen')}><Text style={styles.loginLinkText}> Log in</Text>
       </TouchableOpacity>
     </View>
-  </View>
+  </View>    
+  </ImageBackground>
+
 );
 }
 
 const styles = StyleSheet.create({
   container: {
     borderRadius: 32,
-    backgroundColor: "#FFF",
     alignItems: "center",
     maxWidth: 480,
     width: "100%",
     margin: "auto",
     padding: 47,
+  },
+  fullScreen:{
+    width:'100%',
   },
   title: {
     position: 'absolute',
@@ -75,21 +93,21 @@ const styles = StyleSheet.create({
     color: "#4A9BB4",
     fontSize: 32,
     marginBottom: 16,
-    fontWeight: "700",
-    fontFamily: "Inter, sans-serif",
+    // fontWeight: "700",
+    fontFamily: "Inter-Bold",
 },
   blueTitle: {
-    color: "#4A9BB4",
+    color: COLORS.mindstormGrey,
     marginTop: 99,
     fontSize: 32,
     fontWeight: "700",
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "Inter-Bold",
   },
   greyMessage: {
-    color: "#7D7979",
+    color: COLORS.mindstormGrey,
     marginTop: 32,
     fontSize: 16,
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "Inter-Regular",
   },
   welcomeImage: {
     marginTop: 35,
@@ -116,7 +134,7 @@ const styles = StyleSheet.create({
   getStartButtonText: {
     color: "#FFF",
     fontWeight: 'bold',
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "Inter-Regular",
   },
   loginOption: {
     marginTop: 23,

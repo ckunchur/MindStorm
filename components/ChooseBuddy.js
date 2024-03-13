@@ -31,18 +31,16 @@ export default function ChooseYourBuddy() {
     const renderCarouselItem = ({ item, index }) => {
         return (
             <View style={styles.slide}>
+                <Text style={styles.title}>{item.speciality}</Text>
                 <View style={{ flexDirection: 'column', alignItems: 'center' }}>
                     <TouchableOpacity>
-                        <Image source={item.image} style={styles.buddyImage}></Image>
+                        <Image resizeMode="contain" source={item.image} style={styles.buddyImage}></Image>
                     </TouchableOpacity>
                 </View>
-                <Text style={styles.subheaderText}>{buddies[activeSlide].name}</Text>
-                <View style={[
-                    styles.descriptionBox,
-                ]}>
-                    <Text style={styles.descriptionText}>{buddies[activeSlide].text}</Text>
+                <Text style={styles.subheaderText}>{item.name}</Text>
+                <View style={[styles.descriptionBox]}>
+                    <Text style={styles.descriptionText}>{item.text}</Text>
                 </View>
-
             </View>
         );
     };
@@ -51,33 +49,25 @@ export default function ChooseYourBuddy() {
         <View style={styles.container}>
             <ImageBackground
                 resizeMode="cover"
-                // source={buddies[activeSlide].chooseBackground}
                 source={IMAGES.gradientbg}
                 style={styles.fullScreen}
             >
-                <Text style={styles.title}> {buddies[activeSlide].speciality}</Text>
-                <Carousel
-                    data={buddies}
-                    renderItem={renderCarouselItem}
-                    onSnapToItem={(index) => setActiveSlide(index)}
-                    sliderWidth={300}
-                    itemWidth={300}
-                    style={styles.carousel}
-                />
+                <View style={styles.carouselContainer}>
+                    <Carousel
+                        data={buddies}
+                        renderItem={renderCarouselItem}
+                        onSnapToItem={(index) => setActiveSlide(index)}
+                        sliderWidth={windowWidth}
+                        itemWidth={windowWidth - 40}
+                        contentContainerCustomStyle={styles.carouselContentContainer}
+                    />
+                </View>
                 <View style={styles.buttonCol}>
                     <TouchableOpacity style={styles.customizeButton}
                         onPress={() => navigation.navigate('ChatScreen', { bot: buddies[activeSlide].name})}
                     >
                         <Ionicons name="chatbubbles-outline" size={24} />
                         <Text style={{ ...styles.customizeButtonText, color: buddies[activeSlide].lightColor }}>Chat with {buddies[activeSlide].name}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={styles.customizeButton}
-                        onPress={() => navigation.navigate('CustomizeScreen', { activeSlide: activeSlide })}
-                    >
-                        <Ionicons name="hammer-outline" size={24} />
-                        <Text style={{ ...styles.customizeButtonText, color: buddies[activeSlide].lightColor }}>
-                            Customize</Text>
                     </TouchableOpacity>
                 </View>
             </ImageBackground>
@@ -94,19 +84,31 @@ const styles = StyleSheet.create({
         justifyContent: 'center', 
         alignItems: 'center', 
     },
+    carouselContainer:{
+        flex: 1,
+        marginTop:80,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    carouselContentContainer: {
+        paddingHorizontal: 20,
+    },
     title: {
-        position: 'absolute',
-        top: 80,
         color: COLORS.mindstormGrey,
         fontSize: 32,
         marginBottom: 16,
-        fontWeight: "700",
+        textAlign: 'center',
     },
     subheaderText: {
         textAlign: 'center',
         color: COLORS.mindstormPurple,
-        fontSize: 20,
-        fontWeight: 'bold',
+        fontSize: 25,
+        fontFamily: "Inter-Medium"   
+    },
+    buddyImage:{
+        width: 0.55 * windowWidth,
+        height:  0.55 * windowWidth,
+        marginBottom:10
     },
     bgImage: {
         width: windowWidth,
@@ -117,10 +119,10 @@ const styles = StyleSheet.create({
     },
     heading: {
         fontSize: 24,
-        fontFamily: 'Inter-SemiBold',
-        marginBottom: 8,
+        fontFamily: 'Inter-Regular',
+        marginBottom: 12,
         color: COLORS.mindstormPurple,
-        paddingTop: 60,
+        paddingTop: 160,
         textAlign: 'center',
     },
     subheading: {
@@ -128,14 +130,18 @@ const styles = StyleSheet.create({
         color:COLORS.mindstormPurple,
         textAlign: 'center',
         marginBottom: 16,
-        fontWeight: 'bold'
+        fontFamily: "Inter-Regular"
     },
-    slide: { marginTop: 160 },
+    slide: { 
+        backgroundColor: COLORS.transcluscentWhite,
+        borderRadius: 30,
+        padding: 20,
+        marginHorizontal: 10,
+    },
     descriptionBox: {
         borderRadius: 32,
         padding: 20,
         margin: 16,
-        backgroundColor: COLORS.transcluscentWhite,
     },
     descriptionText: {
         color: COLORS.mindstormGrey,
@@ -147,20 +153,21 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: COLORS.mindstormGrey,
         textAlign: 'center',
-        marginLeft: 4
+        marginLeft: 4,
+        fontFamily: "Inter-Regular"
     },
     customizeButton: {
         backgroundColor: 'white',
         margin: 8,
-        padding: 8,
-        paddingLeft: 12,
-        paddingRight: 12,
+        padding: 12,
+        paddingLeft: 22,
+        paddingRight: 22,
         borderColor: 'white',
         borderRadius: 16,
         flexDirection: "row",
         alignItems: 'center',
         justifyContent: 'center',
-        width: windowWidth * 0.4
+        width: windowWidth * 0.6
     },
     buttonCol: {
         position: 'absolute',

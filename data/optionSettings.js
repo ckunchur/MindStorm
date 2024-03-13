@@ -4,12 +4,12 @@ export const buddies = [
         "name": "Lyra",
         "speciality": "Stress/Anxiety",
         "avatar": require("../assets/lyra-avatar.png"),
-        "image": require("../assets/lyra.png"),
+        "image": require("../assets/beancloud.png"),
         "chooseBackground": require("../assets/choose-lyra-background.png"),
         "chatBackground": require("../assets/chat-lyra-background.png"),
 
-        "lightColor": "#4A9BB4",
-        "darkColor": "#1F7D9B",
+        "lightColor": "#47464a",
+        "darkColor": "#47464a",
         "text": "Word vomit, rant - Lyra has you covered. I can work through your chaos and give you a gentle actionable plan to help you feel better ASAP!",
     },
     {
@@ -17,11 +17,11 @@ export const buddies = [
         "name": "Nimbus",
         "speciality": "Productivity",
         "avatar": require("../assets/nimbus-avatar.png"),
-        "image": require("../assets/nimbus.png"),
+        "image": require("../assets/beancloud.png"),
         "chooseBackground": require("../assets/choose-nimbus-background.png"),
         "chatBackground": require("../assets/chat-nimbus-background.png"),
-        "lightColor": "#7887DA",
-        "darkColor": "#4D64E4",
+        "lightColor": "#47464a",
+        "darkColor": "#47464a",
         "text": "Stuck in a rut? Need help breaking your tasks into bit-size chunks? Nimbus is here to help!"
     }
 ];
