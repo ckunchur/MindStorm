@@ -3,7 +3,7 @@ export const COLORS = {
     mindstormLightPurple: "#7887DA",
     mindstormGrey: "#47464a",
     mindstormLightGrey: "#787580",
-    transcluscentWhite: 'rgba(255, 255, 255, 0.9)',
+    transcluscentWhite: 'rgba(255, 255, 255, 0.8)',
     test: "#b0a5d9",
   };
 

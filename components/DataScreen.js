@@ -193,7 +193,7 @@ export default function DataScreen() {
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <WelcomeTitle title={userName ? `Hi ${userName},` : "Your weekly summary"} style={styles.title} />
-          <WelcomeMessage message="Here is a summary of your key feelings and topics over time" style={styles.subheaderText} />
+          {/* <WelcomeMessage message="Here is a summary of your key feelings and topics over time" style={styles.subheaderText} /> */}
 
           {isLoading ? (
             <Text style={styles.summarySubheading}>Loading...</Text>
@@ -225,29 +225,32 @@ export default function DataScreen() {
               {weeklongTopics.length > 0 && (
                 <>
                   <Text style={styles.summarySubheading}>Your brain real estate this week:</Text>
+                  <Text style={styles.summarySubsubheading}>You've been spending your thoughts on... </Text>
                   <View style={styles.donutChartContainer}>
                     <ChartRow title="" sections={weeklongTopics} />
                   </View>
                 </>
               )}
 
-              {/* Weeklong moods */}
-              {weeklongMoods.length > 0 && (
+              {/* Weeklong moods was calculated as pie chart in firebase, but i think mood graph is better */}
+              {/* {weeklongMoods.length > 0 && (
                 <>
                   <Text style={styles.summarySubheading}>Your overall moods this week:</Text>
                   <View style={styles.donutChartContainer}>
                     <ChartRow title="" sections={weeklongMoods} />
                   </View>
                 </>
-              )}
+              )} */}
 
               {/* Weeklong summary */}
               {weeklongSummary && (
                 <>
-                  <Text style={styles.summarySubheading}>Weekly Reflections</Text>
+                  <Text style={styles.summarySubheading}>Your weekly summary:</Text>
                   <View style={styles.reflections}>
                     <View style={styles.predictedTextContainer}>
-                      <Text style={styles.predictedText}>{weeklongSummary}</Text>
+                      <Text style={styles.predictedText}>
+                        {weeklongSummary.replace(/- /g, '\u2022 ')}
+                      </Text>
                     </View>
                   </View>
                 </>
@@ -312,6 +315,7 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 5,
     marginLeft: 10,
+    marginBottom: 10
   },
   title: {
     color: COLORS.mindstormGrey,
@@ -349,9 +353,11 @@ const styles = StyleSheet.create({
   reflections: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 40,
-    borderRadius: 24,
+    marginTop:10,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     backgroundColor: COLORS.transcluscentWhite,
+    borderRadius: 8,
   },
   summarySubheading: {
     fontSize: 18,
@@ -375,13 +381,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 24,
     padding: 10,
-    marginBottom: 20,
+    marginBottom: 5,
   },
   predictedText: {
     fontFamily: "Inter-Regular",
     textAlign: 'left',
     color: COLORS.mindstormGrey,
     fontSize: 16,
+    lineHeight: 20, 
+    letterSpacing: 0.3, 
   },
   donutChartContainer: {
     alignItems: 'right',
