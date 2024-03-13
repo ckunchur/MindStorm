@@ -30,20 +30,22 @@ export default function ChooseYourBuddy() {
 
     const renderCarouselItem = ({ item, index }) => {
         return (
-            <View style={styles.slide}>
+            <TouchableOpacity
+                style={styles.slide}
+                onPress={() => navigation.navigate('ChatScreen', { bot: item.name })}
+            >
                 <Text style={styles.title}>{item.speciality}</Text>
                 <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-                    <TouchableOpacity>
-                        <Image resizeMode="contain" source={item.image} style={styles.buddyImage}></Image>
-                    </TouchableOpacity>
+                    <Image resizeMode="contain" source={item.image} style={styles.buddyImage}></Image>
                 </View>
                 <Text style={styles.subheaderText}>{item.name}</Text>
                 <View style={[styles.descriptionBox]}>
                     <Text style={styles.descriptionText}>{item.text}</Text>
                 </View>
-            </View>
+            </TouchableOpacity>
         );
     };
+    
 
     return (
         <View style={styles.container}>
@@ -66,7 +68,7 @@ export default function ChooseYourBuddy() {
                     <TouchableOpacity style={styles.customizeButton}
                         onPress={() => navigation.navigate('ChatScreen', { bot: buddies[activeSlide].name})}
                     >
-                        <Ionicons name="chatbubbles-outline" size={24} />
+                        <Ionicons name="chatbubbles-outline" size={24} style={{color: "white"}} />
                         <Text style={{ ...styles.customizeButtonText, color: buddies[activeSlide].lightColor }}>Chat with {buddies[activeSlide].name}</Text>
                     </TouchableOpacity>
                 </View>
@@ -152,18 +154,18 @@ const styles = StyleSheet.create({
     },
     customizeButtonText: {
         fontWeight: 'bold',
-        color: COLORS.mindstormGrey,
+        color: "white",
         textAlign: 'center',
         marginLeft: 4,
         fontFamily: "Inter-Regular"
     },
     customizeButton: {
-        backgroundColor: 'white',
+        backgroundColor: COLORS.mindstormLightPurple,
         margin: 8,
         padding: 12,
         paddingLeft: 22,
         paddingRight: 22,
-        borderColor: 'white',
+        borderColor: COLORS.mindstormLightPurple,
         borderRadius: 16,
         flexDirection: "row",
         alignItems: 'center',
