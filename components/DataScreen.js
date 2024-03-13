@@ -12,7 +12,6 @@ import { db } from '../firebaseConfig';
 import { useGlobalFonts } from '../styles/globalFonts';
 import { COLORS, IMAGES} from '../styles/globalStyles';
 
-
 const colors = ['#d7a8ff', '#ffdbe8', '#99a6f7', '#ffdbfb', '#dbfffd'];
 
 const ChartRow = ({ title, sections }) => {
@@ -174,18 +173,24 @@ export default function DataScreen() {
         fetchData();
     }, []);
 
-    const MoodImage = ({ mood, date }) => {
-        return (
-            <View style={styles.moodWeatherView}>
-                <Image
-                    source={weather_moods[mood]}
-                    style={[styles.moodImage, { tintColor: COLORS.mindstormGrey }]}
-                    resizeMode="contain"
-                ></Image>
-                <Text style={styles.moodWeatherText}>{date}</Text>
-            </View>
-        )
-    }
+    const MoodImage = ({ mood, date, onPress }) => {
+      return (
+        <TouchableOpacity onPress={onPress}>
+          <View style={styles.moodWeatherView}>
+            <Image
+              source={weather_moods[mood]}
+              style={[styles.moodImage, { tintColor: COLORS.mindstormGrey }]}
+              resizeMode="contain"
+            ></Image>
+            <Text style={styles.moodWeatherText}>{date}</Text>
+          </View>
+        </TouchableOpacity>
+      );
+    };
+
+    const handleViewPastEntries = (selectedDate) => {
+      navigation.navigate('ViewPastEntries', { selectedDate });
+    };
 
     return (
         <View style={styles.fullScreenContainer}>
@@ -203,17 +208,7 @@ export default function DataScreen() {
 
               {/* Daily weather moods */}
               <Text style={styles.summarySubheading}>Your daily weather moods this month:</Text>
-              {/* <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                <View style={styles.moodRow}>
-                  <MoodImage mood="Stormy" date="Today"></MoodImage>
-                  <MoodImage mood="Rainy" date={new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' })}></MoodImage>
-                  <MoodImage mood="Cloudy" date={new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' })}></MoodImage>
-                  <MoodImage mood="Partly Cloudy" date={new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' })}></MoodImage>
-                  <MoodImage mood="Sunny" date={new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' })}></MoodImage>
-                  <MoodImage mood="Stormy" date={new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' })}></MoodImage>
-                  <MoodImage mood="Rainy" date={new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' })}></MoodImage>
-                </View>
-              </ScrollView> */}
+              <Text style={styles.summarySubsubheading}>Click on a day to view past entries</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <View style={styles.moodRow}>
                   {[...Array(31)].map((_, index) => {
@@ -221,7 +216,14 @@ export default function DataScreen() {
                     date.setDate(date.getDate() - index);
                     const formattedDate = date.toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' });
                     const mood = ["Rainy", "Cloudy", "Partly Cloudy", "Sunny"][index % 4];
-                    return <MoodImage key={index} mood={mood} date={formattedDate}></MoodImage>;
+                    return (
+                      <MoodImage
+                        key={index}
+                        mood={mood}
+                        date={formattedDate}
+                        onPress={() => handleViewPastEntries(date)}
+                      />
+                    );
                   })}
                 </View>
               </ScrollView>
@@ -320,7 +322,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         alignItems: 'center',
         width: '100%',
-        marginTop: 30,
+        marginTop: 5,
         marginLeft:10,
     },
     title: {
@@ -368,8 +370,16 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: COLORS.mindstormGrey,
         textAlign: 'left',
-        marginTop: 20,
-        marginBottom:-30,
+        marginTop: 3,
+        marginBottom:3,
+        fontFamily: "Inter-Medium"
+      },
+      summarySubsubheading: {
+        fontSize: 14,
+        color: COLORS.mindstormGrey,
+        textAlign: 'left',
+        marginTop: 3,
+        marginBottom:3,
         fontFamily: "Inter-Regular"
       },
     predictedTextContainer: {

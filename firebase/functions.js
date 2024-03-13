@@ -270,7 +270,7 @@ export const ExtractLastWeekEntriesFirebase = async (userId) => {
   }
 };
 
-// // Used in DataScreen.js page
+// // Used in DataScreen.js page and Fletchie Bot
 export async function ExtractLatestWeeklyAnalysisFromFirebase(userId) {
   try {
       console.log("Inside ExtractLatestWeeklyAnalysisFromFirebase function");
@@ -295,3 +295,36 @@ export async function ExtractLatestWeeklyAnalysisFromFirebase(userId) {
       return null;
   }
 }
+
+// Used in ViewPastEntries page
+export const ExtractEntriesFromSpecificDayFirebase = async (userId, specificDate) => {
+  let entriesData = []; // This will hold the formatted entries data
+  try {
+    const entriesCollectionRef = collection(db, 'users', userId, 'entries');
+    const querySnapshot = await getDocs(entriesCollectionRef);
+
+    querySnapshot.forEach((doc) => {
+      const entry = doc.data();
+      // Check if the entry has an "entryText" field and a valid timestamp
+      if (entry && entry.entryText && entry.timeStamp) {
+        const entryDate = entry.timeStamp.toDate(); // Convert Firestore Timestamp to JavaScript Date object
+
+        // Check if the entry date matches the specified date
+        if (
+          entryDate.getFullYear() === specificDate.getFullYear() &&
+          entryDate.getMonth() === specificDate.getMonth() &&
+          entryDate.getDate() === specificDate.getDate()
+        ) {
+          entriesData.push({
+            text: entry.entryText, // the entry text
+            time: entryDate // the entry timestamp as a Date object
+          });
+        }
+      }
+    });
+    console.log(`Extracted entries data for the specific date (${specificDate.toDateString()}):`, entriesData);
+    return entriesData; // Return the array of entries data
+  } catch (e) {
+    console.error("Error extracting entries from Firestore: ", e);
+  }
+};

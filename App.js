@@ -16,6 +16,7 @@ import PersonalInfoScreen from './components/PersonalInfoScreen';
 import ChooseYourBuddy from './components/ChooseBuddy';
 import LogInScreen from './components/LogInScreen';
 import CreateAccountScreen from './components/CreateAccount';
+import ViewPastEntries from './components/ViewPastEntries';
 import { Ionicons } from '@expo/vector-icons';
 import { LogBox } from 'react-native';
 import { COLORS} from './styles/globalStyles';
@@ -27,7 +28,16 @@ const Tab = createBottomTabNavigator();
 const OnboardingStack = createStackNavigator();
 const ChatStack = createStackNavigator();
 const JournalStack = createStackNavigator();
+const DataStack = createStackNavigator();
 
+function DataStackNavigator() {
+  return (
+    <DataStack.Navigator initialRouteName="DataScreen" screenOptions={{ headerShown: false }}>
+      <DataStack.Screen name="DataScreen" component={DataScreen} />
+      <DataStack.Screen name="ViewPastEntries" component={ViewPastEntries} />
+    </DataStack.Navigator>
+  );
+}
 
 // Stack Navigator for the Chat tab
 function ChatStackNavigator() {
@@ -110,7 +120,7 @@ export default function App() {
         >
           <Tab.Screen name="Journal" component={JournalStackNavigator} options={{ headerShown: false }} />
           <Tab.Screen name="Chat" component={ChatStackNavigator} options={{ headerShown: false, tabBarVisible: false, }} />
-          <Tab.Screen name="Insights" component={DataScreen} options={{ headerShown: false }} />
+          <Tab.Screen name="Insights" component={DataStackNavigator} options={{ headerShown: false }} />
         </Tab.Navigator>
       </NavigationContainer>
     );
