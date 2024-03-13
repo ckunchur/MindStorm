@@ -1,9 +1,11 @@
 import { React, useState } from "react";
-import { View, StyleSheet, ImageBackground, Text, TextInput, Alert, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ImageBackground, Text, TextInput, Alert, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, TouchableWithoutFeedback,Keyboard} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { collection, serverTimestamp, addDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { topMoodsAndTopicsWithChatGPT, moodWeatherClassificationWithChatGPT, recommendTherapyChatbotWithChatGPT } from '../OpenAI/OpenAI';
+import { useGlobalFonts } from '../styles/globalFonts';
+import { COLORS, IMAGES} from '../styles/globalStyles';
 
 const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style]}>{title}</Text>;
 const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText, style]}>{message}</Text>;
@@ -16,6 +18,10 @@ export default function JournalScreen() {
   const [weatherMood, setWeatherMood] = useState("");
   const [botRecommendation, setBotRecommendation] = useState("");
 
+  const fontsLoaded = useGlobalFonts();
+  if (!fontsLoaded) {
+    return null;
+  }
   const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2" // hardcoded for now
 
   const handleEntrySubmit = async (uid) => {
@@ -75,31 +81,44 @@ export default function JournalScreen() {
     }
   };
   return (
-    <View style={styles.fullScreenContainer}>
-      <ImageBackground
-        resizeMode="cover"
-        source={require('../assets/journal-background.png')}
-        style={styles.fullScreen}
-      >
-        <WelcomeTitle title="What's on your mind?" style={styles.title} />
-        <WelcomeMessage message="This is your mind space. Write down anything you wish!" style={styles.subheaderText} />
+    <KeyboardAvoidingView
+      style={styles.fullScreenContainer}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ImageBackground
+            resizeMode="cover"
+            source={IMAGES.gradientbg}
+            style={styles.fullScreen}
+          >
+            <WelcomeTitle title="What's on your mind?" style={styles.title} />
+            <WelcomeMessage
+              message="This is your mind space. Write down anything you wish!"
+              style={styles.subheaderText}
+            />
 
-        <TextInput
-          placeholder="Start writing here"
-          value={entryText}
-          onChangeText={setEntryText}
-          style={styles.input}
-          placeholderTextColor="grey"
-          multiline={true}
-        />
+            <TextInput
+              placeholder="Start writing here"
+              value={entryText}
+              onChangeText={setEntryText}
+              style={styles.input}
+              placeholderTextColor="grey"
+              multiline={true}
+            />
 
-        <TouchableOpacity style={styles.continueButton} onPress={() => handleEntrySubmit(testUser)}>
-          <Text style={styles.continueButtonText}>Submit</Text>
-        </TouchableOpacity>
-      </ImageBackground>
-    </View>
-  )
-};
+            <TouchableOpacity
+              style={styles.continueButton}
+              onPress={() => handleEntrySubmit(testUser)}
+            >
+              <Text style={styles.continueButtonText}>Submit</Text>
+            </TouchableOpacity>
+          </ImageBackground>
+        </TouchableWithoutFeedback>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+}
 
 const styles = StyleSheet.create({
 
@@ -111,43 +130,45 @@ const styles = StyleSheet.create({
     justifyContent: 'center', // Center the children vertically
     alignItems: 'center', // Center the children horizontally
   },
+  scrollContainer: {
+    flexGrow: 1,
+  },
   title: {
     position: 'absolute',
-    top: 80,
-    color: "#4A9BB4",
+    top: 100,
+    color: COLORS.mindstormGrey,
     fontSize: 32,
-    marginBottom: 16,
+    marginBottom: 30,
     fontWeight: "700",
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "Inter-Medium",
   },
   subheaderText: {
     position: 'absolute',
-    top: 120,
+    top: 150,
     textAlign: 'center',
     width: '60%',
-    color: "#4A9BB4",
+    color: COLORS.mindstormGrey,
     fontSize: 16,
-    fontFamily: "Inter, sans-serif",
-    marginBottom: 50, // Adjust the value as needed
+    fontFamily:"Inter-Regular",
   },
 
   inputSubheader: {
     color: "white",
     fontSize: 16,
-    fontFamily: "Inter, sans-serif",
+    fontFamily:"Inter-Regular",
   },
   inputHeader: {
     color: "white",
     fontWeight: 'bold',
     fontSize: 18,
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "Inter-Regular",
   },
 
   input: {
-    marginTop: 220,
-    height: '50%',
+    marginTop: 190,
+    height: '55%',
     width: '80%',
-    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    backgroundColor: COLORS.transcluscentWhite,
     borderRadius: 5,
     paddingHorizontal: 10,
     color: 'grey',
@@ -158,20 +179,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 48,
-    backgroundColor: "#FFF",
+    backgroundColor: COLORS.mindstormLightPurple,
     position: "relative",
     width: "100%",
     maxWidth: 327,
-    color: "#4A9BB4",
+    color: COLORS.mindstormPurple,
     textAlign: "center",
     marginTop: 36,
     padding: 18,
     fontSize: 16,
     fontWeight: "700",
-    fontFamily: "Inter, sans-serif",
+    fontFamily:"Inter-Regular",
   },
   continueButtonText: {
-    color: "#4A9BB4",
-    fontWeight: 'bold'
+    color: "white",
+    fontFamily: "Inter-Medium"
   },
 });

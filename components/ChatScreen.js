@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Image, Text, ImageBackground, Dimensions, TouchableOpacity, TextInput, ScrollView } from 'react-native';
+import { StyleSheet, View, Image, Text, ImageBackground, Dimensions, TouchableOpacity, TextInput, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { apiCall, apiRAGCall } from '../OpenAI/OpenAI';
 import { Ionicons } from '@expo/vector-icons';
 import { writeChatHistoryToFirebase, ExtractUserProfileFromFirebase, generateRandomSessionID } from '../firebase/functions';
 import { lyra_prompt, lyra_greeting, nimbus_greeting, nimbus_prompt } from '../OpenAI/prompts';
-import { KeyboardAvoidingView, Platform } from 'react-native';
 import { testUser } from '../firebase/functions';
 import { buddies } from '../data/optionSettings';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+import { useGlobalFonts } from '../styles/globalFonts';
+import { COLORS } from '../styles/globalStyles';
 
 export default function ChatScreen() {
+    const fontsLoaded = useGlobalFonts();
+    if (!fontsLoaded) {
+        return null;
+    }
     const navigation = useNavigation();
     const route = useRoute();
     const { bot, entryText } = route.params;
@@ -33,7 +38,6 @@ export default function ChatScreen() {
                 setChatHistory([instructionPrompt]);
             }
             else {
-
                 setChatHistory([instructionPrompt, greetingPrompt]);
             }
         };
@@ -43,7 +47,7 @@ export default function ChatScreen() {
 
     const handleSend = async () => {
         if (!userInput.trim()) return; // Prevent sending empty messages
-        
+
         console.log("chatHistory in rag call", chatHistory, userInput, instructionPromptString)
         let response;
         // don't need RAG for basic productivity bot
@@ -52,12 +56,11 @@ export default function ChatScreen() {
         }
         else {
             // response = await apiCall(userInput, chatHistory);
-
             response = await apiRAGCall(instructionPromptString, userInput, chatHistory);
         }
         setUserInput(''); // Clear input after sending
         if (response.success && response.data.length > 0) {
-            const newMessages= response.data // append user prompt and gpt response
+            const newMessages = response.data // append user prompt and gpt response
             const newChatHistory = [...chatHistory, ...newMessages];
             console.log("newChatHistory", newChatHistory);
             setChatHistory(newChatHistory);
@@ -67,8 +70,6 @@ export default function ChatScreen() {
                 setSessionID(newSessionID);
             }
             await writeChatHistoryToFirebase(testUser, sessionID, newChatHistory);
-           
-          
         } else {
             console.error(response.msg);
         }
@@ -81,21 +82,31 @@ export default function ChatScreen() {
     };
 
     return (
-        <View style={styles.container}>
-            <ImageBackground source={bot === "Lyra" ? buddies[0].chatBackground : buddies[1].chatBackground} style={styles.bgImage}>
-                <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
-                    <Ionicons name="arrow-back-circle-outline" color="white" size={48} />
-                </TouchableOpacity>
-                <ScrollView style={styles.chatContainer}>
-                    {chatHistory.length < 2 ? null :
-                        chatHistory.slice(1).map((msg, index) => (
-                            <View key={index} style={[styles.bubble, msg.role === 'user' ? styles.userBubble : styles.aiBubble]}>
-                                {msg.role !== 'user' ?
-                                <Image source={bot === "Lyra" ? buddies[0].avatar : buddies[1].avatar} style={styles.botImage}></Image> : null}
-                                <Text style={[styles.bubbleText, { color: msg.role === 'user' ? '#ffffff' : '#000000' }]}>{msg.content}</Text>
-                            </View>
-                        ))}
-                </ScrollView>
+        <KeyboardAvoidingView
+            style={styles.container}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 10 : 0}
+        >
+            <ImageBackground source={require('../assets/gradient3.jpeg')} style={styles.bgImage}>
+                <View style={styles.contentContainer}>
+                    <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
+                        <Ionicons name="arrow-back-circle-outline" color={COLORS.mindstormLightGrey} size={48} />
+                    </TouchableOpacity>
+                    <ScrollView
+                        style={styles.chatContainer}
+                        ref={ref => this.scrollViewRef = ref}
+                        onContentSizeChange={() => this.scrollViewRef.scrollToEnd({ animated: true })}
+                    >
+                        {chatHistory.length < 2 ? null :
+                            chatHistory.slice(1).map((msg, index) => (
+                                <View key={index} style={[styles.bubble, msg.role === 'user' ? styles.userBubble : styles.aiBubble]}>
+                                    {msg.role !== 'user' ?
+                                        <Image source={bot === "Lyra" ? buddies[0].avatar : buddies[1].avatar} style={styles.botImage}></Image> : null}
+                                    <Text style={[styles.bubbleText, { color: msg.role === 'user' ? '#ffffff' : '#000000' }]}>{msg.content}</Text>
+                                </View>
+                            ))}
+                    </ScrollView>
+                </View>
                 <View style={styles.inputContainer}>
                     <TextInput
                         style={styles.input}
@@ -104,28 +115,32 @@ export default function ChatScreen() {
                         placeholder="Type your message..."
                     />
                     <TouchableOpacity onPress={handleSend}>
-                        <Ionicons name="send-outline" color="white" size={36} />
+                        <Ionicons name="send" color={COLORS.mindstormLightGrey} size={36} />
                     </TouchableOpacity>
                 </View>
             </ImageBackground>
-        </View>
+        </KeyboardAvoidingView>
     );
 }
 
 const styles = StyleSheet.create({
     bubbleText: {
         maxWidth: '80%',
-        padding: 4
+        padding: 4,
+        fontFamily: "Inter-Regular"
     },
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     bgImage: {
+        flex: 1,
         width: windowWidth,
         height: windowHeight,
         padding: 20,
+    },
+    contentContainer: {
+        marginTop:20,
+        flex: 1,
     },
     botImage: {
         backgroundColor: 'black',
@@ -137,14 +152,13 @@ const styles = StyleSheet.create({
     },
     backButton: {
         position: 'absolute',
-        top: 80, // Adjusted to be below status bar
-        left: 20,
-        zIndex: 10, // Ensure the back button is above the chat bubbles
+        top: 30,
+        zIndex: 10,
     },
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 40,
+        paddingVertical: 5,
     },
     input: {
         flex: 1,
@@ -155,20 +169,12 @@ const styles = StyleSheet.create({
         borderRadius: 24,
         paddingHorizontal: 10,
         backgroundColor: "#FFF",
-    },
-    sendButton: {
-        backgroundColor: '#007bff',
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-        borderRadius: 5,
-        marginBottom: 40
-    },
-    sendButtonText: {
-        color: '#ffffff',
+        fontFamily: "Inter-Regular"
     },
     chatContainer: {
         flex: 1,
-        marginTop: 120,
+        marginTop: 80,
+        paddingBottom: 20,
     },
     bubble: {
         display: 'flex',
@@ -181,9 +187,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     userBubble: {
-      
         alignSelf: 'flex-end',
-        backgroundColor: '#007bff',
+        backgroundColor: COLORS.mindstormPurple,
     },
     aiBubble: {
         alignSelf: 'flex-start',

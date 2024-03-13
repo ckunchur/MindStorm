@@ -9,9 +9,11 @@ import { testUser, ExtractUserNameFromFirebase, ExtractLastWeekEntriesFirebase, 
 import { weeklongSummaryWithChatGPT, weeklongTopicClassificationWithChatGPT, weeklongMoodClassificationWithChatGPT } from '../OpenAI/OpenAI';
 import { collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
+import { useGlobalFonts } from '../styles/globalFonts';
+import { COLORS, IMAGES} from '../styles/globalStyles';
 
 
-const colors = ['#1a75ad', '#a47dff', '#335c9e', 'skyblue', '#ffb6c1'];
+const colors = ['#d7a8ff', '#ffdbe8', '#99a6f7', '#ffdbfb', '#dbfffd'];
 
 const ChartRow = ({ title, sections }) => {
     return (
@@ -56,6 +58,11 @@ const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText,
 
 export default function DataScreen() {
     const navigation = useNavigation();
+    const fontsLoaded = useGlobalFonts();
+    if (!fontsLoaded) {
+      return null;
+    }    
+
     const [userName, setUserName] = useState('');
     const [weeklongSummary, setWeeklongSummary] = useState("");
     const [weeklongTopics, setWeeklongTopics] = useState([]);
@@ -172,7 +179,7 @@ export default function DataScreen() {
             <View style={styles.moodWeatherView}>
                 <Image
                     source={weather_moods[mood]}
-                    style={styles.moodImage}
+                    style={[styles.moodImage, { tintColor: COLORS.mindstormGrey }]}
                     resizeMode="contain"
                 ></Image>
                 <Text style={styles.moodWeatherText}>{date}</Text>
@@ -183,11 +190,11 @@ export default function DataScreen() {
     return (
         <View style={styles.fullScreenContainer}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Ionicons name="arrow-back-circle-outline" color="white" size={48} />
+            <Ionicons name="arrow-back-circle-outline" color={COLORS.mindstormGrey} size={48} />
           </TouchableOpacity>
           <ImageBackground
             resizeMode="cover"
-            source={require('../assets/data-screen-background.png')}
+            source={IMAGES.gradientbg}
             style={styles.fullScreen}
           >
             <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -282,7 +289,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: 8,
         margin: 4,
-        backgroundColor: 'rgba(0, 0, 0, 0.1)',
+        backgroundColor: COLORS.transcluscentWhite,
         borderRadius: 12,
     },
     moodImage: {
@@ -291,8 +298,9 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     moodWeatherText: {
-        color: 'white',
+        color: COLORS.mindstormGrey,
         fontWeight: 'bold',
+        fontFamily: "Inter-Regular"
     },
     moodRow: {
         flexDirection: 'row',
@@ -302,11 +310,11 @@ const styles = StyleSheet.create({
         marginTop: 30,
     },
     title: {
-        color: "white",
+        color: COLORS.mindstormGrey,
         fontSize: 32,
         marginBottom: 16,
         fontWeight: "700",
-        fontFamily: "Inter, sans-serif",
+        fontFamily: "Inter-Medium",
         textAlign: 'center',
     },
     forecastView: {
@@ -318,14 +326,14 @@ const styles = StyleSheet.create({
         fontSize: 22,
         fontWeight: 'bold',
         marginBottom: 10,
-        color: 'white'
+        color: COLORS.mindstormGrey
     },
     subheaderText: {
         textAlign: 'center',
         width: '80%',
-        color: "white",
+        color: COLORS.mindstormGrey,
         fontSize: 16,
-        fontFamily: "Inter, sans-serif",
+        fontFamily: "Inter-Regular",
         marginBottom: 20,
     },
     controls: {
@@ -339,16 +347,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginTop: 40,
         borderRadius: 24,
-        backgroundColor: 'rgba(125, 125, 125, 0.4)',
+        backgroundColor: COLORS.transcluscentWhite,
         // width: '100%',
     },
     summarySubheading: {
         fontSize: 18,
-        fontWeight: 'bold',
-        color: 'white',
+        color: COLORS.mindstormGrey,
         textAlign: 'left',
         marginTop: 20,
-        marginBottom:-30
+        marginBottom:-30,
+        fontFamily: "Inter-Regular"
       },
     predictedTextContainer: {
         width: '90%',
@@ -360,9 +368,9 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     predictedText: {
-        fontFamily: "Inter, sans-serif",
-        textAlign: 'left',
-        color: 'white',
+      fontFamily: "Inter-Regular",
+      textAlign: 'left',
+        color: COLORS.mindstormGrey,
         fontSize: 16,
     },
     donutChartContainer: {
@@ -401,7 +409,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     chipText: {
-        color: 'white',
+        color: COLORS.mindstormGrey,
         textAlign: 'center',
     },
 });

@@ -25,6 +25,24 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/Inter-Black.otf",
+            "./assets/fonts/Inter-Bold.otf",
+            "./assets/fonts/Inter-ExtraBold.otf",
+            "./assets/fonts/Inter-ExtraLight.otf",
+            "./assets/fonts/Inter-Light.otf",
+            "./assets/fonts/Inter-Medium.otf",
+            "./assets/fonts/Inter-Regular.otf",
+            "./assets/fonts/Inter-SemiBold.otf",
+            "./assets/fonts/Inter-Thin.otf"
+          ]
+        }
+      ]
+    ]
   }
 }

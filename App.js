@@ -18,6 +18,7 @@ import LogInScreen from './components/LogInScreen';
 import CreateAccountScreen from './components/CreateAccount';
 import { Ionicons } from '@expo/vector-icons';
 import { LogBox } from 'react-native';
+import { COLORS} from './styles/globalStyles';
 LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
 LogBox.ignoreAllLogs();//Ignore all log notifications
 
@@ -85,7 +86,7 @@ export default function App() {
               } else if (route.name === 'Insights') {
                 iconName = focused ? 'bar-chart' : 'bar-chart-outline';
               }
-              return <Ionicons name={iconName} size={32} color="#4A9BB4" />;
+              return <Ionicons name={iconName} size={32} color={COLORS.mindstormLightGrey} />;
             },
           })}
           tabBarOptions={{

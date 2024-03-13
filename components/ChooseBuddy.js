@@ -12,63 +12,64 @@ import Carousel from 'react-native-snap-carousel';
 import { useNavigation } from '@react-navigation/native'; 
 import { Ionicons } from '@expo/vector-icons';
 import { buddies } from '../data/optionSettings';
+import { useGlobalFonts } from '../styles/globalFonts';
+import { COLORS, IMAGES} from '../styles/globalStyles';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 export default function ChooseYourBuddy() {
+    const fontsLoaded = useGlobalFonts();
+    if (!fontsLoaded) {
+      return null;
+    }    
+    
     const [activeSlide, setActiveSlide] = useState(0);
     const navigation = useNavigation(); 
 
+
     const renderCarouselItem = ({ item, index }) => {
         return (
-            <View style={styles.slide}>
+            <TouchableOpacity
+                style={styles.slide}
+                onPress={() => navigation.navigate('ChatScreen', { bot: item.name })}
+            >
+                <Text style={styles.title}>{item.speciality}</Text>
                 <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-                    <TouchableOpacity>
-                        <Image source={item.image} style={styles.buddyImage}></Image>
-                    </TouchableOpacity>
+                    <Image resizeMode="contain" source={item.image} style={styles.buddyImage}></Image>
                 </View>
-                <Text style={styles.subheaderText}>{buddies[activeSlide].name}</Text>
-                <View style={[
-                    styles.descriptionBox,
-                ]}>
-                    <Text style={styles.descriptionText}>{buddies[activeSlide].text}</Text>
+                <Text style={styles.subheaderText}>{item.name}</Text>
+                <View style={[styles.descriptionBox]}>
+                    <Text style={styles.descriptionText}>{item.text}</Text>
                 </View>
-
-            </View>
+            </TouchableOpacity>
         );
     };
+    
 
     return (
         <View style={styles.container}>
             <ImageBackground
                 resizeMode="cover"
-                source={buddies[activeSlide].chooseBackground}
+                source={IMAGES.gradientbg}
                 style={styles.fullScreen}
             >
-                <Text style={styles.title}> {buddies[activeSlide].speciality}</Text>
-                <Carousel
-                    data={buddies}
-                    renderItem={renderCarouselItem}
-                    onSnapToItem={(index) => setActiveSlide(index)}
-                    sliderWidth={300}
-                    itemWidth={300}
-                    style={styles.carousel}
-                />
+                <View style={styles.carouselContainer}>
+                    <Carousel
+                        data={buddies}
+                        renderItem={renderCarouselItem}
+                        onSnapToItem={(index) => setActiveSlide(index)}
+                        sliderWidth={windowWidth}
+                        itemWidth={windowWidth - 40}
+                        contentContainerCustomStyle={styles.carouselContentContainer}
+                    />
+                </View>
                 <View style={styles.buttonCol}>
                     <TouchableOpacity style={styles.customizeButton}
                         onPress={() => navigation.navigate('ChatScreen', { bot: buddies[activeSlide].name})}
                     >
-                        <Ionicons name="chatbubbles-outline" size={24} />
+                        <Ionicons name="chatbubbles-outline" size={24} style={{color: "white"}} />
                         <Text style={{ ...styles.customizeButtonText, color: buddies[activeSlide].lightColor }}>Chat with {buddies[activeSlide].name}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={styles.customizeButton}
-                        onPress={() => navigation.navigate('CustomizeScreen', { activeSlide: activeSlide })}
-                    >
-                        <Ionicons name="hammer-outline" size={24} />
-                        <Text style={{ ...styles.customizeButtonText, color: buddies[activeSlide].lightColor }}>
-                            Customize</Text>
                     </TouchableOpacity>
                 </View>
             </ImageBackground>
@@ -85,22 +86,33 @@ const styles = StyleSheet.create({
         justifyContent: 'center', 
         alignItems: 'center', 
     },
+    carouselContainer:{
+        flex: 1,
+        marginTop:80,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    carouselContentContainer: {
+        paddingHorizontal: 20,
+    },
     title: {
-        position: 'absolute',
-        top: 80,
-        color: "#4A9BB4",
+        color: COLORS.mindstormGrey,
         fontSize: 32,
         marginBottom: 16,
-        fontWeight: "700",
+        textAlign: 'center',
+        fontFamily: "Inter-Regular"
     },
     subheaderText: {
         textAlign: 'center',
-        color: "white",
-        fontSize: 20,
-        fontWeight: 'bold',
-
+        color: COLORS.mindstormPurple,
+        fontSize: 25,
+        fontFamily: "Inter-Medium"   
     },
-
+    buddyImage:{
+        width: 0.55 * windowWidth,
+        height:  0.55 * windowWidth,
+        marginBottom:20
+    },
     bgImage: {
         width: windowWidth,
         height: windowHeight * 1.02,
@@ -110,51 +122,55 @@ const styles = StyleSheet.create({
     },
     heading: {
         fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 8,
-        color: 'white',
-        paddingTop: 60,
+        fontFamily: 'Inter-Regular',
+        marginBottom: 12,
+        color: COLORS.mindstormPurple,
+        paddingTop: 160,
         textAlign: 'center',
     },
     subheading: {
         fontSize: 18,
-        color: 'white',
+        color:COLORS.mindstormPurple,
         textAlign: 'center',
         marginBottom: 16,
-        fontWeight: 'bold'
+        fontFamily: "Inter-Regular"
     },
-    slide: { marginTop: 160 },
+    slide: { 
+        backgroundColor: COLORS.transcluscentWhite,
+        borderRadius: 30,
+        padding: 20,
+        marginHorizontal: 10,
+    },
     descriptionBox: {
         borderRadius: 32,
         padding: 20,
         margin: 16,
-        backgroundColor: 'rgba(0, 0, 0, 0.2)',
     },
     descriptionText: {
-        color: 'white',
+        color: COLORS.mindstormGrey,
         textAlign: 'center',
         marginBottom: '20',
         fontSize: 16
     },
-
     customizeButtonText: {
         fontWeight: 'bold',
-        color: '#4A9BB4',
+        color: "white",
         textAlign: 'center',
-        marginLeft: 4
+        marginLeft: 4,
+        fontFamily: "Inter-Regular"
     },
     customizeButton: {
-        backgroundColor: 'white',
+        backgroundColor: COLORS.mindstormLightPurple,
         margin: 8,
-        padding: 8,
-        paddingLeft: 12,
-        paddingRight: 12,
-        borderColor: 'white',
+        padding: 12,
+        paddingLeft: 22,
+        paddingRight: 22,
+        borderColor: COLORS.mindstormLightPurple,
         borderRadius: 16,
         flexDirection: "row",
         alignItems: 'center',
         justifyContent: 'center',
-        width: windowWidth * 0.4
+        width: windowWidth * 0.6
     },
     buttonCol: {
         position: 'absolute',
