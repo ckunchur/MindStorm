@@ -48,14 +48,14 @@ Our user flow is simple — journal and reflect on your day, and choose to chat 
 
 ## Current Features
 
-**Specialized Companions:**
+### Specialized Companions:
 - **Lyra, Your Anxiety Coach:** Feeling the pressure rise? Lyra detects your anxiety in real-time and provides personalized stress management techniques tailored to your preferences. Uncover the 'why' behind your thoughts and understand the root causes of your recurring patterns, tailored to your unique experiences.
 - **Nimbus, Your Productivity Partner:** Drowning in a sea of thoughts and to-dos? Nimbus helps you conquer mental clutter by organizing tasks and prioritizing your workload. Reduce overwhelm, regain control, and achieve more with Nimbus by your side.
 - **Fletchie, Your Reflective Buddy:** Need to step back and see the bigger picture? Fletchie utilizes your past entries to guide you in high-level reflection. Explore patterns, gain insights, and make informed changes for a better tomorrow with Fletchie's insightful prompts.
 
 These specialized companions work together to create a personalized support system that adapts to your evolving needs.
 
-**Adaptive Long-Term Memory:**
+### Adaptive Long-Term Memory:
 
 Imagine a companion that not only listens, but truly remembers. Unlike basic chatbots, Mindstorm utilizes RAG (Retrieval-Augmented Generation) to:
 
@@ -65,7 +65,7 @@ Imagine a companion that not only listens, but truly remembers. Unlike basic cha
 
 Think of it as a conversation that deepens over time. The more you interact with Windstorm, the better your AI companion can support you on your path to optimal well-being.
 
-**Weekly Insights:**
+### Weekly Insights:
 - **Weekly Summary**
     - Reflect & Reconnect: Gain a clear view of your week's entries with our concise summary. This easy-to-read snapshot helps you connect the dots and identify recurring themes in your thoughts and emotions.
 - **Mood Trends**
