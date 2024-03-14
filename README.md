@@ -1,5 +1,8 @@
+<div align="center">
+    <img src="https://github.com/ckunchur/MindStorm-mobile/blob/main/assets/Blue%20White%20Minimal%20Creative%20Illustration%20Short%20Link%20Application%20Online%20Poster.png?raw=true" width="500" alt="Description of the image">
+</div>
 
-![alt text](https://github.com/ckunchur/MindStorm-mobile/blob/main/assets/Blue%20White%20Minimal%20Creative%20Illustration%20Short%20Link%20Application%20Online%20Poster.png?raw=true)
+# mindstorm
 
 Your journey to well-being is unique. Your support should be too. We utilize personalized LLM companions and goal-oriented pipelines to build emotional resilience, discover healthy habits, and empower you on your path to a happier, healthier you.
 
@@ -51,7 +54,7 @@ Our user flow is simple — journal and reflect on your day, and choose to chat 
 ### Specialized Companions:
 - **Lyra, Your Anxiety Coach:** Feeling the pressure rise? Lyra detects your anxiety in real-time and provides personalized stress management techniques tailored to your preferences. Uncover the 'why' behind your thoughts and understand the root causes of your recurring patterns, tailored to your unique experiences.
 - **Nimbus, Your Productivity Partner:** Drowning in a sea of thoughts and to-dos? Nimbus helps you conquer mental clutter by organizing tasks and prioritizing your workload. Reduce overwhelm, regain control, and achieve more with Nimbus by your side.
-- **Fletchie, Your Reflective Buddy:** Need to step back and see the bigger picture? Fletchie utilizes your past entries to guide you in high-level reflection. Explore patterns, gain insights, and make informed changes for a better tomorrow with Fletchie's insightful prompts.
+- **Solara, Your Reflective Buddy:** Need to step back and see the bigger picture? Solara utilizes your past entries to guide you in high-level reflection. Explore patterns, gain insights, and make informed changes for a better tomorrow with Solara's insightful prompts.
 
 These specialized companions work together to create a personalized support system that adapts to your evolving needs.
 
