@@ -20,6 +20,7 @@ export default function ChatScreen() {
     const navigation = useNavigation();
     const route = useRoute();
     const { bot, entryText } = route.params;
+    console.log("bot on chat screen", bot);
     const [userInput, setUserInput] = useState('');
     const [instructionPromptString, setInstructionPromptString] = useState("");
     const [chatHistory, setChatHistory] = useState([]);
