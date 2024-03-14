@@ -91,18 +91,19 @@ fullScreen: {
   justifyContent: 'center',
 },
 blueTitle: {
-  color: COLORS.transcluscentWhite,
+  color: COLORS.maintextcolor,
   marginTop: '25%',
   fontSize: width * 0.09,
   fontFamily: "Inter-Medium",
 },
 greyMessage: {
-  color: COLORS.transcluscentGrey,
+  color: COLORS.secondarytextcolor,
   marginTop: '8%',
   fontSize: width * 0.04,
   fontFamily: "Inter-Regular",
 },
 welcomeImage: {
+  marginTop:-40,
   maxWidth: '90%',
   maxHeight: '60%',
   aspectRatio: 1,
@@ -120,13 +121,14 @@ getStartButton: {
   borderRadius: 48,
   backgroundColor: 'white',
   alignSelf: "stretch",
+  marginTop:0,
   paddingVertical: '8%',
   paddingHorizontal: '15%',
 },
 getStartButtonText: {
-  color: COLORS.mindstormPurple,
+  color: COLORS.maintextcolor,
   fontWeight: 'bold',
-  fontFamily: "Inter-SemiBold",
+  fontFamily: "Inter-Medium",
 },
 loginOption: {
   marginTop: '6%',
@@ -135,11 +137,11 @@ loginOption: {
 },
 loginText: {
   fontFamily: "Inter, sans-serif",
-  color: COLORS.transcluscentWhite,
+  color: COLORS.mindstormLightGrey,
 },
 loginLinkText: {
   fontWeight: "500",
   textDecorationLine: "underline",
-  color: COLORS.transcluscentGrey,
+  color: COLORS.mindstormLightPurple,
 },
 });

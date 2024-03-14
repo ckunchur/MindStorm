@@ -157,7 +157,7 @@ export default function DataScreen() {
   return (
     <View style={styles.fullScreenContainer}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Ionicons name="arrow-back-circle-outline" color={COLORS.transcluscentWhite} size={48} />
+        <Ionicons name="arrow-back-circle-outline" color={COLORS.secondarytextcolor} size={48} />
       </TouchableOpacity>
       <ImageBackground
         resizeMode="cover"
@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   moodWeatherText: {
-    color: COLORS.mindstormGrey,
+    color: COLORS.secondarytextcolor,
     fontWeight: 'bold',
     fontFamily: "Inter-Regular"
   },
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   title: {
-    color: 'white',
+    color: COLORS.maintextcolor,
     fontSize: 32,
     marginBottom: 16,
     fontWeight: "700",
@@ -325,12 +325,12 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: COLORS.transcluscentWhite,
+    color: COLORS.maintextcolor,
   },
   subheaderText: {
     textAlign: 'center',
     width: '80%',
-    color: COLORS.transcluscentWhite,
+    color: COLORS.maintextcolor,
     fontSize: 16,
     fontFamily: "Inter-Regular",
     marginBottom: 20,
@@ -352,7 +352,7 @@ const styles = StyleSheet.create({
   },
   summarySubheading: {
     fontSize: 18,
-    color: COLORS.transcluscentWhite,
+    color: COLORS.maintextcolor,
     textAlign: 'left',
     marginTop: 3,
     marginBottom: 3,
@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
   },
   summarySubsubheading: {
     fontSize: 14,
-    color: COLORS.transcluscentGrey,
+    color: COLORS.secondarytextcolor,
     textAlign: 'left',
     marginTop: 3,
     marginBottom: 3,

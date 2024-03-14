@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   title: {
     position: 'absolute',
     top: 100,
-    color: 'white',
+    color: COLORS.maintextcolor,
     fontSize: 32,
     marginBottom: 30,
     fontWeight: "700",
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     top: 150,
     textAlign: 'center',
     width: '60%',
-    color: COLORS.transcluscentWhite,
+    color: COLORS.secondarytextcolor,
     fontSize: 16,
     fontFamily:"Inter-Regular",
   },
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
   },
   
   continueButtonText: {
-    color: COLORS.mindstormPurple,
-    fontFamily: "Inter-SemiBold"
+    color: COLORS.maintextcolor,
+    fontFamily: "Inter-Medium"
   },
 });

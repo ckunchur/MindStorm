@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
     },
     title: {
-        color: 'white',
+        color: COLORS.transcluscentWhite,
         fontSize: 28,
         marginBottom: 8,
         padding: 16,

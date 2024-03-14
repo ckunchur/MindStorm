@@ -41,7 +41,7 @@ export default function PersonalInfoScreen({ setOnboardingComplete }) {
   return (
     <View style={styles.fullScreenContainer}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Ionicons name="arrow-back-circle-outline" color={COLORS.transcluscentWhite} size={48} />
+        <Ionicons name="arrow-back-circle-outline" color={COLORS.secondarytextcolor} size={48} />
       </TouchableOpacity>
       <ImageBackground
         resizeMode="cover"
@@ -116,13 +116,13 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   inputHeader: {
-    color: COLORS.transcluscentWhite,
+    color: COLORS.maintextcolor,
     fontSize: width * 0.045,
     marginTop: height * 0.01,
     fontFamily: "Inter-Medium",
   },
   inputSubtext: {
-    color: COLORS.transcluscentWhite,
+    color: COLORS.maintextcolor,
     fontSize: width * 0.035,
     fontFamily: "Inter-Regular",
     marginTop: height * 0.01,
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: width * 0.05,
   },
   title: {
-    color: COLORS.transcluscentWhite,
+    color: COLORS.maintextcolor,
     fontSize: width * 0.08,
     fontWeight: "700",
     fontFamily: "Inter-Medium",
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   subheaderText: {
-    color: COLORS.transcluscentWhite,
+    color: COLORS.maintextcolor,
     fontSize: width * 0.04,
     fontFamily: "Inter-Regular",
     marginTop: height * 0.01,
@@ -164,13 +164,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   chipHeader: {
-    color: COLORS.transcluscentWhite,
+    color: COLORS.maintextcolor,
     fontSize: width * 0.05,
-    fontFamily: "Inter-SemiBold",
+    fontFamily: "Inter-Medium",
     marginTop: height * 0.02,
   },
   chipText: {
-    color: COLORS.mindstormPurple,
+    color: COLORS.secondarytextcolor,
     fontWeight: 'bold',
     fontFamily: "Inter-Medium",
   },
@@ -233,9 +233,9 @@ const styles = StyleSheet.create({
   },
   
   continueButtonText: {
-    color: COLORS.mindstormPurple,
+    color: COLORS.maintextcolor,
     fontWeight: 'bold',
-    fontFamily: "Inter-SemiBold",
+    fontFamily: "Inter-Medium",
     paddingVertical: 5,
   },
 });

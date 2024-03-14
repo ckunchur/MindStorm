@@ -47,7 +47,7 @@ export default function ChooseGoalsScreen() {
   return (
     <View style={styles.fullScreenContainer}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Ionicons name="arrow-back-circle-outline" color={COLORS.transcluscentWhite} size={48} />
+        <Ionicons name="arrow-back-circle-outline" color={COLORS.mindstormLightGrey} size={48} />
       </TouchableOpacity>
       <ImageBackground
         resizeMode="cover"
@@ -97,13 +97,13 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   inputHeader: {
-    color: COLORS.transcluscentWhite,
+    color: COLORS.maintextcolor,
     fontSize: width * 0.04,
     marginTop: height * 0.01,
     fontFamily: "Inter-Medium",
   },
   inputSubtext: {
-    color: COLORS.transcluscentGrey,
+    color: COLORS.maintextcolor,
     fontSize: width * 0.035,
     fontFamily: "Inter-Regular",
     marginTop: height * 0.01,
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     fontFamily: "Inter-Regular",
   },
   title: {
-    color: COLORS.transcluscentWhite,
+    color: COLORS.maintextcolor,
     fontSize: width * 0.08,
     fontWeight: "700",
     fontFamily: "Inter-Medium",
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   subheaderText: {
-    color: COLORS.transcluscentWhite,
+    color: COLORS.maintextcolor,
     fontSize: width * 0.04,
     fontFamily: "Inter-Regular",
     marginTop: height * 0.02,
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   goalOptionText: {
     fontFamily: "Inter-Regular",
     textAlign: 'center',
-    color: '#7887DA',
+    color: COLORS.maintextcolor,
     fontWeight: 'bold',
     fontSize: width * 0.04,
   },
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
     fontFamily: "Inter-Medium",
   },
   continueButtonText: {
-    color: COLORS.mindstormPurple,
+    color: COLORS.maintextcolor,
     fontWeight: 'bold',
     fontFamily: "Inter-SemiBold",
     paddingVertical: 5,

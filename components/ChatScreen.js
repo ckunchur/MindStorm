@@ -140,7 +140,7 @@ export default function ChatScreen() {
             <ImageBackground source={IMAGES.gradientbg} style={styles.bgImage}>
                 <View style={styles.contentContainer}>
                     <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
-                        <Ionicons name="arrow-back-circle-outline" color={COLORS.transcluscentWhite} size={48} />
+                        <Ionicons name="arrow-back-circle-outline" color={COLORS.secondarytextcolor} size={48} />
                     </TouchableOpacity>
                     <ScrollView
                         style={styles.chatContainer}
@@ -166,7 +166,7 @@ export default function ChatScreen() {
                         placeholder="Type your message..."
                     />
                     <TouchableOpacity onPress={handleSend}>
-                        <Ionicons name="send" color={COLORS.transcluscentWhite} size={36} />
+                        <Ionicons name="send" color={COLORS.secondarytextcolor} size={36} />
                     </TouchableOpacity>
                 </View>
             </ImageBackground>

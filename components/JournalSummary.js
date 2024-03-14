@@ -104,7 +104,7 @@ export default function JournalSummary() {
         return (
             <Image
                 source={weather_moods[mood]}
-                style={mood === weatherMood ? [styles.selectedMoodImage, { tintColor: COLORS.transcluscentWhite }] : [styles.moodImage, { tintColor: COLORS.mindstormLightGrey }]}
+                style={mood === weatherMood ? [styles.selectedMoodImage, { tintColor: COLORS.secondarytextcolor }] : [styles.moodImage, { tintColor: COLORS.mindstormLightGrey }]}
                 resizeMode="contain"
             ></Image>
         );
@@ -123,7 +123,7 @@ export default function JournalSummary() {
     return (
         <View style={styles.fullScreenContainer}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                <Ionicons name="arrow-back-circle-outline" color={COLORS.transcluscentWhite} size={48} />
+                <Ionicons name="arrow-back-circle-outline" color={COLORS.secondarytextcolor} size={48} />
             </TouchableOpacity>
             <ImageBackground
                 resizeMode="cover"
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
     title: {
         position: 'absolute',
         top: 100,
-        color: COLORS.transcluscentWhite,
+        color: COLORS.maintextcolor,
         fontSize: 32,
         marginBottom: 16,
         fontFamily: "Inter-Medium",
@@ -249,14 +249,14 @@ const styles = StyleSheet.create({
         fontFamily: "Inter-Medium",
         marginTop: 5,
         marginBottom: 20,
-        color: COLORS.transcluscentWhite,
+        color: COLORS.maintextcolor,
     },
     subheaderText: {
         position: 'absolute',
         top: 140,
         textAlign: 'center',
         width: '80%',
-        color: COLORS.transcluscentGrey,
+        color: COLORS.maintextcolor,
         fontSize: 16,
         fontFamily: "Inter-Regular",
         marginTop: 20,
