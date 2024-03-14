@@ -168,7 +168,7 @@ export default function JournalSummary() {
                        
                         <TouchableOpacity 
                             style={styles.continueButton} 
-                            onPress={() => navigation.navigate('ChatScreen', { botName: isValidBotRecommendation(botRecommendation) ? botRecommendation : 'Lyra', entryText: entryText })}
+                            onPress={() => navigation.navigate('ChatScreen', { bot: isValidBotRecommendation(botRecommendation) ? botRecommendation : 'Lyra', entryText: entryText })}
                         >
                             <Text style={styles.continueButtonText}>Chat with {isValidBotRecommendation(botRecommendation) ? botRecommendation : 'Lyra'}</Text>
                         </TouchableOpacity>
@@ -377,6 +377,8 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 48,
+        borderWidth: 2,
+        borderColor: COLORS.mindstormPurple,
         backgroundColor: 'white',
         position: "relative",
         width: "100%",
