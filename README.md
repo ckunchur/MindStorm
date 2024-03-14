@@ -1,27 +1,86 @@
-# MindStorm
-MindStorm is an app designed to "help you find the calm in your storm" with the goal of empowering users to navigate their mental challenges. Currently, we are focused on helping users with stress/anxiety and productivity, offering 2 chatbots ("Lyra" and "Nimbus") for immediate guidance. MindStorm also has space for free journaling for quick mental insights. Data analysis is performed across chat history and journal entries, allowing users to track their mood and writing content over time. 
 
-## How to run app
+# mindstorm
+
+Your journey to well-being is unique. Your support should be too. We utilize personalized LLM companions and goal-oriented pipelines to build emotional resilience, discover healthy habits, and empower you on your path to a happier, healthier you.
+
+## Inspiration
+
+This project was inspired by a recent study published in Nature [1], which investigated the potential of artificial intelligence (AI) for mental health interventions. The study explored the use of large language models (LLMs) to provide emotional support and personalized guidance to individuals. The findings highlighted the promise of AI chatbots in:
+
+- Enhancing accessibility: Offering 24/7 support, overcoming geographical limitations and potentially reducing therapy costs.
+- Promoting self-discovery: Enabling users to gain insights into their emotions and thought patterns through reflection and journaling prompts.
+- Providing personalized support: Tailoring responses and guidance based on user input, creating a more individualized experience compared to traditional therapy resources.
+
+([1] Loneliness and suicide mitigation for students using GPT3-enabled chatbots: [Nature Article](https://www.nature.com/articles/s44184-023-00047-6#Sec10))
+
+We believe that Mindstorm can build upon this research by developing a comprehensive AI-powered mental wellness companion. Our app aims to address the limitations identified in the study, such as:
+
+- **Limited emotional understanding:** By incorporating advanced emotional recognition techniques, we can create AI companions that can better respond to user emotions, addressing people who might not want to see a real therapist/had bad experiences with therapy.
+- **Focus on short-term interactions:** We aim to provide long-term support through features like weekly analysis and goal-setting tools.
+
+Our vision is to create a user-friendly and accessible tool that empowers individuals on their journey towards mental well-being.
+
+## Problem
+
+Mental health concerns are prevalent, with anxiety affecting over 264 million people globally, according to WHO. Yet, accessing effective care remains a challenge. Cost, scheduling difficulties, and social stigma create major barriers.
+
+The result? People struggling the most are often the least likely to seek help. Over 54% of adults with mental illness don’t seek treatment (WHO). This creates a vicious cycle, impacting their overall well-being, relationships, and physical health.
+
+Mindstorm is here to break free from the limitations of traditional therapy. We offer personalized, accessible support through an accessible on-the-go app. Forget one-size-fits-all: we use LLMs with specialized chatbots tailored to address specific needs: ADHD, depression, anxiety, and productivity goals. The App Store and GPT Store are flooded with generic mental wellness chatbots. We offer something fundamentally different: precise support tailored to your specific needs.
+
+## Differentiators
+
+We have a pipeline and a specialized companion for every need, with long-term adaptive memory. With RAG-powered personalization, the companion you talk to analyzes your chat history, experiences, struggles, and preferences, allowing it to provide targeted support that resonates with your unique needs.
+
+Unlike generic apps with a one-size-fits-all therapist, Mindstorm evolves with you. It’s your personalized mental health partner, offering ongoing guidance and a safe space to work towards your goals.
+
+## Getting Started
+### How to run app
 - create `.env` file in root directory with the following:
   - EXPO_PUBLIC_OPENAI_API_KEY="{your key here}"
   - EXPO_PUBLIC_PINECONE_API_KEY="{your key here}"
 - run `npm install` 
 - run `npx expo start`
 
-## Notes:
-- Login is currently not working (Sign up is!). Will be resolved ASAP!
-- We are currently not working on VoiceAssistant code (will not look updated from sprint 2)
-  
-## Sprint 3
-Sonya: I focused on designing and implementing the RAG logic for the app. I integrated Pinecone, utilizing its vector search to dynamically fetch contextually relevant conversation entries. Incorporated OpenAI's APIs, specifically leveraging the 'text-embedding-ada-002' model for generating text embeddings, and crafted a system prompt after custom GPT testing that incorporates the retrieved entries that produces empathetic responses, similar to talking with a close friend. Designed the upsert logic to prioritize journal entry data in a way that makes sense, ensuring efficient retrieval of past experiences and emotional states through labeled metadata for more nuanced conversation context. Also constructed a feedback loop that updates user profiles with new insights from each conversation, leveraging past entry data from Pinecone and also user profile preference/insight data from Firebase.
+## Usage
 
-Caitlin: I redesigned our screens (ignoring chat for now) to be more in line with our MindStorm product vision (aiming for a more comforting theme with weather elements intentionally incorporated throughout app features). I coded up all of the new screens (LandingScreen, LoginScreen, ChooseGoals, PersonalInfoScreen, CreateAccount, JournalScreen, and JournalSummary) for onboarding and implemented user login/register with Firebase and saving of user personal info in Firebase. I wrote prompts and corresponding API calling functions for classifying top 3 moods and top 3 topics in the entry and recommending which chatbot (Lyra for anxiety/stress or Nimbus for productivity) is better suited for the user based on their entry. I also started working on a "Moodometer" pie chart (maps overall mood of journal entry to weather condition) which will be one of our unique mood tracking visualizations. 
+Our user flow is simple — journal and reflect on your day, and choose to chat from your entry with a recommended companion based on what we detected from your needs. Over time, you can check your weekly insights to make sense of your trends and emotional landscape.
 
-Janet: I focused on converting the RAG logic that Sonya developed into the back-end of the React Native app. This involved setting up FastAPI functions on the back-end. It connects successfully to Pinecone and FastAPI and is connected to the front-end chat screen. There is now IN-CONVO history in openai.js page + commented out code in the chat screen and PAST-CHAT history in the pinecone db search in the fastapi search - these just need to be combined more smoothly now.
+## Current Features
 
-## Sprint 4
-Sonya: I plan on helping out on the data insights flow (extracting from conversation data and generating visualizations). I'll also work on prompting and designing/setting up the backend for the productivity bot and testing the user flow from there. I will also help clean up/test anything that is needed for final demo. 
+**Specialized Companions:**
+- **Lyra, Your Anxiety Coach:** Feeling the pressure rise? Lyra detects your anxiety in real-time and provides personalized stress management techniques tailored to your preferences. Uncover the 'why' behind your thoughts and understand the root causes of your recurring patterns, tailored to your unique experiences.
+- **Nimbus, Your Productivity Partner:** Drowning in a sea of thoughts and to-dos? Nimbus helps you conquer mental clutter by organizing tasks and prioritizing your workload. Reduce overwhelm, regain control, and achieve more with Nimbus by your side.
+- **Fletchie, Your Reflective Buddy:** Need to step back and see the bigger picture? Fletchie utilizes your past entries to guide you in high-level reflection. Explore patterns, gain insights, and make informed changes for a better tomorrow with Fletchie's insightful prompts.
 
-Caitlin: I will finish transferring our latest designs to the chat and data insights pages + finish up the data insights page aggregating analysis across all entries in a user's history. I also plan to help rework our RAG choices (e.g. helping make choices like embed each message that is sent vs embedding summary of conversation, how do we weight certain messages more, etc), help with Firebase storage of conversation histories, and help out with integrating Firebase stored user profile data (collected during onboarding) into our RAG-based user profile to finetune our bots' responses. I will help customize the prompting of our 2 bots, exploring unique formats of conversation for boosting engagement (previously considered chat based games to talk through emotions). Time permitting, I will also look into letting users create their own custom therapy bot. Will generally help clean up code structure and make sure backend logic is solid.
+These specialized companions work together to create a personalized support system that adapts to your evolving needs.
 
-Janet: I want to focus on making the app usable for ourselves as test cases. I think this could mean encrypting entries before they go into the database for privacy and security. Furthermore, although the RAG works, the RAG and in-convo does not combine seamlessly yet and this will take some experimentation to make the chatbot smooth and natural. 
+**Adaptive Long-Term Memory:**
+
+Imagine a companion that not only listens, but truly remembers. Unlike basic chatbots, Mindstorm utilizes RAG (Retrieval-Augmented Generation) to:
+
+- **Personalize Your Experience:** We analyze your interactions, preferences, and past entries to tailor responses and support that hits home for you.
+- **Dynamic Learning:** Our adaptive memory continuously evolves alongside you. As you share your experiences and emotions, your companion gains a deeper understanding of your unique needs.
+- **Precise Therapy:** By understanding your individual patterns and triggers, we can provide targeted therapy suggestions and coping mechanisms that are effective for you.
+
+Think of it as a conversation that deepens over time. The more you interact with Windstorm, the better your AI companion can support you on your path to optimal well-being.
+
+**Weekly Insights:**
+- **Weekly Summary**
+    - Reflect & Reconnect: Gain a clear view of your week's entries with our concise summary. This easy-to-read snapshot helps you connect the dots and identify recurring themes in your thoughts and emotions.
+- **Mood Trends**
+    - Uncover Your Emotional Landscape: Dive deeper with our mood trend analysis. By understanding your emotional patterns throughout the week, you can gain valuable insights and personalize self-care strategies for greater well-being.
+- **Brain Real Estate**
+    - Know What Occupies Your Mind: Ever feel overwhelmed by swirling thoughts? "Brain Real Estate" reveals the topics that occupy your mind the most. This self-discovery tool empowers you to prioritize what matters most and focus on areas that need your attention.
+
+## Contact Info
+
+Sonya Jin  
+sonyajin@stanford.edu
+
+Caitlin Rita Kunchur  
+ckunchur@stanford.edu
+
+Janet Fan Mi Zhong  
+janetzh@stanford.edu
+
