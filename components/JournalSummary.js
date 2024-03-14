@@ -57,54 +57,54 @@ export default function JournalSummary() {
     }, []);
 
 
-  const performWeeklongAnalysis = async (uid) => {
-    const fetchedEntries = await ExtractLastWeekEntriesFirebase(uid);
-    if (fetchedEntries.length > 0) {
-      try {
-        const results = await Promise.all([
-          weeklongSummaryWithChatGPT(JSON.stringify(fetchedEntries)),
-          weeklongTopicClassificationWithChatGPT(JSON.stringify(fetchedEntries)),
-          weeklongMoodClassificationWithChatGPT(JSON.stringify(fetchedEntries)),
-        ]);
-        const [
-          weeklongSummaryWithResult,
-          weeklongTopicClassificationResult,
-          weeklongMoodClassificationResult,
-        ] = results;
+    const performWeeklongAnalysis = async (uid) => {
+        const fetchedEntries = await ExtractLastWeekEntriesFirebase(uid);
+        if (fetchedEntries.length > 0) {
+            try {
+                const results = await Promise.all([
+                    weeklongSummaryWithChatGPT(JSON.stringify(fetchedEntries)),
+                    weeklongTopicClassificationWithChatGPT(JSON.stringify(fetchedEntries)),
+                    weeklongMoodClassificationWithChatGPT(JSON.stringify(fetchedEntries)),
+                ]);
+                const [
+                    weeklongSummaryWithResult,
+                    weeklongTopicClassificationResult,
+                    weeklongMoodClassificationResult,
+                ] = results;
 
-        console.log("Weeklong Summary Result:", weeklongSummaryWithResult);
-        console.log("Weeklong Topic Classification Result:", weeklongTopicClassificationResult);
-        console.log("Weeklong Mood Classification Result:", weeklongMoodClassificationResult);
+                console.log("Weeklong Summary Result:", weeklongSummaryWithResult);
+                console.log("Weeklong Topic Classification Result:", weeklongTopicClassificationResult);
+                console.log("Weeklong Mood Classification Result:", weeklongMoodClassificationResult);
 
-        // Extract the JSON string from the topic classification response
-        const topicJsonString = weeklongTopicClassificationResult.data.match(/```json\s*([\s\S]*?)\s*```/)?.[1];
-        const parsedTopicData = topicJsonString ? JSON.parse(topicJsonString.replace(/\\"/g, '"')) : [];
+                // Extract the JSON string from the topic classification response
+                const topicJsonString = weeklongTopicClassificationResult.data.match(/```json\s*([\s\S]*?)\s*```/)?.[1];
+                const parsedTopicData = topicJsonString ? JSON.parse(topicJsonString.replace(/\\"/g, '"')) : [];
 
-        // Extract the JSON string from the mood classification response
-        const moodJsonString = weeklongMoodClassificationResult.data.match(/```json\s*([\s\S]*?)\s*```/)?.[1];
-        const parsedMoodData = moodJsonString ? JSON.parse(moodJsonString.replace(/\\"/g, '"')) : [];
+                // Extract the JSON string from the mood classification response
+                const moodJsonString = weeklongMoodClassificationResult.data.match(/```json\s*([\s\S]*?)\s*```/)?.[1];
+                const parsedMoodData = moodJsonString ? JSON.parse(moodJsonString.replace(/\\"/g, '"')) : [];
 
-        // Firebase: Create a new entry in the "weeklyAnalysis" collection for the user
-        const weeklyAnalysisRef = collection(db, `users/${uid}/weeklyAnalysis`);
-        console.log("Weeklong Summary Data:", weeklongSummaryWithResult.data);
-        await addDoc(weeklyAnalysisRef, {
-          weeklongSummary: weeklongSummaryWithResult.data || "",
-          weeklongTopics: parsedTopicData,
-          weeklongMoods: parsedMoodData,
-          timeStamp: serverTimestamp(),
-        });
-      } catch (error) {
-        console.error('Error during weekly analysis:', error);
-        // Handle the error, show an error message, or take appropriate action
-      }
-    }
-  };
+                // Firebase: Create a new entry in the "weeklyAnalysis" collection for the user
+                const weeklyAnalysisRef = collection(db, `users/${uid}/weeklyAnalysis`);
+                console.log("Weeklong Summary Data:", weeklongSummaryWithResult.data);
+                await addDoc(weeklyAnalysisRef, {
+                    weeklongSummary: weeklongSummaryWithResult.data || "",
+                    weeklongTopics: parsedTopicData,
+                    weeklongMoods: parsedMoodData,
+                    timeStamp: serverTimestamp(),
+                });
+            } catch (error) {
+                console.error('Error during weekly analysis:', error);
+                // Handle the error, show an error message, or take appropriate action
+            }
+        }
+    };
 
     const MoodImage = ({ mood }) => {
         return (
             <Image
                 source={weather_moods[mood]}
-                style={mood === weatherMood ? [styles.selectedMoodImage, { tintColor: COLORS.mindstormGrey }]: [styles.moodImage ,{ tintColor: COLORS.mindstormLightGrey }]}
+                style={mood === weatherMood ? [styles.selectedMoodImage, { tintColor: COLORS.transcluscentWhite }] : [styles.moodImage, { tintColor: COLORS.mindstormLightGrey }]}
                 resizeMode="contain"
             ></Image>
         );
@@ -123,7 +123,7 @@ export default function JournalSummary() {
     return (
         <View style={styles.fullScreenContainer}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                <Ionicons name="arrow-back-circle-outline" color={COLORS.mindstormLightGrey} size={48} />
+                <Ionicons name="arrow-back-circle-outline" color={COLORS.transcluscentWhite} size={48} />
             </TouchableOpacity>
             <ImageBackground
                 resizeMode="cover"
@@ -157,18 +157,22 @@ export default function JournalSummary() {
                             <ChipsRow title="Detected Topics" items={topTopics} />
                         )}
                     </View>
-                    <TouchableOpacity
+                    <View
                         style={styles.predictedTextContainer}
-                        onPress={() => navigation.navigate('ChatScreen', { botName: isValidBotRecommendation(botRecommendation) ? botRecommendation : 'Lyra' })}
+                        // onPress={() => navigation.navigate('ChatScreen', { botName: isValidBotRecommendation(botRecommendation) ? botRecommendation : 'Lyra' })}
                     >
                         <Text style={styles.predictedText}>
                             Based on your entry, we think {isValidBotRecommendation(botRecommendation) ? botRecommendation : 'Lyra'} would be a good buddy to talk to!
                         </Text>
-                        <Image style={styles.buddyImage} source={require('../assets/beancloud.png')}></Image>
-                        <Text style={[styles.chatButtonText]}>
-                            Chat with {isValidBotRecommendation(botRecommendation) ? botRecommendation : 'Lyra'}
-                        </Text>
-                    </TouchableOpacity>
+                        <Image style={styles.buddyImage} source={botRecommendation === "Lyra" ? require('../assets/lyra.png') : require('../assets/nimbus.png')}></Image>
+                       
+                        <TouchableOpacity 
+                            style={styles.continueButton} 
+                            onPress={() => navigation.navigate('ChatScreen', { botName: isValidBotRecommendation(botRecommendation) ? botRecommendation : 'Lyra' })}
+                        >
+                            <Text style={styles.continueButtonText}>Chat with {isValidBotRecommendation(botRecommendation) ? botRecommendation : 'Lyra'}</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </ImageBackground>
         </View>
@@ -196,7 +200,7 @@ const styles = StyleSheet.create({
         top: 80,
         left: 20,
         zIndex: 10
-        },
+    },
     moodImage: {
         width: 35,
         marginRight: 8,
@@ -212,10 +216,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height: '30%',
     },
-    buddyImage:{
-        width: 150,
-        height:  150,
-        marginVertical:20
+    buddyImage: {
+        width: 140,
+        height: 150,
+        marginVertical: 20
     },
     noDataText: {
         color: COLORS.mindstormGrey,
@@ -226,7 +230,7 @@ const styles = StyleSheet.create({
     title: {
         position: 'absolute',
         top: 100,
-        color: COLORS.mindstormGrey,
+        color: COLORS.transcluscentWhite,
         fontSize: 32,
         marginBottom: 16,
         fontFamily: "Inter-Medium",
@@ -243,16 +247,16 @@ const styles = StyleSheet.create({
     forecasttitle: {
         fontSize: 22,
         fontFamily: "Inter-Medium",
-        marginTop:5,
+        marginTop: 5,
         marginBottom: 20,
-        color: COLORS.mindstormGrey,
+        color: COLORS.transcluscentWhite,
     },
     subheaderText: {
         position: 'absolute',
         top: 140,
         textAlign: 'center',
         width: '80%',
-        color: COLORS.mindstormGrey,
+        color: COLORS.transcluscentGrey,
         fontSize: 16,
         fontFamily: "Inter-Regular",
         marginTop: 20,
@@ -289,16 +293,16 @@ const styles = StyleSheet.create({
         alignItems: "center",
         borderRadius: 24,
         backgroundColor: COLORS.transcluscentWhite,
-        padding: 8,
+        padding: 4,
         textAlign: "center",
         fontFamily: "Inter-Regular",
     },
     predictedText: {
         fontFamily: "Inter-Regular",
         textAlign: 'center',
-        color: COLORS.mindstormGrey,
+        color: COLORS.mindstormLightGrey,
         fontSize: 16,
-        margin:20
+        margin: 20
     },
     chipsContainer: {
         alignItems: 'center',
@@ -363,4 +367,25 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    continueButtonText: {
+        color: COLORS.mindstormPurple,
+        fontWeight: 'bold',
+        fontFamily: "Inter-SemiBold",
+        paddingVertical: 5,
+      },
+      continueButton: {
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 48,
+        backgroundColor: 'white',
+        position: "relative",
+        width: "100%",
+        maxWidth: windowWidth * 0.8,
+        textAlign: "center",
+        marginBottom: windowHeight * 0.03,
+        padding: windowHeight * 0.02,
+        fontSize: windowWidth * 0.04,
+        fontWeight: "700",
+        fontFamily: "Inter-Medium",
+      },
 });

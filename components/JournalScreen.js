@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   title: {
     position: 'absolute',
     top: 100,
-    color: COLORS.mindstormGrey,
+    color: 'white',
     fontSize: 32,
     marginBottom: 30,
     fontWeight: "700",
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     top: 150,
     textAlign: 'center',
     width: '60%',
-    color: COLORS.mindstormGrey,
+    color: COLORS.transcluscentWhite,
     fontSize: 16,
     fontFamily:"Inter-Regular",
   },
@@ -179,11 +179,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 48,
-    backgroundColor: COLORS.mindstormLightPurple,
+    backgroundColor: 'white',
     position: "relative",
     width: "100%",
     maxWidth: 327,
-    color: COLORS.mindstormPurple,
+    
     textAlign: "center",
     marginTop: 36,
     padding: 18,
@@ -191,8 +191,9 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontFamily:"Inter-Regular",
   },
+  
   continueButtonText: {
-    color: "white",
-    fontFamily: "Inter-Medium"
+    color: COLORS.mindstormPurple,
+    fontFamily: "Inter-SemiBold"
   },
 });

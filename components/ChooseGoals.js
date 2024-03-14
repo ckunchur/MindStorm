@@ -47,7 +47,7 @@ export default function ChooseGoalsScreen() {
   return (
     <View style={styles.fullScreenContainer}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Ionicons name="arrow-back-circle-outline" color={COLORS.mindstormLightGrey} size={48} />
+        <Ionicons name="arrow-back-circle-outline" color={COLORS.transcluscentWhite} size={48} />
       </TouchableOpacity>
       <ImageBackground
         resizeMode="cover"
@@ -97,13 +97,13 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   inputHeader: {
-    color: COLORS.mindstormGrey,
+    color: COLORS.transcluscentWhite,
     fontSize: width * 0.04,
     marginTop: height * 0.01,
     fontFamily: "Inter-Medium",
   },
   inputSubtext: {
-    color: COLORS.mindstormLightGrey,
+    color: COLORS.transcluscentGrey,
     fontSize: width * 0.035,
     fontFamily: "Inter-Regular",
     marginTop: height * 0.01,
@@ -125,11 +125,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: width * 0.03,
     marginVertical: height * 0.01,
-    color: 'grey',
     fontFamily: "Inter-Regular",
   },
   title: {
-    color: COLORS.mindstormGrey,
+    color: COLORS.transcluscentWhite,
     fontSize: width * 0.08,
     fontWeight: "700",
     fontFamily: "Inter-Medium",
@@ -137,7 +136,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   subheaderText: {
-    color: COLORS.mindstormGrey,
+    color: COLORS.transcluscentWhite,
     fontSize: width * 0.04,
     fontFamily: "Inter-Regular",
     marginTop: height * 0.02,
@@ -175,7 +174,7 @@ const styles = StyleSheet.create({
     borderColor: "#BCC6FC",
   },
   goalOptionTextSelected: {
-    fontWeight: "bold",
+    fontFamily: "Inter-SemiBold",
   },
   paginationContainer: {
     justifyContent: "center",
@@ -202,11 +201,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 48,
-    backgroundColor: COLORS.mindstormLightPurple,
+    backgroundColor: 'white',
     position: "relative",
     width: "100%",
     maxWidth: width * 0.8,
-    color: "#4A9BB4",
+  
     textAlign: "center",
     marginTop: height * 0.03,
     padding: height * 0.02,
@@ -215,9 +214,9 @@ const styles = StyleSheet.create({
     fontFamily: "Inter-Medium",
   },
   continueButtonText: {
-    color: "white",
+    color: COLORS.mindstormPurple,
     fontWeight: 'bold',
-    fontFamily: "Inter-Medium",
+    fontFamily: "Inter-SemiBold",
     paddingVertical: 5,
   },
 });
