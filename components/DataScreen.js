@@ -303,6 +303,7 @@ const styles = StyleSheet.create({
   pieChartContainer: {
     alignItems: 'center',
     justifyContent: 'center',
+    width: 0.9*windowWidth,
     marginTop: 5,
     marginBottom:20, 
     marginHorizontal:30,
