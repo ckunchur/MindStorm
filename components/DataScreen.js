@@ -94,6 +94,7 @@ export default function DataScreen() {
         setWeeklongSummary(weeklongSummaryWithResult.data);
         setWeeklongTopics(parsedTopicData);
         setWeeklongMoods(parsedMoodData);
+        console.log(parsedMoodData);
       } catch (error) {
         console.error('Error during weekly analysis:', error);
       }
@@ -156,7 +157,7 @@ export default function DataScreen() {
   return (
     <View style={styles.fullScreenContainer}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Ionicons name="arrow-back-circle-outline" color={COLORS.mindstormGrey} size={48} />
+        <Ionicons name="arrow-back-circle-outline" color={COLORS.transcluscentWhite} size={48} />
       </TouchableOpacity>
       <ImageBackground
         resizeMode="cover"
@@ -211,8 +212,11 @@ export default function DataScreen() {
               {/* {weeklongMoods.length > 0 && (
                 <>
                   <Text style={styles.summarySubheading}>Your overall moods this week:</Text>
-                  <View style={styles.donutChartContainer}>
-                    <ChartRow title="" sections={weeklongMoods} />
+                  <View style={styles.pieChartContainer}>
+                  <PieChart size={200} sections={weeklongMoods.map((mood, index) => ({
+                      ...mood,
+                      color: colors[index % colors.length],
+                    }))} />
                   </View>
                 </>
               )} */}
@@ -293,7 +297,7 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   title: {
-    color: COLORS.mindstormGrey,
+    color: 'white',
     fontSize: 32,
     marginBottom: 16,
     fontWeight: "700",
@@ -321,12 +325,12 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: COLORS.mindstormGrey
+    color: COLORS.transcluscentWhite,
   },
   subheaderText: {
     textAlign: 'center',
     width: '80%',
-    color: COLORS.mindstormGrey,
+    color: COLORS.transcluscentWhite,
     fontSize: 16,
     fontFamily: "Inter-Regular",
     marginBottom: 20,
@@ -348,7 +352,7 @@ const styles = StyleSheet.create({
   },
   summarySubheading: {
     fontSize: 18,
-    color: COLORS.mindstormGrey,
+    color: COLORS.transcluscentWhite,
     textAlign: 'left',
     marginTop: 3,
     marginBottom: 3,
@@ -356,7 +360,7 @@ const styles = StyleSheet.create({
   },
   summarySubsubheading: {
     fontSize: 14,
-    color: COLORS.mindstormGrey,
+    color: COLORS.transcluscentGrey,
     textAlign: 'left',
     marginTop: 3,
     marginBottom: 3,

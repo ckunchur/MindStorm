@@ -41,7 +41,7 @@ export default function PersonalInfoScreen({ setOnboardingComplete }) {
   return (
     <View style={styles.fullScreenContainer}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Ionicons name="arrow-back-circle-outline" color={COLORS.mindstormLightGrey} size={48} />
+        <Ionicons name="arrow-back-circle-outline" color={COLORS.transcluscentWhite} size={48} />
       </TouchableOpacity>
       <ImageBackground
         resizeMode="cover"
@@ -116,13 +116,13 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   inputHeader: {
-    color: COLORS.mindstormGrey,
-    fontSize: width * 0.04,
+    color: COLORS.transcluscentWhite,
+    fontSize: width * 0.045,
     marginTop: height * 0.01,
     fontFamily: "Inter-Medium",
   },
   inputSubtext: {
-    color: COLORS.mindstormLightGrey,
+    color: COLORS.transcluscentWhite,
     fontSize: width * 0.035,
     fontFamily: "Inter-Regular",
     marginTop: height * 0.01,
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: width * 0.05,
   },
   title: {
-    color: COLORS.mindstormGrey,
+    color: COLORS.transcluscentWhite,
     fontSize: width * 0.08,
     fontWeight: "700",
     fontFamily: "Inter-Medium",
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   subheaderText: {
-    color: COLORS.mindstormGrey,
+    color: COLORS.transcluscentWhite,
     fontSize: width * 0.04,
     fontFamily: "Inter-Regular",
     marginTop: height * 0.01,
@@ -164,10 +164,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   chipHeader: {
-    color: COLORS.mindstormGrey,
-    fontSize: width * 0.04,
-    fontFamily: "Inter-Medium",
-    marginTop: height * 0.01,
+    color: COLORS.transcluscentWhite,
+    fontSize: width * 0.05,
+    fontFamily: "Inter-SemiBold",
+    marginTop: height * 0.02,
   },
   chipText: {
     color: COLORS.mindstormPurple,
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: height * 0.01,
-    width: '100%',
+    width: '90%',
   },
   chip: {
     paddingVertical: height * 0.015,
@@ -219,21 +219,23 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 48,
-    backgroundColor: COLORS.mindstormLightPurple,
+    backgroundColor: 'white',
     position: "relative",
     width: "100%",
     maxWidth: width * 0.8,
+  
     textAlign: "center",
-    marginTop: height * 0.02,
+    marginTop: height * 0.03,
     padding: height * 0.02,
     fontSize: width * 0.04,
     fontWeight: "700",
     fontFamily: "Inter-Medium",
   },
+  
   continueButtonText: {
-    color: "white",
+    color: COLORS.mindstormPurple,
     fontWeight: 'bold',
-    fontFamily: "Inter-Medium",
+    fontFamily: "Inter-SemiBold",
     paddingVertical: 5,
   },
 });

@@ -4,13 +4,13 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { apiCall, apiRAGCall } from '../OpenAI/OpenAI';
 import { Ionicons } from '@expo/vector-icons';
 import { writeChatHistoryToFirebase, ExtractUserProfileFromFirebase, generateRandomSessionID , ExtractLatestWeeklyAnalysisFromFirebase} from '../firebase/functions';
-import { lyra_prompt, lyra_greeting, nimbus_greeting, nimbus_prompt, fletchie_prompt, fletchie_greeting} from '../OpenAI/prompts';
+import { lyra_prompt, lyra_greeting, nimbus_greeting, nimbus_prompt, Solara_prompt, Solara_greeting} from '../OpenAI/prompts';
 import { testUser } from '../firebase/functions';
 import { buddies } from '../data/optionSettings';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import { useGlobalFonts } from '../styles/globalFonts';
-import { COLORS } from '../styles/globalStyles';
+import { COLORS, IMAGES } from '../styles/globalStyles';
 
 export default function ChatScreen() {
     const fontsLoaded = useGlobalFonts();
@@ -48,7 +48,7 @@ export default function ChatScreen() {
             console.log(userProfile);
 
             const generalpromptending = "Make sure to use the user's name if available. DON'T NEED TO BRING UP THE CONTEXT UNLESS IT IS NATURAL AND RELEVANT. Keep answers short and EMPHASIZE CONVERSATION FLOW. MAKE IT SOUND NATURAL AND FRIENDLY. FOCUS MOSTLY ON THE LAST USER INPUT AND RESPOND TO THAT. "
-            const fletchiepromptending = "Make sure to use the user's name if available. Keep answers short and EMPHASIZE CONVERSATION FLOW. MAKE IT SOUND NATURAL AND FRIENDLY. FOCUS MOSTLY ON THE LAST USER INPUT AND RESPOND TO THAT. "
+            const Solarapromptending = "Make sure to use the user's name if available. Keep answers short and EMPHASIZE CONVERSATION FLOW. MAKE IT SOUND NATURAL AND FRIENDLY. FOCUS MOSTLY ON THE LAST USER INPUT AND RESPOND TO THAT. "
 
             // Setting instruction and greeting prompts based on the bot name
 
@@ -61,9 +61,9 @@ export default function ChatScreen() {
                     instructionPromptContent = `Context about user: ${userProfile}. System instructions: ${nimbus_prompt}`+generalpromptending;
                     greetingPromptContent = nimbus_greeting;
                     break;
-                case "Fletchie": // Adjusted case for Fletchie to include weekly analysis summary
-                    instructionPromptContent = `Context about user: ${userProfile}. ${weeklyAnalysisSummaryPrompt} System instructions: ${fletchie_prompt}.`+fletchiepromptending;
-                    greetingPromptContent = fletchie_greeting;
+                case "Solara": // Adjusted case for Solara to include weekly analysis summary
+                    instructionPromptContent = `Context about user: ${userProfile}. ${weeklyAnalysisSummaryPrompt} System instructions: ${Solara_prompt}.`+Solarapromptending;
+                    greetingPromptContent = Solara_greeting;
                     break;
                 // Additional cases for other bots can be added here
             }
@@ -100,6 +100,9 @@ export default function ChatScreen() {
         if (bot === "Nimbus") {
             response = await apiCall(userInput, chatHistory);
         }
+        if (bot === "Solara") {
+            response = await apiCall(userInput, chatHistory);
+        }
         else {
             // response = await apiCall(userInput, chatHistory);
             response = await apiRAGCall(instructionPromptString, userInput, chatHistory);
@@ -134,10 +137,10 @@ export default function ChatScreen() {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             keyboardVerticalOffset={Platform.OS === 'ios' ? 10 : 0}
         >
-            <ImageBackground source={require('../assets/gradient3.jpeg')} style={styles.bgImage}>
+            <ImageBackground source={IMAGES.gradientbg} style={styles.bgImage}>
                 <View style={styles.contentContainer}>
                     <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
-                        <Ionicons name="arrow-back-circle-outline" color={COLORS.mindstormLightGrey} size={48} />
+                        <Ionicons name="arrow-back-circle-outline" color={COLORS.transcluscentWhite} size={48} />
                     </TouchableOpacity>
                     <ScrollView
                         style={styles.chatContainer}
@@ -148,7 +151,8 @@ export default function ChatScreen() {
                             chatHistory.slice(1).map((msg, index) => (
                                 <View key={index} style={[styles.bubble, msg.role === 'user' ? styles.userBubble : styles.aiBubble]}>
                                     {msg.role !== 'user' ?
-                                        <Image source={bot === "Lyra" ? buddies[0].avatar : buddies[1].avatar} style={styles.botImage}></Image> : null}
+                                        <Image source={bot === "Lyra" ? buddies[0].avatar : (bot === "Nimbus" ? buddies[1].avatar : buddies[2].avatar)
+                                    } style={styles.botImage}></Image> : null}
                                     <Text style={[styles.bubbleText, { color: msg.role === 'user' ? '#ffffff' : '#000000' }]}>{msg.content}</Text>
                                 </View>
                             ))}
@@ -162,7 +166,7 @@ export default function ChatScreen() {
                         placeholder="Type your message..."
                     />
                     <TouchableOpacity onPress={handleSend}>
-                        <Ionicons name="send" color={COLORS.mindstormLightGrey} size={36} />
+                        <Ionicons name="send" color={COLORS.transcluscentWhite} size={36} />
                     </TouchableOpacity>
                 </View>
             </ImageBackground>
@@ -190,8 +194,6 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     botImage: {
-        backgroundColor: 'black',
-        borderRadius: 12,
         width: windowWidth * 0.08,
         height: windowHeight * 0.04,
         padding: 8,

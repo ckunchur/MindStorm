@@ -34,13 +34,13 @@ export default function ChooseYourBuddy() {
                 style={styles.slide}
                 onPress={() => navigation.navigate('ChatScreen', { bot: item.name })}
             >
-                <Text style={styles.title}>{item.speciality}</Text>
+                <View  style={{borderTopLeftRadius: 30, borderTopRightRadius: 30, backgroundColor: item.darkColor}}><Text style={styles.title}>{item.speciality}</Text></View>
                 <View style={{ flexDirection: 'column', alignItems: 'center' }}>
                     <Image resizeMode="contain" source={item.image} style={styles.buddyImage}></Image>
                 </View>
-                <Text style={styles.subheaderText}>{item.name}</Text>
+                <Text style={[{color: item.darkColor}, styles.subheaderText]}> {item.name}</Text>
                 <View style={[styles.descriptionBox]}>
-                    <Text style={styles.descriptionText}>{item.text}</Text>
+                <Text style={styles.descriptionText}>{item.text}</Text>
                 </View>
             </TouchableOpacity>
         );
@@ -54,6 +54,7 @@ export default function ChooseYourBuddy() {
                 source={IMAGES.gradientbg}
                 style={styles.fullScreen}
             >
+                
                 <View style={styles.carouselContainer}>
                     <Carousel
                         data={buddies}
@@ -65,11 +66,11 @@ export default function ChooseYourBuddy() {
                     />
                 </View>
                 <View style={styles.buttonCol}>
-                    <TouchableOpacity style={styles.customizeButton}
+                    <TouchableOpacity style={{...styles.customizeButton, backgroundColor: buddies[activeSlide].darkColor}}
                         onPress={() => navigation.navigate('ChatScreen', { bot: buddies[activeSlide].name})}
                     >
                         <Ionicons name="chatbubbles-outline" size={24} style={{color: "white"}} />
-                        <Text style={{ ...styles.customizeButtonText, color: buddies[activeSlide].lightColor }}>Chat with {buddies[activeSlide].name}</Text>
+                        <Text style={{ ...styles.customizeButtonText,  color: buddies[activeSlide].lightColor }}>Chat with {buddies[activeSlide].name}</Text>
                     </TouchableOpacity>
                 </View>
             </ImageBackground>
@@ -96,22 +97,23 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
     },
     title: {
-        color: COLORS.mindstormGrey,
-        fontSize: 32,
-        marginBottom: 16,
+        color: 'white',
+        fontSize: 28,
+        marginBottom: 8,
+        padding: 16,
         textAlign: 'center',
-        fontFamily: "Inter-Regular"
+        fontFamily: "Inter-Semibold"
     },
     subheaderText: {
         textAlign: 'center',
-        color: COLORS.mindstormPurple,
         fontSize: 25,
         fontFamily: "Inter-Medium"   
     },
     buddyImage:{
         width: 0.55 * windowWidth,
         height:  0.55 * windowWidth,
-        marginBottom:20
+        marginBottom: 20,
+        marginTop: 12
     },
     bgImage: {
         width: windowWidth,
@@ -130,7 +132,6 @@ const styles = StyleSheet.create({
     },
     subheading: {
         fontSize: 18,
-        color:COLORS.mindstormPurple,
         textAlign: 'center',
         marginBottom: 16,
         fontFamily: "Inter-Regular"
@@ -138,13 +139,14 @@ const styles = StyleSheet.create({
     slide: { 
         backgroundColor: COLORS.transcluscentWhite,
         borderRadius: 30,
-        padding: 20,
+        // padding: 20,
         marginHorizontal: 10,
     },
     descriptionBox: {
         borderRadius: 32,
         padding: 20,
         margin: 16,
+        backgroundColor: 'white'
     },
     descriptionText: {
         color: COLORS.mindstormGrey,

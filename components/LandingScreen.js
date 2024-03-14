@@ -56,7 +56,7 @@ return (
       <WelcomeMessage message="Learn how to find the calm in your storm" style={styles.greyMessage} />
       <Image
         resizeMode="contain"
-        source={require('../assets/cloud-egg-1.png')}
+        source={require('../assets/buddy-group.png')}
         style={styles.welcomeImage}
       />
       <TouchableOpacity style={styles.getStartButton} onPress={() => navigation.navigate('ChooseGoals')}>
@@ -91,20 +91,20 @@ fullScreen: {
   justifyContent: 'center',
 },
 blueTitle: {
-  color: COLORS.mindstormGrey,
+  color: COLORS.transcluscentWhite,
   marginTop: '25%',
   fontSize: width * 0.09,
   fontFamily: "Inter-Medium",
 },
 greyMessage: {
-  color: COLORS.mindstormGrey,
+  color: COLORS.transcluscentGrey,
   marginTop: '8%',
   fontSize: width * 0.04,
   fontFamily: "Inter-Regular",
 },
 welcomeImage: {
-  marginTop: '5%',
-  maxWidth: '100%',
+  maxWidth: '90%',
+  maxHeight: '60%',
   aspectRatio: 1,
 },
 titleText: {
@@ -118,16 +118,15 @@ getStartButton: {
   justifyContent: "center",
   alignItems: "center",
   borderRadius: 48,
-  backgroundColor: "#7887DA",
+  backgroundColor: 'white',
   alignSelf: "stretch",
-  marginTop: '8%',
   paddingVertical: '8%',
   paddingHorizontal: '15%',
 },
 getStartButtonText: {
-  color: "#FFF",
+  color: COLORS.mindstormPurple,
   fontWeight: 'bold',
-  fontFamily: "Inter-Regular",
+  fontFamily: "Inter-SemiBold",
 },
 loginOption: {
   marginTop: '6%',
@@ -136,11 +135,11 @@ loginOption: {
 },
 loginText: {
   fontFamily: "Inter, sans-serif",
-  color: "#000",
+  color: COLORS.transcluscentWhite,
 },
 loginLinkText: {
   fontWeight: "500",
   textDecorationLine: "underline",
-  color: "#4A9BB4",
+  color: COLORS.transcluscentGrey,
 },
 });

@@ -270,7 +270,7 @@ export const ExtractLastWeekEntriesFirebase = async (userId) => {
   }
 };
 
-// // Used in DataScreen.js page and Fletchie Bot
+// // Used in DataScreen.js page and Solara Bot
 export async function ExtractLatestWeeklyAnalysisFromFirebase(userId) {
   try {
       console.log("Inside ExtractLatestWeeklyAnalysisFromFirebase function");
