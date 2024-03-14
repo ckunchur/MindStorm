@@ -1,4 +1,4 @@
-https://www.youtube.com/watch?v=8SBlpKvKBGE
+  <img src="https://www.youtube.com/watch?v=8SBlpKvKBGE">
 
 <div align="center">
     <img src="https://github.com/ckunchur/MindStorm-mobile/blob/main/assets/Blue%20White%20Minimal%20Creative%20Illustration%20Short%20Link%20Application%20Online%20Poster.png?raw=true" width="300" alt="Description of the image">
