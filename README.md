@@ -1,7 +1,7 @@
-
+https://github.com/ckunchur/MindStorm-mobile/assets/67437371/5e04b8d2-49e1-4385-a889-7f03ee9b2167
 
 <div align="center">
-https://github.com/ckunchur/MindStorm-mobile/assets/67437371/5e04b8d2-49e1-4385-a889-7f03ee9b2167
+    <img src="https://github.com/ckunchur/MindStorm-mobile/blob/main/assets/Blue%20White%20Minimal%20Creative%20Illustration%20Short%20Link%20Application%20Online%20Poster.png?raw=true" width="300" alt="Description of the image">
 </div>
 
 # mindstorm
