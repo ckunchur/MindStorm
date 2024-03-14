@@ -2,13 +2,12 @@
     <img src="https://github.com/ckunchur/MindStorm-mobile/blob/main/assets/Blue%20White%20Minimal%20Creative%20Illustration%20Short%20Link%20Application%20Online%20Poster.png?raw=true" width="300" alt="Description of the image">
 </div>
 
-
-https://github.com/ckunchur/MindStorm-mobile/assets/67437371/49f6a40b-9c34-400d-bbbc-248365d2c0f1
-
-
 # mindstorm
 
 Your journey to well-being is unique. Your support should be too. We utilize personalized LLM companions and goal-oriented pipelines to build emotional resilience, discover healthy habits, and empower you on your path to a happier, healthier you.
+
+# Demo
+Check out our MindStorm demo video [here](https://www.youtube.com/watch?v=8SBlpKvKBGE)!
 
 ## Inspiration
 
