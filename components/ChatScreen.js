@@ -46,22 +46,29 @@ export default function ChatScreen() {
     
             console.log("user profile");
             console.log(userProfile);
+
+            const generalpromptending = "Make sure to use the user's name if available. DON'T NEED TO BRING UP THE CONTEXT UNLESS IT IS NATURAL AND RELEVANT. Keep answers short and EMPHASIZE CONVERSATION FLOW. MAKE IT SOUND NATURAL AND FRIENDLY. FOCUS MOSTLY ON THE LAST USER INPUT AND RESPOND TO THAT. "
+            const fletchiepromptending = "Make sure to use the user's name if available. Keep answers short and EMPHASIZE CONVERSATION FLOW. MAKE IT SOUND NATURAL AND FRIENDLY. FOCUS MOSTLY ON THE LAST USER INPUT AND RESPOND TO THAT. "
+
             // Setting instruction and greeting prompts based on the bot name
+
             switch (bot) {
                 case "Lyra":
-                    instructionPromptContent = `Context about user: ${userProfile}. System instructions: ${lyra_prompt}`;
+                    instructionPromptContent = `Context about user: ${userProfile}. System instructions: ${lyra_prompt}`+generalpromptending;
                     greetingPromptContent = lyra_greeting;
                     break;
                 case "Nimbus":
-                    instructionPromptContent = `Context about user: ${userProfile}. System instructions: ${nimbus_prompt}`;
+                    instructionPromptContent = `Context about user: ${userProfile}. System instructions: ${nimbus_prompt}`+generalpromptending;
                     greetingPromptContent = nimbus_greeting;
                     break;
                 case "Fletchie": // Adjusted case for Fletchie to include weekly analysis summary
-                    instructionPromptContent = `Context about user: ${userProfile}. ${weeklyAnalysisSummaryPrompt} System instructions: ${fletchie_prompt}. Make sure to use the user's name if available.`;
+                    instructionPromptContent = `Context about user: ${userProfile}. ${weeklyAnalysisSummaryPrompt} System instructions: ${fletchie_prompt}.`+fletchiepromptending;
                     greetingPromptContent = fletchie_greeting;
                     break;
                 // Additional cases for other bots can be added here
             }
+            console.log("Full Prompt is below:")
+            console.log(instructionPromptContent)
             const instructionPrompt = {
                 role: 'system',
                 content: instructionPromptContent,
@@ -96,6 +103,7 @@ export default function ChatScreen() {
         else {
             // response = await apiCall(userInput, chatHistory);
             response = await apiRAGCall(instructionPromptString, userInput, chatHistory);
+
         }
         setUserInput(''); // Clear input after sending
         if (response.success && response.data.length > 0) {

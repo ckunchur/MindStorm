@@ -139,7 +139,7 @@ export async function generateResponse(instruction_prompt, user_prompt, messages
     console.log("topMatchesResponse", topMatchesResponse);
 
     const context = formatContext(topMatchesResponse); 
-    console.log("context", context);
+    console.log("Rag test 2 context", context);
 
     // don't know if we need instruction prompt
       const fullPrompt = `Take the following instruction prompt, chat history, and RAG context from user journal entries to best answer the user prompt.\nSystem Prompt: ${instruction_prompt}\nSession History: ${sessionHistory}\nRAG Context: ${context}\nUser Prompt: ${user_prompt}`;

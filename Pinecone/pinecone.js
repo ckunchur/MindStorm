@@ -92,7 +92,6 @@ async function generateResponse(system_prompt, messages, query) {
           model: "gpt-3.5-turbo",
       });
 
-
       return response.choices[0].message.content.trim();
 
   } catch (error) {
