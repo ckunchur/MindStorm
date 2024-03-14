@@ -1,8 +1,10 @@
-  <img src="https://www.youtube.com/watch?v=8SBlpKvKBGE">
-
 <div align="center">
     <img src="https://github.com/ckunchur/MindStorm-mobile/blob/main/assets/Blue%20White%20Minimal%20Creative%20Illustration%20Short%20Link%20Application%20Online%20Poster.png?raw=true" width="300" alt="Description of the image">
 </div>
+
+
+https://github.com/ckunchur/MindStorm-mobile/assets/67437371/49f6a40b-9c34-400d-bbbc-248365d2c0f1
+
 
 # mindstorm
 
