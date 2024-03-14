@@ -23,7 +23,7 @@ export default function ChatScreen() {
     const [userInput, setUserInput] = useState('');
     const [instructionPromptString, setInstructionPromptString] = useState("");
     const [chatHistory, setChatHistory] = useState([]);
-
+    console.log("entry text on chat screen", entryText);
     // Chat instructions based on bot
     useEffect(() => {
         const initializeChatHistory = async () => {

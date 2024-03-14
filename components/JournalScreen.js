@@ -72,6 +72,7 @@ export default function JournalScreen() {
         topMoods: topMoods,
         weatherMood: moodWeatherClassificationResult.success ? moodWeatherClassificationResult.data : "",
         botRecommendation: recommendTherapyChatbotResult.success ? recommendTherapyChatbotResult.data : "",
+        entryText: entryText
       });
   
       setEntryText(""); // Clear the input field after successful submission

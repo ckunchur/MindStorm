@@ -48,7 +48,7 @@ export default function JournalSummary() {
     }
 
     const route = useRoute();
-    const { topTopics, topMoods, weatherMood, botRecommendation } = route.params;
+    const { topTopics, topMoods, weatherMood, botRecommendation, entryText } = route.params;
     const navigation = useNavigation();
     const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2"; // hardcoded for now
 
@@ -168,7 +168,7 @@ export default function JournalSummary() {
                        
                         <TouchableOpacity 
                             style={styles.continueButton} 
-                            onPress={() => navigation.navigate('ChatScreen', { botName: isValidBotRecommendation(botRecommendation) ? botRecommendation : 'Lyra' })}
+                            onPress={() => navigation.navigate('ChatScreen', { botName: isValidBotRecommendation(botRecommendation) ? botRecommendation : 'Lyra', entryText: entryText })}
                         >
                             <Text style={styles.continueButtonText}>Chat with {isValidBotRecommendation(botRecommendation) ? botRecommendation : 'Lyra'}</Text>
                         </TouchableOpacity>
