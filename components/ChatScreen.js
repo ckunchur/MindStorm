@@ -7,6 +7,7 @@ import { writeChatHistoryToFirebase, ExtractUserProfileFromFirebase, generateRan
 import { lyra_prompt, lyra_greeting, nimbus_greeting, nimbus_prompt, Solara_prompt, Solara_greeting} from '../OpenAI/prompts';
 import { testUser } from '../firebase/functions';
 import { buddies } from '../data/optionSettings';
+import { upsertEntry } from '../Pinecone/pinecone-requests';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import { useGlobalFonts } from '../styles/globalFonts';
@@ -129,6 +130,7 @@ export default function ChatScreen() {
     const handleBackPress = () => {
         setSessionID(""); // reset session ID
         setChatHistory([]); // reset chat history if starting fresh next time
+        // await upsertEntry()
         navigation.goBack();
     };
 

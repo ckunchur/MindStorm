@@ -175,4 +175,22 @@ export async function generateResponse(instruction_prompt, user_prompt, messages
     }
   }
   
-    
+  // assume form is of {id: id, text: text}
+  export const upsertEntry = async (chat) => {
+    try {
+      const pineconeResponse = await upsertChatSessionsToPinecone([chat]);
+      console.log("Entry upserted into Pinecone index:", pineconeResponse);
+    } catch (error) {
+      console.error('Error during test:', error);
+    }
+  };
+
+  // assume form is a single string representing the chat history
+  export const upsertChatHistory = async (entry) => {
+    try {
+      const pineconeResponse = await upsertEntriesToPinecone([entry]);
+      console.log("Entry upserted into Pinecone index:", pineconeResponse);
+    } catch (error) {
+      console.error('Error during test:', error);
+    }
+  };
