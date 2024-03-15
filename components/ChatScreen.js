@@ -49,7 +49,7 @@ export default function ChatScreen() {
             console.log("user profile");
             console.log(userProfile);
 
-            const generalpromptending = "Make sure to use the user's name if available. DON'T NEED TO BRING UP THE CONTEXT UNLESS IT IS NATURAL AND RELEVANT. Keep answers short and EMPHASIZE CONVERSATION FLOW. MAKE IT SOUND NATURAL AND FRIENDLY. FOCUS MOSTLY ON THE LAST USER INPUT AND RESPOND TO THAT. "
+            const generalpromptending = "Make sure to use the user's name if available. DON'T NEED TO BRING UP THE CONTEXT UNLESS IT IS NATURAL AND RELEVANT. Keep answers comforting and short to medium length, whatever is needed to fully comfort and reassure. EMPHASIZE CONVERSATION FLOW. MAKE IT SOUND NATURAL AND FRIENDLY. FOCUS MOSTLY ON THE LAST USER INPUT AND RESPOND TO THAT. "
             const Solarapromptending = "Make sure to use the user's name if available. EMPHASIZE CONVERSATION FLOW. MAKE IT SOUND NATURAL AND FRIENDLY. FOCUS MOSTLY ON THE LAST USER INPUT AND RESPOND TO THAT. "
 
             // Setting instruction and greeting prompts based on the bot name
