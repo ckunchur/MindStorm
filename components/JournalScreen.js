@@ -1,8 +1,10 @@
 import { React, useState } from "react";
 import { View, StyleSheet, ImageBackground, Text, TextInput, Alert, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, TouchableWithoutFeedback,Keyboard} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { collection, serverTimestamp, addDoc } from 'firebase/firestore';
+import { collection, serverTimestamp, addDoc, doc, setDoc } from 'firebase/firestore';
+import { generateRandomSessionID } from "../firebase/functions";
 import { db } from '../firebaseConfig';
+import { upsertSingleEntry } from "../Pinecone/pinecone-requests";
 import { topMoodsAndTopicsWithChatGPT, moodWeatherClassificationWithChatGPT, recommendTherapyChatbotWithChatGPT } from '../OpenAI/OpenAI';
 import { useGlobalFonts } from '../styles/globalFonts';
 import { COLORS, IMAGES} from '../styles/globalStyles';
@@ -56,14 +58,15 @@ export default function JournalScreen() {
       setBotRecommendation(recommendTherapyChatbotResult.success ? recommendTherapyChatbotResult.data : "");
   
       // Firebase: Create a new entry in the "entries" collection for the user
-      const entriesRef = collection(db, `users/${uid}/entries`);
-      await addDoc(entriesRef, {
+      const docID = generateRandomSessionID();
+      const docRef = doc(db, `users/${uid}/entries`, docID);
+      await setDoc(docRef, {
         entryText: entryText,
         topTopics: topTopics,
         topMoods: topMoods,
         weatherMood: moodWeatherClassificationResult.success ? moodWeatherClassificationResult.data : "",
         botRecommendation: recommendTherapyChatbotResult.success ? recommendTherapyChatbotResult.data : "",
-        timeStamp: serverTimestamp(), // Use Firestore's serverTimestamp for consistency
+        timeStamp: serverTimestamp(),
       });
   
       // Navigate to the 'JournalSummary' screen after the weekly analysis is completed
@@ -74,6 +77,7 @@ export default function JournalScreen() {
         botRecommendation: recommendTherapyChatbotResult.success ? recommendTherapyChatbotResult.data : "",
         entryText: entryText
       });
+      await upsertSingleEntry({id: docID, text: entryText });
   
       setEntryText(""); // Clear the input field after successful submission
     } catch (error) {
