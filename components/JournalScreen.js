@@ -188,7 +188,8 @@ const styles = StyleSheet.create({
     position: "relative",
     width: "100%",
     maxWidth: 327,
-    
+    borderColor: COLORS.mindstormLightPurple,
+    borderWidth: 1,
     textAlign: "center",
     marginTop: 36,
     padding: 18,

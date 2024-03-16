@@ -3,6 +3,7 @@ import { View, StyleSheet, ImageBackground, Text, TextInput, Alert, TouchableOpa
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { signInUser } from "../firebase/functions";
+import { COLORS, IMAGES} from '../styles/globalStyles';
 
 export default function LogIn({ setOnboardingComplete }) {
   const navigation = useNavigation();
@@ -29,11 +30,11 @@ export default function LogIn({ setOnboardingComplete }) {
   return (
     <View style={styles.fullScreenContainer}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Ionicons name="arrow-back-circle-outline" color="white" size={48} />
+        <Ionicons name="arrow-back-circle-outline" color={COLORS.secondarytextcolor} size={48} />
       </TouchableOpacity>
       <ImageBackground
         resizeMode="cover"
-        source={require('../assets/onboarding-background.png')}
+        source={IMAGES.gradientbg}
         style={styles.fullScreen}
       >
         <Text style={styles.title}>Log In</Text>
@@ -81,25 +82,25 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
   },
   title: {
-    color: "white",
+    color: COLORS.maintextcolor,
     fontSize: 32,
     fontWeight: "700",
     fontFamily: "Inter, sans-serif",
     marginTop: 72, 
   },
   subheaderText: {
-    color: "white",
+    color: COLORS.secondarytextcolor,
     fontSize: 16,
     fontFamily: "Inter, sans-serif",
     marginBottom: 50, 
   },
   inputSubheader: {
-    color: "white",
+    color: COLORS.secondarytextcolor,
     fontSize: 16,
     fontFamily: "Inter, sans-serif",
   },
   inputHeader: {
-    color: "white",
+    color: COLORS.secondarytextcolor,
     fontWeight: 'bold',
     fontSize: 18,
     fontFamily: "Inter, sans-serif",
@@ -108,7 +109,7 @@ const styles = StyleSheet.create({
     height: 40,
     width: '80%',
     backgroundColor: 'rgba(255, 255, 255, 0.6)',
-    borderRadius: 5,
+    borderRadius: 16,
     paddingHorizontal: 10,
     marginVertical: 10,
     color: 'black',
@@ -128,9 +129,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
     fontFamily: "Inter, sans-serif",
+    borderColor: COLORS.mindstormLightPurple,
+    borderWidth: 1,
   },
   continueButtonText: {
-    color: "#4A9BB4",
-    fontWeight: 'bold'
+    color: COLORS.mindstormLightPurple,
+    fontWeight: 'bold',
+   
   },
 });

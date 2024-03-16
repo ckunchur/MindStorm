@@ -64,7 +64,6 @@ export const updatePersonalGoals = async (uid, goals, struggles) => {
 
 
 export const signInUser = async (email, password) => {
-  const auth = getAuth();
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;

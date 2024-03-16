@@ -3,7 +3,7 @@ import { View, StyleSheet, ImageBackground, Text, TextInput, Alert, TouchableOpa
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { signUpUser } from "../firebase/functions";
-
+import { COLORS, IMAGES } from "../styles/globalStyles";
 export default function CreateAccount() {
   const navigation = useNavigation();
   const [name, setName] = useState("");
@@ -41,62 +41,62 @@ export default function CreateAccount() {
   return (
     <View style={styles.fullScreenContainer}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Ionicons name="arrow-back-circle-outline" color="white" size={48} />
+        <Ionicons name="arrow-back-circle-outline" color={COLORS.secondarytextcolor} size={48} />
       </TouchableOpacity>
       <ImageBackground
         resizeMode="cover"
-        source={require('../assets/onboarding-background.png')}
+        source={IMAGES.gradientbg}
         style={styles.fullScreen}
       >
-          <Text style={styles.title}>Create Account</Text>
-          <Text style={styles.subheaderText}>Create an account to get started!</Text>
-          <Text style={styles.inputHeader}>Name</Text>
-          <Text style={styles.inputSubheader}>What should we call you?</Text>
-          <TextInput
-            placeholder="Name"
-            value={name}
-            onChangeText={setName}
-            style={styles.input}
-            placeholderTextColor="grey"
-          />
-          <Text style={styles.inputHeader}>Email</Text>
-          <TextInput
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            style={styles.input}
-            placeholderTextColor="grey"
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-          <Text style={styles.inputHeader}>Password</Text>
-          <Text style={styles.inputSubheader}>*At least 6 characters</Text>
-          <TextInput
-            placeholder="Password"
-            value={password}
-            onChangeText={setPassword}
-            style={styles.input}
-            placeholderTextColor="grey"
-            secureTextEntry
-          />
-          <Text style={styles.inputHeader}>Confirm Password</Text>
-          <TextInput
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            style={styles.input}
-            placeholderTextColor="grey"
-            secureTextEntry
-          />
-          <View style={styles.paginationContainer}>
-            <View style={styles.paginationActive} />
-            <View style={styles.paginationInactive} />
-            <View style={styles.paginationInactive} />
-            <View style={styles.paginationInactive} />
-          </View>
-          <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
-            <Text style={styles.continueButtonText}>Continue</Text>
-          </TouchableOpacity>
+        <Text style={styles.title}>Create Account</Text>
+        <Text style={styles.subheaderText}>Create an account to get started!</Text>
+        <Text style={styles.inputHeader}>Name</Text>
+        <Text style={styles.inputSubheader}>What should we call you?</Text>
+        <TextInput
+          placeholder="Name"
+          value={name}
+          onChangeText={setName}
+          style={styles.input}
+          placeholderTextColor="grey"
+        />
+        <Text style={styles.inputHeader}>Email</Text>
+        <TextInput
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          style={styles.input}
+          placeholderTextColor="grey"
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+        <Text style={styles.inputHeader}>Password</Text>
+        <Text style={styles.inputSubheader}>*At least 6 characters</Text>
+        <TextInput
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          style={styles.input}
+          placeholderTextColor="grey"
+          secureTextEntry
+        />
+        <Text style={styles.inputHeader}>Confirm Password</Text>
+        <TextInput
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          style={styles.input}
+          placeholderTextColor="grey"
+          secureTextEntry
+        />
+        <View style={styles.paginationContainer}>
+          <View style={styles.paginationActive} />
+          <View style={styles.paginationInactive} />
+          <View style={styles.paginationInactive} />
+          <View style={styles.paginationInactive} />
+        </View>
+        <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
+          <Text style={styles.continueButtonText}>Continue</Text>
+        </TouchableOpacity>
       </ImageBackground>
     </View>
   )
@@ -118,25 +118,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    color: "white",
+    color: COLORS.maintextcolor,
     fontSize: 32,
     fontWeight: "700",
     fontFamily: "Inter, sans-serif",
     marginTop: 72,
   },
   subheaderText: {
-    color: "white",
+    color: COLORS.secondarytextcolor,
     fontSize: 16,
     fontFamily: "Inter, sans-serif",
     marginBottom: 50,
   },
   inputSubheader: {
-    color: "white",
+    color: COLORS.secondarytextcolor,
     fontSize: 16,
     fontFamily: "Inter, sans-serif",
   },
   inputHeader: {
-    color: "white",
+    color: COLORS.secondarytextcolor,
     fontWeight: 'bold',
     fontSize: 18,
     fontFamily: "Inter, sans-serif",
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   },
   paginationInactive: {
     borderRadius: 100,
-    backgroundColor: "#E3E5E5",
+    backgroundColor: COLORS.secondarytextcolor,
     height: 8,
     width: 8,
   },
@@ -186,9 +186,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
     fontFamily: "Inter, sans-serif",
+    borderColor: COLORS.mindstormLightPurple,
+    borderWidth: 1,
   },
   continueButtonText: {
-    color: "#4A9BB4",
+    color: COLORS.mindstormLightPurple,
     fontWeight: 'bold'
   },
 });
