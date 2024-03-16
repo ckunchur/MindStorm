@@ -124,11 +124,14 @@ getStartButton: {
   marginTop:0,
   paddingVertical: '8%',
   paddingHorizontal: '15%',
+  borderColor: COLORS.mindstormLightPurple,
+  borderWidth: 1,
 },
 getStartButtonText: {
-  color: COLORS.maintextcolor,
+  color: COLORS.mindstormLightPurple,
   fontWeight: 'bold',
   fontFamily: "Inter-Medium",
+
 },
 loginOption: {
   marginTop: '6%',
