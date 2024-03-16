@@ -7,7 +7,7 @@ import { writeChatHistoryToFirebase, ExtractUserProfileFromFirebase, generateRan
 import { lyra_prompt, lyra_greeting, nimbus_greeting, nimbus_prompt, Solara_prompt, Solara_greeting} from '../OpenAI/prompts';
 import { testUser } from '../firebase/functions';
 import { buddies } from '../data/optionSettings';
-import { upsertEntry } from '../Pinecone/pinecone-requests';
+import { upsertSingleChat, upsertEntry } from '../Pinecone/pinecone-requests';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import { useGlobalFonts } from '../styles/globalFonts';
@@ -118,16 +118,19 @@ export default function ChatScreen() {
                 setSessionID(newSessionID);
 
             }
-            await writeChatHistoryToFirebase(testUser, sessionID, newChatHistory);
         } else {
             console.error(response.msg);
         }
     };
 
-    const handleBackPress = () => {
+    const handleBackPress = async() => {
+        const chatString = chatHistory.slice(1).map(message => `role: ${message.role}, content: "${message.content}"`).join('; ');
+        // upsert whole chat history to Pinecone after exit
+        console.log("chatstring", chatString);
+        await upsertSingleChat([{ id: sessionID, messages: chatString }]);
+        await writeChatHistoryToFirebase(testUser, sessionID, chatHistory);
         setSessionID(""); // reset session ID
         setChatHistory([]); // reset chat history if starting fresh next time
-        // await upsertEntry()
         navigation.goBack();
     };
 

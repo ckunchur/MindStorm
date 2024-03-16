@@ -120,8 +120,8 @@ export const writeBotSettingsToFirebase = async (userId, bot, memory, tone, age,
 export const writeChatHistoryToFirebase = async (userId, sessionID, history) => {
  
   try {
-      const docRef = doc(db, `users/${userId}/chats`, sessionID);
-      await setDoc(docRef, {
+    const docRef = doc(db, `users/${userId}/chats/${sessionID}`);
+    await setDoc(docRef, {
           chatHistory: history,
           timestamp: new Date() // Adds a timestamp
       }, { merge: true });

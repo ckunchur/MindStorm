@@ -18,6 +18,7 @@ const openaiClient = axios.create({
 });
 const model = "text-embedding-ada-002";
 async function getEmbeddings(text) {
+    console.log("text for embedding", text);
     try {
         const response = await openaiClient.post('/embeddings', {
             model: model,
@@ -25,6 +26,7 @@ async function getEmbeddings(text) {
         });
         console.log("embedding response received");
         return response.data.data[0].embedding;
+        console.log("embedding", response.data.data[0].embedding);
     } catch (error) {
         console.error('Error fetching embeddings, pinecone-requests:', error);
         throw error; // or handle error as needed
@@ -180,10 +182,10 @@ export async function generateResponse(instruction_prompt, user_prompt, messages
     }
   };
 
-  // assume form is a single string representing the chat history
-  export const upsertChatHistory = async (entry) => {
+  // assume form is of form {id: id, messages: concatenated messages string}
+  export const upsertSingleChat = async (history) => {
     try {
-      const pineconeResponse = await upsertEntriesToPinecone([entry]);
+      const pineconeResponse = await upsertChatSessionsToPinecone(history);
       console.log("Entry upserted into Pinecone index:", pineconeResponse);
     } catch (error) {
       console.error('Error during test:', error);
