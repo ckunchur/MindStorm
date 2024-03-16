@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
 import { doc, getDoc, addDoc, getDocs, collection, setDoc, serverTimestamp, query, where, orderBy, limit } from 'firebase/firestore';
 import { db, auth } from '../firebaseConfig';
-import { Alert } from 'react-native';
+import uuid from 'react-native-uuid';
+
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -13,8 +13,13 @@ import {
   updatePassword,
 } from 'firebase/auth';
 
+
 export const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2" // hardcoded for now
 
+
+export function generateRandomSessionID() {
+  return uuid.v4();
+}
 export const updatePersonalInfo = async (uid, gender, age, relaxActivities, hobbies) => {
   try {
     const userDocRef = doc(db, `users`, uid);
@@ -113,10 +118,7 @@ export const writeBotSettingsToFirebase = async (userId, bot, memory, tone, age,
 };
 
 export const writeChatHistoryToFirebase = async (userId, sessionID, history) => {
-  if (!sessionID) {
-    console.error("Invalid sessionID");
-    return;
-  }
+ 
   try {
       const docRef = doc(db, `users/${userId}/chats`, sessionID);
       await setDoc(docRef, {
@@ -238,6 +240,37 @@ export const ExtractUserNameFromFirebase = async (userId) => {
   return userName; // Return the userName found or an empty string
 };
 
+// used to read back entry after submission for upserting
+export const ExtractLatestEntryFirebase = async (userId) => {
+  
+  try {
+    const entriesCollectionRef = collection(db, 'users', userId, 'entries');
+    const querySnapshot = await getDocs(entriesCollectionRef);
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    querySnapshot.forEach((doc) => {
+      const entry = doc.data();
+      // Check if the entry has an "entryText" field and a valid timestamp
+      if (entry && entry.entryText && entry.timeStamp) {
+        const entryDate = entry.timeStamp.toDate(); // Convert Firestore Timestamp to JavaScript Date object
+
+        // Only push the entry if it's from the last week to now
+        if (entryDate >= oneWeekAgo) {
+          entriesData.push({
+            text: entry.entryText, // the entry text
+            time: entryDate // the entry timestamp as a Date object
+          });
+        }
+      }
+    });
+    // console.log("Extracted entries data from the last week: ", entriesData);
+    return entriesData; // Return the array of entries data
+  } catch (e) {
+    console.error("Error extracting entries from Firestore: ", e);
+  }
+};
+
 // // Used in DataScreen.js page
 export const ExtractLastWeekEntriesFirebase = async (userId) => {
   let entriesData = []; // This will hold the formatted entries data
@@ -273,21 +306,14 @@ export const ExtractLastWeekEntriesFirebase = async (userId) => {
 // // Used in DataScreen.js page and Solara Bot
 export async function ExtractLatestWeeklyAnalysisFromFirebase(userId) {
   try {
-      console.log("Inside ExtractLatestWeeklyAnalysisFromFirebase function");
       const weeklyAnalysisRef = collection(db, `users/${userId}/weeklyAnalysis`);
-      console.log("Weekly analysis collection reference:", weeklyAnalysisRef);
       const q = query(weeklyAnalysisRef, orderBy("timeStamp", "desc"), limit(1));
-      console.log("Query:", q);
       const querySnapshot = await getDocs(q);
-      console.log("Query snapshot:", querySnapshot);
       
       if (!querySnapshot.empty) {
-          console.log("Query snapshot is not empty");
           const doc = querySnapshot.docs[0];
-          console.log("Latest weekly analysis document:", doc);
           return { id: doc.id, ...doc.data() };
       } else {
-          console.log("Query snapshot is empty");
           return null;
       }
   } catch (error) {

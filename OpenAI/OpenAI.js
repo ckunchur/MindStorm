@@ -60,8 +60,6 @@ export const chatgptApiRAGCall = async (instruction_prompt, user_prompt, message
     try {
         const answer = await generateResponse(instruction_prompt, user_prompt, messages)
         // Append only the new assistant response to the existing messages
-        console.log("Rag test 1")
-        console.log(answer)
         const newMessages = [{ role: 'user', content: user_prompt }, { role: 'system', content: answer }];
         return { success: true, data: newMessages };
     } catch (err) {

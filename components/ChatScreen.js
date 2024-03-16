@@ -21,11 +21,9 @@ export default function ChatScreen() {
     const navigation = useNavigation();
     const route = useRoute();
     const { bot, entryText } = route.params;
-    console.log("bot on chat screen", bot);
     const [userInput, setUserInput] = useState('');
     const [instructionPromptString, setInstructionPromptString] = useState("");
     const [chatHistory, setChatHistory] = useState([]);
-    console.log("entry text on chat screen", entryText);
     // Chat instructions based on bot
     useEffect(() => {
         const initializeChatHistory = async () => {
@@ -39,15 +37,13 @@ export default function ChatScreen() {
             let weeklyAnalysisSummaryPrompt = "";
             if (latestWeeklyAnalysis) {
                 // Format the weekly analysis as needed, for example:
-                console.log("Weekly analysis")
-                console.log(latestWeeklyAnalysis.weeklongSummary)
+               
                 weeklyAnalysisSummaryPrompt = `Here's your latest weekly analysis: ${latestWeeklyAnalysis.weeklongSummary} (from ${new Date(latestWeeklyAnalysis.timeStamp.seconds * 1000).toLocaleDateString()})`;
             } else {
                 weeklyAnalysisSummaryPrompt = "It seems like we don't have a weekly analysis for you yet.";
             }
     
-            console.log("user profile");
-            console.log(userProfile);
+           
 
             const generalpromptending = "Make sure to use the user's name if available. DON'T NEED TO BRING UP THE CONTEXT UNLESS IT IS NATURAL AND RELEVANT. Keep answers comforting and short to medium length, whatever is needed to fully comfort and reassure. EMPHASIZE CONVERSATION FLOW. MAKE IT SOUND NATURAL AND FRIENDLY. FOCUS MOSTLY ON THE LAST USER INPUT AND RESPOND TO THAT. "
             const Solarapromptending = "Make sure to use the user's name if available. EMPHASIZE CONVERSATION FLOW. MAKE IT SOUND NATURAL AND FRIENDLY. FOCUS MOSTLY ON THE LAST USER INPUT AND RESPOND TO THAT. "
@@ -69,8 +65,7 @@ export default function ChatScreen() {
                     break;
                 // Additional cases for other bots can be added here
             }
-            console.log("Full Prompt is below:")
-            console.log(instructionPromptContent)
+            
             const instructionPrompt = {
                 role: 'system',
                 content: instructionPromptContent,
@@ -96,7 +91,6 @@ export default function ChatScreen() {
     const handleSend = async () => {
         if (!userInput.trim()) return; // Prevent sending empty messages
 
-        console.log("chatHistory in rag call", chatHistory, userInput, instructionPromptString)
         let response;
         // don't need RAG for basic productivity bot
         if (bot === "Nimbus") {
@@ -114,12 +108,15 @@ export default function ChatScreen() {
         if (response.success && response.data.length > 0) {
             const newMessages = response.data // append user prompt and gpt response
             const newChatHistory = [...chatHistory, ...newMessages];
-            console.log("newChatHistory", newChatHistory);
             setChatHistory(newChatHistory);
             if (sessionID === "") {
+
                 const newSessionID = generateRandomSessionID(); // Implement this function to generate a unique ID
-                console.log("sessionid", newSessionID);
+                console.log(newSessionID);
+                console.log("in sessionid function", newSessionID);
+
                 setSessionID(newSessionID);
+
             }
             await writeChatHistoryToFirebase(testUser, sessionID, newChatHistory);
         } else {
