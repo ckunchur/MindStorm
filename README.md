@@ -48,9 +48,9 @@ Unlike generic apps with a one-size-fits-all therapist, Mindstorm evolves with y
 - run `npm install` 
 - run `npx expo start`
 
-## Usage
+Note: to avoid creating new account log in with the following email: zappy77876@gmail.com and password: abc123
 
-Note: to avoid creating new account log in with the following email and password: zappy77876@gmail.com, abc123
+## Usage
 
 Our user flow is simple — journal and reflect on your day, and choose to chat from your entry with a recommended companion based on what we detected from your needs. Over time, you can check your weekly insights to make sense of your trends and emotional landscape.
 
