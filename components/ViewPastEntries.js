@@ -5,18 +5,21 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { useGlobalFonts } from '../styles/globalFonts';
 import { ExtractEntriesFromSpecificDayFirebase, testUser } from '../firebase/functions';
+import { useUser } from '../contexts/UserContext';
 
 export default function ViewPastEntries() {
   const navigation = useNavigation();
   const route = useRoute();
   const fontsLoaded = useGlobalFonts();
   const [entries, setEntries] = useState([]);
+  const { userId } = useUser(); // pulled from global state
+
 
   useEffect(() => {
     const fetchEntries = async () => {
       const selectedDate = route.params?.selectedDate;
       if (selectedDate) {
-        const entriesData = await ExtractEntriesFromSpecificDayFirebase(testUser, selectedDate);
+        const entriesData = await ExtractEntriesFromSpecificDayFirebase(userId, selectedDate);
         setEntries(entriesData);
         console.log('Entries from the specific day:', entriesData);
       }

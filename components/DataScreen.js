@@ -12,6 +12,7 @@ import { collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs } f
 import { db } from '../firebaseConfig';
 import { useGlobalFonts } from '../styles/globalFonts';
 import { COLORS, IMAGES} from '../styles/globalStyles';
+import { useUser } from '../contexts/UserContext';
 
 const colors = COLORS.fivecolourPastelRainbowList;
 
@@ -48,6 +49,8 @@ export default function DataScreen() {
   if (!fontsLoaded) {
     return null;
   }    
+  const { userId } = useUser(); // pulled from global state
+
 
   const [userName, setUserName] = useState('');
   const [weeklongSummary, setWeeklongSummary] = useState("");
@@ -105,10 +108,10 @@ export default function DataScreen() {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log("Fetching data for user ID:", testUser);
+      console.log("Fetching data for user ID:", userId);
       
       // Fetch user name
-      const fetchedUserName = await ExtractUserNameFromFirebase(testUser);
+      const fetchedUserName = await ExtractUserNameFromFirebase(userId);
       if (fetchedUserName) {
         setUserName(fetchedUserName);
         console.log("User's name:", fetchedUserName);
@@ -117,7 +120,7 @@ export default function DataScreen() {
       }
 
       // Fetch the last weekly analysis from Firebase
-      const weeklyAnalysisRef = collection(db, `users/${testUser}/weeklyAnalysis`);
+      const weeklyAnalysisRef = collection(db, `users/${userId}/weeklyAnalysis`);
       const q = query(weeklyAnalysisRef, orderBy("timeStamp", "desc"), limit(1));
       const querySnapshot = await getDocs(q);
 
@@ -136,12 +139,12 @@ export default function DataScreen() {
         } else {
           console.log("Last weekly analysis is older than four hours, rerunning analysis");
           // If the last timestamp is older than four hours, rerun the weekly analysis
-          await performWeeklongAnalysis(testUser);
+          await performWeeklongAnalysis(userId);
         }
       } else {
         console.log("No weekly analysis data found, running analysis");
         // If no weekly analysis data is found, run the weekly analysis
-        await performWeeklongAnalysis(testUser);
+        await performWeeklongAnalysis(userId);
       }
 
       setIsLoading(false);

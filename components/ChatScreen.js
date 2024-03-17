@@ -8,12 +8,15 @@ import { lyra_prompt, lyra_greeting, nimbus_greeting, nimbus_prompt, Solara_prom
 import { testUser } from '../firebase/functions';
 import { buddies } from '../data/optionSettings';
 import { upsertSingleChat, upsertEntry } from '../Pinecone/pinecone-requests';
+import { useUser } from '../contexts/UserContext';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import { useGlobalFonts } from '../styles/globalFonts';
 import { COLORS, IMAGES } from '../styles/globalStyles';
 
 export default function ChatScreen() {
+    const { userId } = useUser(); // pulled from global state
+
     const fontsLoaded = useGlobalFonts();
     if (!fontsLoaded) {
         return null;
@@ -27,9 +30,9 @@ export default function ChatScreen() {
     // Chat instructions based on bot
     useEffect(() => {
         const initializeChatHistory = async () => {
-            const userProfile = await ExtractUserProfileFromFirebase(testUser);
+            const userProfile = await ExtractUserProfileFromFirebase(userId);
             // Fetch the latest weekly analysis for the user
-            const latestWeeklyAnalysis = await ExtractLatestWeeklyAnalysisFromFirebase(testUser);
+            const latestWeeklyAnalysis = await ExtractLatestWeeklyAnalysisFromFirebase(userId);
             let instructionPromptContent = "";
             let greetingPromptContent = "";
     
@@ -128,7 +131,7 @@ export default function ChatScreen() {
         // upsert whole chat history to Pinecone after exit
         console.log("chatstring", chatString);
         await upsertSingleChat([{ id: sessionID, messages: chatString }]);
-        await writeChatHistoryToFirebase(testUser, sessionID, chatHistory);
+        await writeChatHistoryToFirebase(userId, sessionID, chatHistory);
         setSessionID(""); // reset session ID
         setChatHistory([]); // reset chat history if starting fresh next time
         navigation.goBack();
