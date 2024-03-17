@@ -1,17 +1,21 @@
 import { React, useState } from "react";
-import { View, StyleSheet, ImageBackground, Text, TextInput, Alert, TouchableOpacity } from 'react-native';
+import { View, Image, StyleSheet, ImageBackground, Text, TextInput, Alert, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { signInUser } from "../firebase/functions";
 import { COLORS, IMAGES} from '../styles/globalStyles';
+import { useUser } from '../contexts/UserContext'; // Adjust the import path as necessary
+
 
 export default function LogIn({ setOnboardingComplete }) {
+  const { setUserId } = useUser();
+
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const handleSignIn = async () => {
     try {
-      const success = await signInUser(email, password);
+      const success = await signInUser(email, password, setUserId);
       if (success) {
         Alert.alert("Sign In Successful", "Welcome back!");
         setOnboardingComplete(true);
@@ -38,6 +42,11 @@ export default function LogIn({ setOnboardingComplete }) {
         style={styles.fullScreen}
       >
         <Text style={styles.title}>Log In</Text>
+        <Image
+        resizeMode="contain"
+        source={require('../assets/buddy-group.png')}
+        style={styles.buddyImage}
+      />
         <Text style={styles.subheaderText}>Sign into an existing account</Text>
         <Text style={styles.inputHeader}>Email</Text>
         <TextInput
@@ -72,6 +81,10 @@ const styles = StyleSheet.create({
     top: 80, 
     left: 20,
     zIndex: 10, 
+  },
+  buddyImage: {
+    maxWidth: '60%',
+    maxHeight: '20%',
   },
   fullScreenContainer: {
     flex: 1, 

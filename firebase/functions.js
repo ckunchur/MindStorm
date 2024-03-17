@@ -14,8 +14,10 @@ import {
 } from 'firebase/auth';
 
 
-export const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2" // hardcoded for now
 
+export const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2" // hardcoded for now
+// export const { userId } = useUser();
+// console.log("logged in user", userId);
 
 export function generateRandomSessionID() {
   return uuid.v4();
@@ -61,14 +63,25 @@ export const updatePersonalGoals = async (uid, goals, struggles) => {
   }
 };
 
+export const forgotPassword = (email) => {
+  sendPasswordResetEmail(auth, email)
+    .then(() => {
+      // Password reset email sent!
+      console.log("Password reset email sent successfully.");
+    })
+    .catch((error) => {
+      const errorMessage = error.message;
+      console.error("Error sending password reset email:", errorMessage);
+    });
+};
 
-
-export const signInUser = async (email, password) => {
+export const signInUser = async (email, password, setUserId) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
     console.log("User signed in: ", user.uid);
+    setUserId(user.uid); // Update the global user ID
 
     return true; // Indicate success
   } catch (error) {
@@ -78,7 +91,7 @@ export const signInUser = async (email, password) => {
   }
 };
 
-export const signUpUser = async (name, email, password) => {
+export const signUpUser = async (name, email, password, setUserId) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
@@ -92,6 +105,7 @@ export const signUpUser = async (name, email, password) => {
       name: name,
     });
 
+    setUserId(user.uid);
     console.log("User created with name: ", user.displayName);
     return true; // Indicate success
   } catch (error) {
@@ -100,6 +114,15 @@ export const signUpUser = async (name, email, password) => {
     throw error;
   }
 };
+
+export const logoutUser = () => {
+  signOut(auth).then(() => {
+    console.log("User signed out successfully.");
+  }).catch((error) => {
+    console.error("Error signing out: ", error);
+  });
+};
+
 export const writeBotSettingsToFirebase = async (userId, bot, memory, tone, age, gender) => {
     try {
         const botSettingsDocRef = doc(db, `users/${userId}/botSettings/${bot}`);

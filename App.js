@@ -1,5 +1,5 @@
 // import React, { useState } from 'react';
-import React, { useState, createContext, useContext } from 'react';
+import React, { useState, useEffect, createContext, useContext } from 'react';
 import { StyleSheet, SafeAreaView, Platform, View } from 'react-native';
 import 'react-native-gesture-handler';
 import { NavigationContainer } from "@react-navigation/native";
@@ -19,7 +19,11 @@ import CreateAccountScreen from './components/CreateAccount';
 import ViewPastEntries from './components/ViewPastEntries';
 import { Ionicons } from '@expo/vector-icons';
 import { LogBox } from 'react-native';
-import { COLORS} from './styles/globalStyles';
+import { COLORS } from './styles/globalStyles';
+import { UserProvider } from './contexts/UserContext'; // Adjust the path as needed
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { db, auth } from './firebaseConfig';
+
 LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
 LogBox.ignoreAllLogs();//Ignore all log notifications
 
@@ -35,6 +39,8 @@ function DataStackNavigator() {
     <DataStack.Navigator initialRouteName="DataScreen" screenOptions={{ headerShown: false }}>
       <DataStack.Screen name="DataScreen" component={DataScreen} />
       <DataStack.Screen name="ViewPastEntries" component={ViewPastEntries} />
+      {/* <DataStack.Screen name="LandingScreen" component={NewLandingScreen} /> */}
+
     </DataStack.Navigator>
   );
 }
@@ -80,11 +86,20 @@ function OnboardingStackNavigator({ setOnboardingComplete }) {
 }
 
 export default function App() {
-  const [onboardingComplete, setOnboardingComplete] = useState(false);
-  let contentDisplayed;
-  if (onboardingComplete) {
-    contentDisplayed = (
-      <NavigationContainer>
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, user => {
+      setIsUserLoggedIn(!!user);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const renderContent = () => {
+    if (isUserLoggedIn === null) {
+      return null; 
+    } else if (isUserLoggedIn) {
+      return (
         <Tab.Navigator
           screenOptions={({ route }) => ({
             tabBarIcon: ({ focused, size }) => {
@@ -100,7 +115,7 @@ export default function App() {
             },
           })}
           tabBarOptions={{
-            showLabel: false, // Hide the tab labels
+            showLabel: false,
             style: {
               position: 'absolute',
               bottom: 0,
@@ -119,20 +134,23 @@ export default function App() {
           }}
         >
           <Tab.Screen name="Journal" component={JournalStackNavigator} options={{ headerShown: false }} />
-          <Tab.Screen name="Chat" component={ChatStackNavigator} options={{ headerShown: false, tabBarVisible: false, }} />
+          <Tab.Screen name="Chat" component={ChatStackNavigator} options={{ headerShown: false }} />
           <Tab.Screen name="Insights" component={DataStackNavigator} options={{ headerShown: false }} />
         </Tab.Navigator>
-      </NavigationContainer>
-    );
-  }
-  else {
-    contentDisplayed = (
+      );
+    } else {
+      // Onboarding flow for users who are not logged in
+      return <OnboardingStackNavigator setOnboardingComplete={setIsUserLoggedIn} />;
+    }
+  };
+
+  return (
+    <UserProvider>
       <NavigationContainer>
-        <OnboardingStackNavigator setOnboardingComplete={setOnboardingComplete} />
+        {renderContent()}
       </NavigationContainer>
-    );
-  }
-  return contentDisplayed;
+    </UserProvider>
+  );
 }
 
 const styles = StyleSheet.create({

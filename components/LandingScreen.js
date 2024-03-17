@@ -59,7 +59,7 @@ return (
         source={require('../assets/buddy-group.png')}
         style={styles.welcomeImage}
       />
-      <TouchableOpacity style={styles.getStartButton} onPress={() => navigation.navigate('ChooseGoals')}>
+      <TouchableOpacity style={styles.getStartButton} onPress={() => navigation.navigate('CreateAccount')}>
         <Text style={styles.getStartButtonText}>Get Started</Text>
       </TouchableOpacity>
       <View style={styles.loginOption}>

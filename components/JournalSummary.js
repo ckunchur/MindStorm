@@ -2,14 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Image, ImageBackground, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { journalEntries } from '../data/fakeEntries';
-import MoodPieChart from './DonutChart';
 import { collection, serverTimestamp, addDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { weeklongSummaryWithChatGPT, weeklongTopicClassificationWithChatGPT, weeklongMoodClassificationWithChatGPT } from '../OpenAI/OpenAI';
 import { ExtractLastWeekEntriesFirebase } from '../firebase/functions';
 import { useGlobalFonts } from '../styles/globalFonts';
 import { COLORS, IMAGES } from '../styles/globalStyles';
+import { useUser } from "../contexts/UserContext";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -50,10 +49,10 @@ export default function JournalSummary() {
     const route = useRoute();
     const { topTopics, topMoods, weatherMood, botRecommendation, entryText } = route.params;
     const navigation = useNavigation();
-    const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2"; // hardcoded for now
-
+    const { userId } = useUser(); // pulled from global state
+  
     useEffect(() => {
-        performWeeklongAnalysis(testUser);
+        performWeeklongAnalysis(userId);
     }, []);
 
 
