@@ -14,8 +14,10 @@ import {
 } from 'firebase/auth';
 
 
-export const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2" // hardcoded for now
 
+export const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2" // hardcoded for now
+// export const { userId } = useUser();
+// console.log("logged in user", userId);
 
 export function generateRandomSessionID() {
   return uuid.v4();
@@ -63,12 +65,13 @@ export const updatePersonalGoals = async (uid, goals, struggles) => {
 
 
 
-export const signInUser = async (email, password) => {
+export const signInUser = async (email, password, setUserId) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
     console.log("User signed in: ", user.uid);
+    setUserId(user.uid); // Update the global user ID
 
     return true; // Indicate success
   } catch (error) {

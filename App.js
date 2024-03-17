@@ -19,7 +19,9 @@ import CreateAccountScreen from './components/CreateAccount';
 import ViewPastEntries from './components/ViewPastEntries';
 import { Ionicons } from '@expo/vector-icons';
 import { LogBox } from 'react-native';
-import { COLORS} from './styles/globalStyles';
+import { COLORS } from './styles/globalStyles';
+import { UserProvider } from './contexts/UserContext'; // Adjust the path as needed
+
 LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
 LogBox.ignoreAllLogs();//Ignore all log notifications
 
@@ -132,7 +134,11 @@ export default function App() {
       </NavigationContainer>
     );
   }
-  return contentDisplayed;
+  return (
+    <UserProvider>
+      {contentDisplayed}
+    </UserProvider>
+  );
 }
 
 const styles = StyleSheet.create({

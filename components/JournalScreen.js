@@ -8,11 +8,14 @@ import { upsertSingleEntry } from "../Pinecone/pinecone-requests";
 import { topMoodsAndTopicsWithChatGPT, moodWeatherClassificationWithChatGPT, recommendTherapyChatbotWithChatGPT } from '../OpenAI/OpenAI';
 import { useGlobalFonts } from '../styles/globalFonts';
 import { COLORS, IMAGES} from '../styles/globalStyles';
+import { useUser } from "../contexts/UserContext";
 
 const WelcomeTitle = ({ title, style }) => <Text style={[styles.titleText, style]}>{title}</Text>;
 const WelcomeMessage = ({ message, style }) => <Text style={[styles.messageText, style]}>{message}</Text>;
 
 export default function JournalScreen() {
+  // const { userId } = useUser();
+
   const navigation = useNavigation();
   const [entryText, setEntryText] = useState("");
   const [topTopics, setTopTopics] = useState([]);
@@ -25,7 +28,7 @@ export default function JournalScreen() {
     return null;
   }
   const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2" // hardcoded for now
-
+  // console.log('userid on journal screen', userId);
   const handleEntrySubmit = async (uid) => {
     if (!uid) {
       Alert.alert("Error", "User ID is missing.");
