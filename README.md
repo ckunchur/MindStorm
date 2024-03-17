@@ -2,14 +2,14 @@
     <img src="https://github.com/ckunchur/MindStorm-mobile/blob/main/assets/Blue%20White%20Minimal%20Creative%20Illustration%20Short%20Link%20Application%20Online%20Poster.png?raw=true" width="300" alt="Description of the image">
 </div>
 
-# mindstorm
+## mindstorm
 
 Your journey to well-being is unique. Your support should be too. We utilize personalized LLM companions and goal-oriented pipelines to build emotional resilience, discover healthy habits, and empower you on your path to a happier, healthier you.
 
-# Demo
+## Demo
 Check out our MindStorm demo video [here](https://www.youtube.com/watch?v=8SBlpKvKBGE)!
 
-# Quick Start
+## Quick Start
 ### How to run app
 - create `.env` file in root directory with the following:
   - EXPO_PUBLIC_OPENAI_API_KEY="{your key here}"
