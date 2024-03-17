@@ -86,7 +86,7 @@ Think of it as a conversation that deepens over time. The more you interact with
 Sonya Jin  
 sonyajin@stanford.edu
 
-Caitlin Rita Kunchur  
+Caitlin Kunchur  
 ckunchur@stanford.edu
 
 Janet Fan Mi Zhong  
