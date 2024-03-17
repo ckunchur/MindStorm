@@ -9,7 +9,7 @@ Your journey to well-being is unique. Your support should be too. We utilize per
 # Demo
 Check out our MindStorm demo video [here](https://www.youtube.com/watch?v=8SBlpKvKBGE)!
 
-## Quick Start
+# Quick Start
 ### How to run app
 - create `.env` file in root directory with the following:
   - EXPO_PUBLIC_OPENAI_API_KEY="{your key here}"
