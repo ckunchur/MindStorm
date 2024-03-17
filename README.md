@@ -9,6 +9,16 @@ Your journey to well-being is unique. Your support should be too. We utilize per
 # Demo
 Check out our MindStorm demo video [here](https://www.youtube.com/watch?v=8SBlpKvKBGE)!
 
+## Quick Start
+### How to run app
+- create `.env` file in root directory with the following:
+  - EXPO_PUBLIC_OPENAI_API_KEY="{your key here}"
+  - EXPO_PUBLIC_PINECONE_API_KEY="{your key here}"
+- run `npm install` 
+- run `npx expo start`
+
+Note: to avoid creating a new account log in with the following information: email - zappy77876@gmail.com, password - abc123
+
 ## Inspiration
 
 This project was inspired by a recent study published in Nature [1], which investigated the potential of artificial intelligence (AI) for mental health interventions. The study explored the use of large language models (LLMs) to provide emotional support and personalized guidance to individuals. The findings highlighted the promise of AI chatbots in:
@@ -39,16 +49,6 @@ Mindstorm is here to break free from the limitations of traditional therapy. We 
 We have a pipeline and a specialized companion for every need, with long-term adaptive memory. With RAG-powered personalization, the companion you talk to analyzes your chat history, experiences, struggles, and preferences, allowing it to provide targeted support that resonates with your unique needs.
 
 Unlike generic apps with a one-size-fits-all therapist, Mindstorm evolves with you. It’s your personalized mental health partner, offering ongoing guidance and a safe space to work towards your goals.
-
-## Getting Started
-### How to run app
-- create `.env` file in root directory with the following:
-  - EXPO_PUBLIC_OPENAI_API_KEY="{your key here}"
-  - EXPO_PUBLIC_PINECONE_API_KEY="{your key here}"
-- run `npm install` 
-- run `npx expo start`
-
-Note: to avoid creating new account log in with the following email: zappy77876@gmail.com and password: abc123
 
 ## Usage
 
