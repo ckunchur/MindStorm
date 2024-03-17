@@ -63,7 +63,17 @@ export const updatePersonalGoals = async (uid, goals, struggles) => {
   }
 };
 
-
+export const forgotPassword = (email) => {
+  sendPasswordResetEmail(auth, email)
+    .then(() => {
+      // Password reset email sent!
+      console.log("Password reset email sent successfully.");
+    })
+    .catch((error) => {
+      const errorMessage = error.message;
+      console.error("Error sending password reset email:", errorMessage);
+    });
+};
 
 export const signInUser = async (email, password, setUserId) => {
   try {
