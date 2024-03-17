@@ -6,7 +6,7 @@ import { updatePersonalInfo } from "../firebase/functions";
 import { genders, ageGroups } from "../data/optionSettings";
 import { useGlobalFonts } from '../styles/globalFonts';
 import { COLORS, IMAGES } from '../styles/globalStyles';
-
+import { useUser } from '../contexts/UserContext';
 const { width, height } = Dimensions.get('window');
 
 const Chip = ({ label, selected, onSelect }) => (
@@ -21,13 +21,13 @@ const Chip = ({ label, selected, onSelect }) => (
 const testUser = "imIQfhTxJteweMhIh88zvRxq5NH2";
 
 export default function PersonalInfoScreen({ setOnboardingComplete }) {
+  const { userId } = useUser(); // pulled from global state
   const navigation = useNavigation();
   const [selectedGender, setSelectedGender] = useState(null);
   const [selectedAge, setSelectedAge] = useState(null);
   const [relaxActivities, setRelaxActivities] = useState(null);
   const [hobbies, setHobbies] = useState(null);
   const fontsLoaded = useGlobalFonts();
-
   if (!fontsLoaded) {
     return null;
   }
@@ -100,7 +100,7 @@ export default function PersonalInfoScreen({ setOnboardingComplete }) {
           <View style={styles.paginationActive} />
           <View style={styles.paginationInactive} />
         </View>
-        <TouchableOpacity style={styles.continueButton} onPress={() => handleContinue(testUser)}>
+        <TouchableOpacity style={styles.continueButton} onPress={() => handleContinue(userId)}>
           <Text style={styles.continueButtonText}>Continue</Text>
         </TouchableOpacity>
       </ImageBackground>

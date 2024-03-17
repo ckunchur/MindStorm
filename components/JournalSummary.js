@@ -50,7 +50,6 @@ export default function JournalSummary() {
     const { topTopics, topMoods, weatherMood, botRecommendation, entryText } = route.params;
     const navigation = useNavigation();
     const { userId } = useUser(); // pulled from global state
-    // const userId = "imIQfhTxJteweMhIh88zvRxq5NH2" // hardcoded 
   
     useEffect(() => {
         performWeeklongAnalysis(userId);

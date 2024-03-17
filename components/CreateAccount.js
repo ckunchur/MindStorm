@@ -4,12 +4,16 @@ import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { signUpUser } from "../firebase/functions";
 import { COLORS, IMAGES } from "../styles/globalStyles";
+import { useUser } from '../contexts/UserContext'; // Adjust the import path as necessary
+
+
 export default function CreateAccount() {
   const navigation = useNavigation();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const { setUserId } = useUser();
 
   const handleContinue = async () => {
     if (name === "" || email === "" || password === "" || confirmPassword === "") {
@@ -21,7 +25,7 @@ export default function CreateAccount() {
       return;
     }
     try {
-      await signUpUser(name, email, password);
+      await signUpUser(name, email, password, setUserId);
       Alert.alert("Sign Up Successful", "Your account has been created successfully.", [
         { text: "OK", onPress: () => navigation.navigate('ChooseGoals') }
       ]);

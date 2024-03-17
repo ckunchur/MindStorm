@@ -7,11 +7,13 @@ import { goalOptions } from "../data/optionSettings";
 import { testUser } from "../firebase/functions";
 import { useGlobalFonts } from '../styles/globalFonts';
 import { COLORS, IMAGES } from '../styles/globalStyles';
+import { useUser } from '../contexts/UserContext';
 
 const { width, height } = Dimensions.get('window');
 
 export default function ChooseGoalsScreen() {
   const navigation = useNavigation();
+  const { userId } = useUser(); // pulled from global state
   const [selectedGoals, setSelectedGoals] = useState([]);
   const [currentStruggles, setCurrentStruggles] = useState("");
   const fontsLoaded = useGlobalFonts();
@@ -81,7 +83,7 @@ export default function ChooseGoalsScreen() {
           <View style={styles.paginationInactive} />
           <View style={styles.paginationInactive} />
         </View>
-        <TouchableOpacity style={styles.continueButton} onPress={() => handleContinue(testUser)}>
+        <TouchableOpacity style={styles.continueButton} onPress={() => handleContinue(userId)}>
           <Text style={styles.continueButtonText}>Continue</Text>
         </TouchableOpacity>
       </ImageBackground>

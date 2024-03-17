@@ -81,7 +81,7 @@ export const signInUser = async (email, password, setUserId) => {
   }
 };
 
-export const signUpUser = async (name, email, password) => {
+export const signUpUser = async (name, email, password, setUserId) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
@@ -95,6 +95,7 @@ export const signUpUser = async (name, email, password) => {
       name: name,
     });
 
+    setUserId(user.uid);
     console.log("User created with name: ", user.displayName);
     return true; // Indicate success
   } catch (error) {
