@@ -114,6 +114,15 @@ export const signUpUser = async (name, email, password, setUserId) => {
     throw error;
   }
 };
+
+export const logoutUser = () => {
+  signOut(auth).then(() => {
+    console.log("User signed out successfully.");
+  }).catch((error) => {
+    console.error("Error signing out: ", error);
+  });
+};
+
 export const writeBotSettingsToFirebase = async (userId, bot, memory, tone, age, gender) => {
     try {
         const botSettingsDocRef = doc(db, `users/${userId}/botSettings/${bot}`);

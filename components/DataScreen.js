@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Image, ImageBackground, Dimensions } from 'react-native';
+import { StyleSheet, Button, View, Text, TouchableOpacity, ScrollView, Image, ImageBackground, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import DonutChart from './DonutChart';
@@ -13,7 +13,7 @@ import { db } from '../firebaseConfig';
 import { useGlobalFonts } from '../styles/globalFonts';
 import { COLORS, IMAGES} from '../styles/globalStyles';
 import { useUser } from '../contexts/UserContext';
-
+import { logoutUser } from '../firebase/functions';
 const colors = COLORS.fivecolourPastelRainbowList;
 
 const weather_moods = {
@@ -168,6 +168,9 @@ export default function DataScreen() {
         style={styles.fullScreen}
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <TouchableOpacity style={styles.logOutButton} onPress={() => logoutUser()}>
+          <Text style={styles.logOutButtonText}> Log Out</Text>
+        </TouchableOpacity>
           <WelcomeTitle title={userName ? `Hi ${userName},` : "Your weekly summary"} style={styles.title} />
           {/* <WelcomeMessage message="Here is a summary of your key feelings and topics over time" style={styles.subheaderText} /> */}
 
@@ -210,19 +213,6 @@ export default function DataScreen() {
                   </View>
                 </>
               )}
-
-              {/* Weeklong moods was calculated as pie chart in firebase, but i think mood graph is better */}
-              {/* {weeklongMoods.length > 0 && (
-                <>
-                  <Text style={styles.summarySubheading}>Your overall moods this week:</Text>
-                  <View style={styles.pieChartContainer}>
-                  <PieChart size={200} sections={weeklongMoods.map((mood, index) => ({
-                      ...mood,
-                      color: colors[index % colors.length],
-                    }))} />
-                  </View>
-                </>
-              )} */}
 
               {/* Weeklong summary */}
               {weeklongSummary && (
@@ -422,5 +412,25 @@ const styles = StyleSheet.create({
     chipText: {
     color: COLORS.mindstormGrey,
     textAlign: 'center',
+    },
+    logOutButton: {
+      alignItems: "center",
+      borderRadius: 48,
+      backgroundColor: 'white',
+      width: "20%",
+      borderColor: COLORS.mindstormLightPurple,
+      borderWidth: 1,
+      textAlign: "center",
+      padding: 8,
+      fontSize: 16,
+      fontFamily:"Inter-Regular",
+      position: "absolute", 
+      top: 50, 
+      right: 40,
+    },
+    
+    logOutButtonText: {
+      color: COLORS.maintextcolor,
+      fontFamily: "Inter-Medium"
     },
     });

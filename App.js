@@ -37,6 +37,8 @@ function DataStackNavigator() {
     <DataStack.Navigator initialRouteName="DataScreen" screenOptions={{ headerShown: false }}>
       <DataStack.Screen name="DataScreen" component={DataScreen} />
       <DataStack.Screen name="ViewPastEntries" component={ViewPastEntries} />
+      {/* <DataStack.Screen name="LandingScreen" component={NewLandingScreen} /> */}
+
     </DataStack.Navigator>
   );
 }
