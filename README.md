@@ -71,7 +71,7 @@ Imagine a companion that not only listens, but truly remembers. Unlike basic cha
 - **Dynamic Learning:** Our adaptive memory continuously evolves alongside you. As you share your experiences and emotions, your companion gains a deeper understanding of your unique needs.
 - **Precise Therapy:** By understanding your individual patterns and triggers, we can provide targeted therapy suggestions and coping mechanisms that are effective for you.
 
-Think of it as a conversation that deepens over time. The more you interact with Windstorm, the better your AI companion can support you on your path to optimal well-being.
+Think of it as a conversation that deepens over time. The more you interact with Mindstorm, the better your AI companion can support you on your path to optimal well-being.
 
 ### Weekly Insights:
 - **Weekly Summary**
