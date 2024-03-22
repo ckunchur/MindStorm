@@ -17,8 +17,6 @@ Check out our MindStorm demo video [here](https://www.youtube.com/watch?v=8SBlpK
 - run `npm install` 
 - run `npx expo start`
 
-Note: to avoid creating a new account log in with the following information: email - zappy77876@gmail.com, password - abc123
-
 ## Inspiration
 
 This project was inspired by a recent study published in Nature [1], which investigated the potential of artificial intelligence (AI) for mental health interventions. The study explored the use of large language models (LLMs) to provide emotional support and personalized guidance to individuals. The findings highlighted the promise of AI chatbots in:
