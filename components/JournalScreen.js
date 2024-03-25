@@ -101,9 +101,9 @@ export default function JournalScreen() {
             source={IMAGES.gradientbg}
             style={styles.fullScreen}
           >
-            <WelcomeTitle title="What's on your mind?" style={styles.title} />
+            <WelcomeTitle title="How are you, really?" style={styles.title} />
             <WelcomeMessage
-              message="This is your mind space. Write down anything you wish!"
+              message="Write about your day, your thoughts, or anything that's on your mind."
               style={styles.subheaderText}
             />
 
@@ -144,18 +144,18 @@ const styles = StyleSheet.create({
   },
   title: {
     position: 'absolute',
-    top: 100,
+    top: 150,
     color: COLORS.maintextcolor,
     fontSize: 32,
-    marginBottom: 30,
-    fontWeight: "700",
+    marginBottom: 10,
+    fontWeight: "500",
     fontFamily: "Inter-Medium",
   },
   subheaderText: {
     position: 'absolute',
-    top: 150,
+    top: 200,
     textAlign: 'center',
-    width: '60%',
+    width: '80%',
     color: COLORS.secondarytextcolor,
     fontSize: 16,
     fontFamily:"Inter-Regular",
@@ -174,12 +174,16 @@ const styles = StyleSheet.create({
   },
 
   input: {
-    marginTop: 190,
-    height: '55%',
+    marginTop: 180,
+    height: '40%',
     width: '80%',
     backgroundColor: COLORS.transcluscentWhite,
-    borderRadius: 5,
+    borderRadius: 20,
     paddingHorizontal: 10,
+    paddingLeft: 20,
+    paddingTop: 20, 
+    paddingBottom: 20,
+    paddingRight: 20,
     color: 'grey',
 
   },

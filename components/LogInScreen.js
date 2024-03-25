@@ -41,7 +41,7 @@ export default function LogIn({ setOnboardingComplete }) {
         source={IMAGES.gradientbg}
         style={styles.fullScreen}
       >
-        <Text style={styles.title}>Log In</Text>
+        <Text style={styles.title}>log in</Text>
         <Image
         resizeMode="contain"
         source={require('../assets/buddy-group.png')}
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
   title: {
     color: COLORS.maintextcolor,
     fontSize: 32,
-    fontWeight: "700",
+    fontWeight: "400",
     fontFamily: "Inter, sans-serif",
     marginTop: 72, 
   },
