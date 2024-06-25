@@ -17,6 +17,9 @@ import ChooseYourBuddy from './components/ChooseBuddy';
 import LogInScreen from './components/LogInScreen';
 import CreateAccountScreen from './components/CreateAccount';
 import ViewPastEntries from './components/ViewPastEntries';
+import OnboardingScreen1 from './components/OnboardingScreen1';
+import OnboardingScreen2 from './components/OnboardingScreen2';
+import OnboardingScreen3 from './components/OnboardingScreen3';
 import { Ionicons } from '@expo/vector-icons';
 import { LogBox } from 'react-native';
 import { COLORS } from './styles/globalStyles';
@@ -66,13 +69,35 @@ function JournalStackNavigator() {
   );
 }
 
+// function OnboardingStackNavigator({ setOnboardingComplete }) {
+//   return (
+//     <OnboardingStack.Navigator
+//       initialRouteName="LandingScreen"
+//       screenOptions={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}
+//     >
+//       <OnboardingStack.Screen name="LandingScreen" component={NewLandingScreen} />
+//       <OnboardingStack.Screen name="LogInScreen">
+//         {(props) => <LogInScreen {...props} setOnboardingComplete={setOnboardingComplete} />}
+//       </OnboardingStack.Screen>
+//       <OnboardingStack.Screen name="CreateAccount" component={CreateAccountScreen} />
+//       <OnboardingStack.Screen name="ChooseGoals" component={ChooseGoalsScreen} />
+//       <OnboardingStack.Screen name="PersonalInfo">
+//         {(props) => <PersonalInfoScreen {...props} setOnboardingComplete={setOnboardingComplete} />}
+//       </OnboardingStack.Screen>
+//     </OnboardingStack.Navigator>
+//   );
+// }
+
 function OnboardingStackNavigator({ setOnboardingComplete }) {
   return (
     <OnboardingStack.Navigator
-      initialRouteName="LandingScreen"
+      initialRouteName="OnboardingScreen1" 
       screenOptions={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}
     >
-      <OnboardingStack.Screen name="LandingScreen" component={NewLandingScreen} />
+      <OnboardingStack.Screen name="OnboardingScreen1" component={OnboardingScreen1} />
+      <OnboardingStack.Screen name="OnboardingScreen2" component={OnboardingScreen2} />
+      <OnboardingStack.Screen name="OnboardingScreen3" component={OnboardingScreen3} />
+      {/* <OnboardingStack.Screen name="LandingScreen" component={NewLandingScreen} /> */}
       <OnboardingStack.Screen name="LogInScreen">
         {(props) => <LogInScreen {...props} setOnboardingComplete={setOnboardingComplete} />}
       </OnboardingStack.Screen>
