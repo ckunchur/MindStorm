@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Modal, ScrollView } from 'react-native';
-import CheckBox from '@react-native-community/checkbox';
+import { View, Text, TextInput, StyleSheet, ScrollView } from 'react-native';
+import { Checkbox, Button, Modal, Portal, Provider as PaperProvider } from 'react-native-paper';
 
 const OnboardingScreen1 = ({ navigation }) => {
   const [hobbies, setHobbies] = useState('');
@@ -25,204 +25,192 @@ const OnboardingScreen1 = ({ navigation }) => {
     );
   };
 
+  const containerStyle = { backgroundColor: 'white', padding: 20 };
+
   return (
-    <View style={styles.container}>
-      {/* Header for hobbies */}
-      <Text style={styles.header}>What are your favorite hobbies?</Text>
-      {/* Subtitle for hobbies */}
-      <Text style={styles.subtitle}>Please fill in the field.</Text>
-      {/* Text input for hobbies */}
-      <TextInput
-        style={styles.input}
-        placeholder="Cooking, swimming, cuddling my dog..."
-        value={hobbies}
-        onChangeText={setHobbies}
-      />
-      
-      {/* Header for stressors */}
-      <Text style={styles.header}>What are your main stressors/sources of unhappiness?</Text>
-      {/* Touchable for opening the checklist modal */}
-      <TouchableOpacity style={styles.dropdown} onPress={() => setIsModalVisible(true)}>
-        <Text style={styles.dropdownText}>Please select (multiple if needed)</Text>
-      </TouchableOpacity>
+    <PaperProvider>
+      <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.content}>
+          {/* Header for hobbies */}
+          <Text style={styles.header}>How would you describe your mental state lately?</Text>
+          {/* Subtitle for hobbies */}
+          <Text style={styles.subtitle}>Please fill in the field.</Text>
+          {/* Text input for hobbies */}
+          <TextInput
+            style={styles.input}
+            placeholder="Feeling exhausted and unmotivated, happy and relaxed..."
+            value={hobbies}
+            multiline={true}
+            onChangeText={setHobbies}
+          />
 
-      {/* Text input for other stressors */}
-      <TextInput
-        style={[styles.input, { marginTop: 20 }]}
-        placeholder="Selected other or have anything to add?"
-        value={otherStressors}
-        onChangeText={setOtherStressors}
-      />
+          {/* Header for stressors */}
+          <Text style={styles.header}>What are your main stressors/sources of unhappiness?</Text>
+          {/* Touchable for opening the checklist modal */}
+          <Button mode="outlined" onPress={() => setIsModalVisible(true)} style={styles.dropdown}>
+            Please select (multiple if needed)
+          </Button>
 
-      {/* Info text */}
-      <Text style={styles.infoText}>
-        Your information is private and secure. Whatever context you provide will only be used to help your companion better understand you.
-      </Text>
-      
-      {/* Next button */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('OnboardingScreen2')}>
-          <Text style={styles.buttonText}>Next</Text>
-        </TouchableOpacity>
-      </View>
+          {/* Header for other stressors */}
+          <Text style={styles.header}>Feel free to elaborate on your stressors or situation below.</Text>
+          {/* Text input for other stressors */}
+          <TextInput
+            style={[styles.input, { marginTop: 20 }]}
+            placeholder="Selected other or have anything to add?"
+            value={otherStressors}
+            multiline={true}
+            onChangeText={setOtherStressors}
+          />
 
-      {/* Modal for checklist */}
-      <Modal visible={isModalVisible} animationType="slide">
-        <View style={styles.modalContainer}>
-          <Text style={styles.modalHeader}>Select Your Stressors</Text>
-          <ScrollView style={styles.scrollView}>
-            {stressorsOptions.map((option) => (
-              <View key={option.value} style={styles.checkboxContainer}>
-                <CheckBox
-                  value={stressors.includes(option.value)}
-                  onValueChange={() => toggleStressors(option.value)}
+          {/* Info text */}
+          <Text style={styles.infoText}>
+            Your information is private and secure. Whatever context you provide will only be used to help your companion better understand you.
+          </Text>
+
+          {/* Next button */}
+          <View style={styles.buttonContainer}>
+            <Button mode="contained" onPress={() => navigation.navigate('OnboardingScreen2')} style={styles.button}>
+              Continue
+            </Button>
+          </View>
+        </ScrollView>
+
+        {/* Modal for checklist */}
+        <Portal>
+          <Modal visible={isModalVisible} onDismiss={() => setIsModalVisible(false)} contentContainerStyle={containerStyle}>
+            <Text style={styles.modalHeader}>Select Your Stressors</Text>
+            <ScrollView style={styles.scrollView}>
+              {stressorsOptions.map((option) => (
+                <Checkbox.Item
+                  key={option.value}
+                  label={option.label}
+                  status={stressors.includes(option.value) ? 'checked' : 'unchecked'}
+                  onPress={() => toggleStressors(option.value)}
                 />
-                <Text style={styles.checkboxLabel}>{option.label}</Text>
-              </View>
-            ))}
-          </ScrollView>
-          <Button title="Done" onPress={() => setIsModalVisible(false)} />
-        </View>
-      </Modal>
-    </View>
+              ))}
+            </ScrollView>
+            <Button mode="contained" onPress={() => setIsModalVisible(false)} style={styles.modalButton}>
+              Done
+            </Button>
+          </Modal>
+        </Portal>
+      </View>
+    </PaperProvider>
   );
 };
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      padding: 20,
-      backgroundColor: '#f0f2f5',
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  content: {
+    padding: 20,
+    paddingTop: 150, // Added paddingTop to move content down
+  },
+  header: {
+    fontSize: 18,
+    marginRight: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    marginLeft: 20,
+    alignSelf: 'flex-start',
+  },
+  subtitle: {
+    fontSize: 14,
+    marginTop: 5,
+    marginLeft: 20,
+    color: '#888',
+    marginBottom: 20, // Increased marginBottom for more space
+    alignSelf: 'flex-start',
+  },
+  input: {
+    height: 40,
+    borderColor: 'grey',
+    borderWidth: 1,
+    borderRadius: 15,
+    padding: 20,
+    width: '90%',
+    height: 100,
+    alignSelf: 'center',
+    marginBottom: 30, // Increased marginBottom for more space
+    padding: 10,
+    textAlign: 'left',
+  },
+  dropdown: {
+    height: 40,
+    borderRadius: 15,
+    width: '90%',
+    alignSelf: 'center',
+    marginTop: 20,
+    justifyContent: 'center',
+    paddingLeft: 10,
+    borderColor: 'grey', // Ensure consistent border color
+    borderWidth: 1,
+    marginBottom: 30, // Increased marginBottom for more space
+  },
+  infoText: {
+    fontSize: 12,
+    color: '#888',
+    marginTop: 0,
+    textAlign: 'center',
+  },
+  buttonContainer: {
+    alignItems: 'center',
+    marginTop: 30, // Increased marginTop for more space
+  },
+  button: {
+    borderRadius: 15,
+    height: 50,
+    width: '90%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
-    header: {
-      // Header for hobbies and stressors
-      fontSize: 18,
-      fontWeight: 'bold',
-      marginBottom: 10,
-      alignSelf: 'flex-start',
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  modalHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  scrollView: {
+    marginBottom: 20,
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  checkboxLabel: {
+    marginLeft: 10,
+    fontSize: 16,
+  },
+  modalButton: {
+    borderRadius: 15,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
-    subtitle: {
-      // Subtitle for hobbies
-      fontSize: 14,
-      color: '#888',
-      marginBottom: 20,
-      alignSelf: 'flex-start',
-    },
-    input: {
-      // Text input for hobbies and other stressors
-      height: 40,
-      borderColor: '#ccc',
-      borderWidth: 1,
-      borderRadius: 5,
-      width: '100%',
-      borderRadius: 15,
-      marginBottom: 20,
-      padding: 10,
-      textAlign: 'left',
-    },
-    dropdown: {
-      // Touchable for opening the checklist modal
-      height: 40,
-      borderColor: '#ccc',
-      borderWidth: 1,
-      borderRadius: 15,
-      width: '100%',
-      justifyContent: 'center',
-      marginBottom: 20,
-      paddingLeft: 10,
-    },
-    dropdownText: {
-      // Text inside the dropdown touchable
-      fontSize: 14,
-      color: '#888',
-    },
-    infoText: {
-      // Info text
-      fontSize: 12,
-      color: '#888',
-      marginBottom: 20,
-      textAlign: 'center',
-    },
-    buttonContainer: {
-      // Container for the Next button
-      alignItems: 'center',
-      marginTop: 20,
-    },
-    button: {
-      // Styles for the Next button
-      backgroundColor: '#fff',
-      borderRadius: 15,
-      height: 50,
-      width: '90%',
-      justifyContent: 'center',
-      alignItems: 'center',
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation: 5,
-    },
-    buttonText: {
-      // Text inside the Next button
-      color: '#000',
-      fontSize: 16,
-      fontWeight: 'medium',
-    },
-    modalContainer: {
-      // Container for the checklist modal
-      flex: 1,
-      justifyContent: 'center',
-      padding: 20,
-      backgroundColor: '#fff',
-    },
-    modalHeader: {
-      // Header inside the modal
-      fontSize: 18,
-      fontWeight: 'bold',
-      marginBottom: 20,
-    },
-    scrollView: {
-      // ScrollView inside the modal
-      marginBottom: 20,
-    },
-    checkboxContainer: {
-      // Container for each checkbox item
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginBottom: 10,
-    },
-    checkboxLabel: {
-      // Label for each checkbox item
-      marginLeft: 10,
-      fontSize: 16,
-    },
-    modalButton: {
-      // Styles for the Done button inside the modal
-      backgroundColor: '#fff',
-      borderRadius: 15,
-      height: 50,
-      justifyContent: 'center',
-      alignItems: 'center',
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation: 5,
-      marginTop: 20,
-    },
-    modalButtonText: {
-      // Text inside the Done button
-      color: '#000',
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-  });
-  
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    marginTop: 20,
+  },
+  modalButtonText: {
+    color: '#000',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
+
 export default OnboardingScreen1;
