@@ -418,7 +418,7 @@ const styles = StyleSheet.create({
       borderRadius: 48,
       backgroundColor: 'white',
       width: "20%",
-      borderColor: COLORS.mindstormLightPurple,
+      borderColor: COLORS.mindstormLightBlue,
       borderWidth: 1,
       textAlign: "center",
       padding: 8,

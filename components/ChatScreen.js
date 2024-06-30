@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     },
     userBubble: {
         alignSelf: 'flex-end',
-        backgroundColor: COLORS.mindstormPurple,
+        backgroundColor: COLORS.mindstormBlue,
     },
     aiBubble: {
         alignSelf: 'flex-start',

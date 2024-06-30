@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontFamily: 'Inter-Regular',
         marginBottom: 12,
-        color: COLORS.mindstormPurple,
+        color: COLORS.mindstormBlue,
         paddingTop: 160,
         textAlign: 'center',
     },
@@ -162,12 +162,12 @@ const styles = StyleSheet.create({
         fontFamily: "Inter-Regular"
     },
     customizeButton: {
-        backgroundColor: COLORS.mindstormLightPurple,
+        backgroundColor: COLORS.mindstormLightBlue,
         margin: 8,
         padding: 12,
         paddingLeft: 22,
         paddingRight: 22,
-        borderColor: COLORS.mindstormLightPurple,
+        borderColor: COLORS.mindstormLightBlue,
         borderRadius: 16,
         flexDirection: "row",
         alignItems: 'center',

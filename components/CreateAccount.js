@@ -190,11 +190,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
     fontFamily: "Inter, sans-serif",
-    borderColor: COLORS.mindstormLightPurple,
+    borderColor: COLORS.mindstormLightBlue,
     borderWidth: 1,
   },
   continueButtonText: {
-    color: COLORS.mindstormLightPurple,
+    color: COLORS.mindstormLightBlue,
     fontWeight: 'bold'
   },
 });

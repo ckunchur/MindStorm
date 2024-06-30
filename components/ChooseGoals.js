@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     position: "relative",
     width: "100%",
     maxWidth: width * 0.8,
-    borderColor: COLORS.mindstormLightPurple,
+    borderColor: COLORS.mindstormLightBlue,
     borderWidth: 1,
     textAlign: "center",
     marginTop: height * 0.03,
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     fontFamily: "Inter-Medium",
   },
   continueButtonText: {
-    color: COLORS.mindstormLightPurple,
+    color: COLORS.mindstormLightBlue,
     fontWeight: 'bold',
     fontFamily: "Inter-SemiBold",
     paddingVertical: 5,

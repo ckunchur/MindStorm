@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
     chatButtonText: {
         fontFamily: "Inter-Medium",
         fontSize: 16,
-        color: COLORS.mindstormPurple,
+        color: COLORS.mindstormBlue,
         textAlign: 'center',
         margin: 18,
     },
@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     continueButtonText: {
-        color: COLORS.mindstormPurple,
+        color: COLORS.mindstormBlue,
         fontWeight: 'bold',
         fontFamily: "Inter-SemiBold",
         paddingVertical: 5,
@@ -377,7 +377,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         borderRadius: 48,
         borderWidth: 2,
-        borderColor: COLORS.mindstormPurple,
+        borderColor: COLORS.mindstormBlue,
         backgroundColor: 'white',
         position: "relative",
         width: "100%",

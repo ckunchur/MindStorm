@@ -124,11 +124,11 @@ getStartButton: {
   marginTop:0,
   paddingVertical: '8%',
   paddingHorizontal: '15%',
-  borderColor: COLORS.mindstormLightPurple,
+  borderColor: COLORS.mindstormLightBlue,
   borderWidth: 1,
 },
 getStartButtonText: {
-  color: COLORS.mindstormLightPurple,
+  color: COLORS.mindstormLightBlue,
   fontWeight: 'bold',
   fontFamily: "Inter-Medium",
 
@@ -145,6 +145,6 @@ loginText: {
 loginLinkText: {
   fontWeight: "500",
   textDecorationLine: "underline",
-  color: COLORS.mindstormLightPurple,
+  color: COLORS.mindstormLightBlue,
 },
 });

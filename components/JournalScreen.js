@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     position: "relative",
     width: "100%",
     maxWidth: 327,
-    borderColor: COLORS.mindstormLightPurple,
+    borderColor: COLORS.mindstormLightBlue,
     borderWidth: 1,
     textAlign: "center",
     marginTop: 36,

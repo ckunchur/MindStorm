@@ -11,8 +11,11 @@ import JournalScreen from './components/JournalScreen';
 import JournalSummary from './components/JournalSummary';
 import ChatScreen from './components/ChatScreen';
 import CustomizeScreen from './components/CustomizeScreen';
+import EmotionIsland from './components/EmotionIsland';
 import DataScreen from './components/DataScreen';
 import PersonalInfoScreen from './components/PersonalInfoScreen';
+import Affirmations from './components/Affirmations';
+import TopicRecap from './components/TopicRecap';
 import ChooseYourBuddy from './components/ChooseBuddy';
 import LogInScreen from './components/LogInScreen';
 import CreateAccountScreen from './components/CreateAccount';
@@ -33,6 +36,8 @@ const OnboardingStack = createStackNavigator();
 const ChatStack = createStackNavigator();
 const JournalStack = createStackNavigator();
 const DataStack = createStackNavigator();
+const IslandStack = createStackNavigator();
+const AffirmationsStack = createStackNavigator();
 
 function DataStackNavigator() {
   return (
@@ -65,6 +70,26 @@ function JournalStackNavigator() {
     </JournalStack.Navigator>
   );
 }
+
+function IslandStackNavigator() {
+  return (
+    <IslandStack.Navigator initialRouteName="EmotionIsland" screenOptions={{ headerShown: false }}>
+      <IslandStack.Screen name="EmotionIsland" component={EmotionIsland} />
+      <IslandStack.Screen name="TopicRecap" component={TopicRecap} />
+      <IslandStack.Screen name="Affirmations" component={Affirmations} />
+      <IslandStack.Screen name="ChatScreen" component={ChatScreen} />
+    </IslandStack.Navigator>
+  );
+}
+
+function AffirmationsStackNavigator() {
+  return (
+    <AffirmationsStack.Navigator initialRouteName="Affirmations" screenOptions={{ headerShown: false }}>
+      <JournalStack.Screen name="Affirmations" component={Affirmations} />
+    </AffirmationsStack.Navigator>
+  );
+}
+
 
 function OnboardingStackNavigator({ setOnboardingComplete }) {
   return (
@@ -111,6 +136,12 @@ export default function App() {
               } else if (route.name === 'Insights') {
                 iconName = focused ? 'bar-chart' : 'bar-chart-outline';
               }
+              else if (route.name === 'EmotionIsland') {
+                iconName = focused ? 'leaf' : 'leaf-outline';
+              }
+              else if (route.name === 'Affirmations') {
+                iconName = focused ? 'barbell' : 'barbell-outline';
+              }
               return <Ionicons name={iconName} size={32} color={COLORS.mindstormLightGrey} />;
             },
           })}
@@ -136,6 +167,9 @@ export default function App() {
           <Tab.Screen name="Journal" component={JournalStackNavigator} options={{ headerShown: false }} />
           <Tab.Screen name="Chat" component={ChatStackNavigator} options={{ headerShown: false }} />
           <Tab.Screen name="Insights" component={DataStackNavigator} options={{ headerShown: false }} />
+          <Tab.Screen name="EmotionIsland" component={IslandStackNavigator} options={{ headerShown: false }} />
+          <Tab.Screen name="Affirmations" component={AffirmationsStackNavigator} options={{ headerShown: false }} />
+
         </Tab.Navigator>
       );
     } else {

@@ -1,8 +1,8 @@
 export const COLORS = {
-    mindstormPurple: "#857bc9",
-    mindstormLightPurple: "#7887DA",
-    mindstormGrey: "#47464a",
-    maintextcolor: "#787580",
+    mindstormBlue: "#247B7B",
+    mindstormLightBlue: "#44A1A0",
+    mindstormGrey: "#247B7B",
+    maintextcolor: "#247B7B",
     secondarytextcolor: "#9c9aa1",
     mindstormLightGrey: "#787580",
     transcluscentWhite: 'rgba(255, 255, 255, 0.8)',
@@ -18,7 +18,9 @@ export const COLORS = {
 
 
   export const IMAGES = {
-    gradientbg: require('../assets/gradient3.jpeg'),
+    gradientbg: require('../assets/gradient4.png'),
+    islandbg: require('../assets/island-background.png'),
+
     // gradientbg: require('../assets/pink-blue-gradient-background.png'),
 
   };
