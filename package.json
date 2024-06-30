@@ -38,6 +38,7 @@
     "react-native-switch-selector": "^2.3.0",
     "react-native-uuid": "^2.0.2",
     "react-native-web": "~0.19.6",
+    "react-native-webview": "^13.10.4",
     "react-navigation": "^5.0.0",
     "uuid": "^9.0.1",
     "victory-native": "^40.0.4"

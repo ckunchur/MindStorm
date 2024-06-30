@@ -13,7 +13,7 @@ const island_topics = {
     "Career": require("../assets/career-mountain.png"),
 };
 
-const action_items = ["Update LinkedIn", "Schedule coffee chat with Melissa"];
+const action_items = ["Update LinkedIn", "Schedule coffee chat with Melissa", "Make a project portfolio."];
 const affirmations = ["I have the power to ask for help when I need it.", "I am capable of improving my skillset.", "I know how to be a good leader."];
 
 
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     },
     cardMessage: {
         fontSize: 16,
-        fontFamily: 'Inter-Regular',
+        fontFamily: 'Inter-Light',
         color: COLORS.maintextcolor,
         textAlign: 'center',
         marginTop: 10,

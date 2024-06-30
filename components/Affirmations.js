@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useGlobalFonts } from '../styles/globalFonts';
 import { COLORS, IMAGES } from '../styles/globalStyles';
 import { useUser } from "../contexts/UserContext";
+import { WebView } from 'react-native-webview';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -83,25 +84,35 @@ export default function Affirmations({ navigation }) {
             >
                 <WelcomeTitle title="Affirmations" style={styles.title} />
                 <WelcomeMessage message="Think or say an affirmation from below as loud as you can. Hearing it is believing it." style={styles.subheaderText} />
-                <ScrollView ref={scrollViewRef}>
-                    <View style={styles.topicFilterContainer}>
-                        <Text style={styles.topicFilterText}>Topic Filter</Text>
-                        <View style={styles.topicRow}>
-                            {affirmation_options.map((category) => (
-                                <TouchableOpacity key={category} onPress={() => handleSelectCategory(category)}>
-                                    <View style={[
-                                        styles.affirmationContainer,
-                                        selectedCategory === category && styles.selectedAffirmationContainer
-                                    ]}>
-                                        <Text style={[
-                                            styles.affirmationCategory,
-                                            selectedCategory === category && styles.selectedAffirmationText
-                                        ]}>{category}</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            ))}
-                        </View>
+
+                <View style={styles.topicFilterContainer}>
+                    <Text style={styles.topicFilterText}>Topic Filter</Text>
+                    <View style={styles.topicRow}>
+                        {affirmation_options.map((category) => (
+                            <TouchableOpacity key={category} onPress={() => handleSelectCategory(category)}>
+                                <View style={[
+                                    styles.affirmationContainer,
+                                    selectedCategory === category && styles.selectedAffirmationContainer
+                                ]}>
+                                    <Text style={[
+                                        styles.affirmationCategory,
+                                        selectedCategory === category && styles.selectedAffirmationText
+                                    ]}>{category}</Text>
+                                </View>
+                            </TouchableOpacity>
+                        ))}
                     </View>
+                </View>
+                <View style={styles.spotifyPlayerContainer}>
+                    <WebView
+                        source={{ uri: 'https://open.spotify.com/embed/track/0ENM2WvAqPr8XJFXlkiuCe?utm_source=generator' }}
+                        style={styles.spotifyPlayer}
+                    />
+                </View>
+                <ScrollView ref={scrollViewRef}>
+
+
+
                     {affirmations
                         .filter(item => selectedCategory === null || item.category === selectedCategory)
                         .map((item, index) => (
@@ -112,6 +123,7 @@ export default function Affirmations({ navigation }) {
                                 isSelected={selectedAffirmationIndex === index}
                             />
                         ))}
+
                 </ScrollView>
                 <View style={[{ display: "flex", flexDirection: "row" }]}>
                     <TouchableOpacity
@@ -240,5 +252,15 @@ const styles = StyleSheet.create({
     topicRow: {
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    spotifyPlayerContainer: {
+        marginTop: 20,
+        marginBottom: 20,
+        width: '80%',
+        height: 80, // Adjust the height based on your needs
+
+    },
+    spotifyPlayer: {
+        flex: 1,
     },
 });

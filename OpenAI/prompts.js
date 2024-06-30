@@ -24,7 +24,8 @@ export const nimbus_greeting = "Hi I'm Nimbus, your friendly guide to mastering 
 
 
 
-export const lyra_greeting = "Hi I'm Lyra, your friendly guide through the stresses of life! What's on your mind today?"
+export const lyra_greeting = "Hi Caitlin! Last time we chatted about making the switch to product management. How are you feeling about the topic now? Would you rather chat about something else today?"
+export const lyra_new_greeting = "Hi I'm Lyra, your friendly guide through the stresses of life! What's on your mind today?"
 
 export const Solara_greeting = "Hi I'm Solara! Would you like to reflect on your week with me?"
 

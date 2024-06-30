@@ -47,7 +47,7 @@ export default function EmotionIsland({ navigation }) {
 
     const handleBeginSession = () => {
         if (selectedTopic) {
-            navigation.navigate('ChatScreen', { bot: 'lyra'});
+            navigation.navigate('ChatScreen', { bot: 'Lyra'});
         }
     };
 
@@ -117,7 +117,7 @@ export default function EmotionIsland({ navigation }) {
                         onPress={handleBeginSession}
                         disabled={!selectedTopic}
                     >
-                        <Text style={styles.continueButtonText}>Begin Session</Text>
+                        <Text style={styles.continueButtonText}>Begin {selectedTopic} Session</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={[
@@ -127,7 +127,7 @@ export default function EmotionIsland({ navigation }) {
                         onPress={handleViewRecap}
                         disabled={!selectedTopic}
                     >
-                        <Text style={styles.continueButtonText}>View Recap</Text>
+                        <Text style={styles.continueButtonText}>Recap Topic</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -236,7 +236,8 @@ const styles = StyleSheet.create({
         borderColor: COLORS.mindstormLightBlue,
         borderWidth: 1,
         textAlign: "center",
-        margin: 20, padding: 16,
+        margin: 20,
+        padding: 16,
         fontSize: 16,
         fontWeight: "700",
         fontFamily: "Inter-Regular",
