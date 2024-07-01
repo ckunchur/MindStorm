@@ -3,17 +3,17 @@ import { StyleSheet, Button, View, Text, TouchableOpacity, ScrollView, Image, Im
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import DonutChart from './DonutChart';
-import PieChart from './PieChart';
+import PieChart from '../PieChart';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-import { testUser, ExtractUserNameFromFirebase, ExtractLastWeekEntriesFirebase, ExtractLatestWeeklyAnalysisFromFirebase } from '../firebase/functions';
-import { weeklongSummaryWithChatGPT, weeklongTopicClassificationWithChatGPT, weeklongMoodClassificationWithChatGPT } from '../OpenAI/OpenAI';
+import { testUser, ExtractUserNameFromFirebase, ExtractLastWeekEntriesFirebase, ExtractLatestWeeklyAnalysisFromFirebase } from '../../firebase/functions';
+import { weeklongSummaryWithChatGPT, weeklongTopicClassificationWithChatGPT, weeklongMoodClassificationWithChatGPT } from '../../OpenAI/OpenAI';
 import { collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs } from 'firebase/firestore';
-import { db } from '../firebaseConfig';
-import { useGlobalFonts } from '../styles/globalFonts';
-import { COLORS, IMAGES} from '../styles/globalStyles';
-import { useUser } from '../contexts/UserContext';
-import { logoutUser } from '../firebase/functions';
+import { db } from '../../firebaseConfig';
+import { useGlobalFonts } from '../../styles/globalFonts';
+import { COLORS, IMAGES} from '../../styles/globalStyles';
+import { useUser } from '../../contexts/UserContext';
+import { logoutUser } from '../../firebase/functions';
 const colors = COLORS.fivecolourPastelRainbowList;
 
 const weather_moods = {

@@ -4,17 +4,20 @@ import { Chip, Button } from 'react-native-paper';
 
 const OnboardingScreen2 = ({ navigation }) => {
   const [selectedChips, setSelectedChips] = useState([]);
-
+  console.log('selectedChips:', selectedChips);
   const options = [
-    'reading',
-    'meditation',
-    'exercise',
-    'music',
-    'hobbies',
-    'talking to friends and family',
-    'professional help',
-    'enjoying nature',
-    'none of the above'
+    "Be Happier",
+    "Career Development",
+    "Anxiety",
+    "Manage stress",
+    "Relationships",
+    "Self-Confidence",
+    "Work-Life Balance",
+    "Self-care",
+    "Health & Fitness/Body Image",
+    "Financial Stability",
+    "Motivation",
+    "Time Management/Productivity",
   ];
 
   const toggleChip = (option) => {
@@ -27,17 +30,17 @@ const OnboardingScreen2 = ({ navigation }) => {
 
   const handleContinue = () => {
     console.log(selectedChips);
-    navigation.navigate('OnboardingScreen3');
+    navigation.navigate('OnboardingScreen4');
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.question}>Favorite ways to unwind? Check all that apply. </Text>
+      <Text style={styles.question}>Select your goals.  </Text>
       <View style={styles.chipContainer}>
         {options.map((option) => (
           <Chip
             key={option}
-            mode="elevated"
+            mode="outlined"
             selected={selectedChips.includes(option)}
             onPress={() => toggleChip(option)}
             style={styles.chip}

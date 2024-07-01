@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Svg, Path } from 'react-native-svg';
-import { COLORS, IMAGES } from '../styles/globalStyles';
+import { COLORS, IMAGES } from '../../styles/globalStyles';
 
 export default function PieChart({ size, sections }) {
   const radius = size / 2;

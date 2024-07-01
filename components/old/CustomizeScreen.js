@@ -11,9 +11,9 @@ import {
 import SwitchSelector from "react-native-switch-selector";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { buddies, toneOptions, genderOptions, ageOptions, memoryOptions } from '../data/optionSettings';
-import { writeBotSettingsToFirebase } from '../firebase/functions';
-import { testUser } from '../firebase/functions';
+import { buddies, toneOptions, genderOptions, ageOptions, memoryOptions } from '../../data/optionSettings';
+import { writeBotSettingsToFirebase } from '../../firebase/functions';
+import { testUser } from '../../firebase/functions';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;

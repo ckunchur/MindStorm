@@ -5,21 +5,22 @@ import 'react-native-gesture-handler';
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
-import ChooseGoalsScreen from './components/ChooseGoals';
-import NewLandingScreen from './components/LandingScreen';
-import JournalScreen from './components/JournalScreen';
-import JournalSummary from './components/JournalSummary';
-import ChatScreen from './components/ChatScreen';
-import CustomizeScreen from './components/CustomizeScreen';
-import DataScreen from './components/DataScreen';
-import PersonalInfoScreen from './components/PersonalInfoScreen';
-import ChooseYourBuddy from './components/ChooseBuddy';
-import LogInScreen from './components/LogInScreen';
-import CreateAccountScreen from './components/CreateAccount';
-import ViewPastEntries from './components/ViewPastEntries';
+import ChatScreen from './components/ChatScreen'
+// import ChooseGoalsScreen from './components/old/ChooseGoals';
+// import JournalScreen from './components/old/JournalScreen';
+// import JournalSummary from './components/old/JournalSummary';
+// import ChatScreen from './components/old/ChatScreen';
+// import CustomizeScreen from './components/old/CustomizeScreen';
+// import DataScreen from './components/old/DataScreen';
+// import PersonalInfoScreen from './components/PersonalInfoScreen';
+// import ChooseYourBuddy from './components/old/ChooseBuddy';
+// import LogInScreen from './components/old/LogInScreen';
+// import CreateAccountScreen from './components/old/CreateAccount';
+// import ViewPastEntries from './components/ViewPastEntries';
 import OnboardingScreen1 from './components/OnboardingScreen1';
 import OnboardingScreen2 from './components/OnboardingScreen2';
-import OnboardingScreen3 from './components/OnboardingScreen3';
+import OnboardingScreen3 from './components/OnboardingLastScreen';
+import OnboardingScreen4 from './components/Onboarding_Unwind';
 import { Ionicons } from '@expo/vector-icons';
 import { LogBox } from 'react-native';
 import { COLORS } from './styles/globalStyles';
@@ -96,16 +97,16 @@ function OnboardingStackNavigator({ setOnboardingComplete }) {
     >
       <OnboardingStack.Screen name="OnboardingScreen1" component={OnboardingScreen1} />
       <OnboardingStack.Screen name="OnboardingScreen2" component={OnboardingScreen2} />
+      <OnboardingStack.Screen name="OnboardingScreen4" component={OnboardingScreen4} />
       <OnboardingStack.Screen name="OnboardingScreen3" component={OnboardingScreen3} />
-      {/* <OnboardingStack.Screen name="LandingScreen" component={NewLandingScreen} /> */}
-      <OnboardingStack.Screen name="LogInScreen">
-        {(props) => <LogInScreen {...props} setOnboardingComplete={setOnboardingComplete} />}
-      </OnboardingStack.Screen>
+      <OnboardingStack.Screen name="ChatScreen" component={ChatScreen} />
+      {/* 
       <OnboardingStack.Screen name="CreateAccount" component={CreateAccountScreen} />
       <OnboardingStack.Screen name="ChooseGoals" component={ChooseGoalsScreen} />
       <OnboardingStack.Screen name="PersonalInfo">
         {(props) => <PersonalInfoScreen {...props} setOnboardingComplete={setOnboardingComplete} />}
       </OnboardingStack.Screen>
+      */}
     </OnboardingStack.Navigator>
   );
 }

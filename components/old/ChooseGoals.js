@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { View, StyleSheet, ImageBackground, Text, TextInput, TouchableOpacity, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { updatePersonalGoals } from "../firebase/functions";
+import { updatePersonalGoals } from "../../firebase/functions";
 import { Ionicons } from '@expo/vector-icons';
-import { goalOptions } from "../data/optionSettings";
-import { testUser } from "../firebase/functions";
-import { useGlobalFonts } from '../styles/globalFonts';
-import { COLORS, IMAGES } from '../styles/globalStyles';
-import { useUser } from '../contexts/UserContext';
+import { goalOptions } from "../../data/optionSettings";
+import { testUser } from "../../firebase/functions";
+import { useGlobalFonts } from '../../styles/globalFonts';
+import { COLORS, IMAGES } from '../../styles/globalStyles';
+import { useUser } from '../../contexts/UserContext';
 
 const { width, height } = Dimensions.get('window');
 

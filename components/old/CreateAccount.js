@@ -2,9 +2,9 @@ import { React, useState } from "react";
 import { View, StyleSheet, ImageBackground, Text, TextInput, Alert, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { signUpUser } from "../firebase/functions";
-import { COLORS, IMAGES } from "../styles/globalStyles";
-import { useUser } from '../contexts/UserContext'; // Adjust the import path as necessary
+import { signUpUser } from "../../firebase/functions";
+import { COLORS, IMAGES } from "../../styles/globalStyles";
+import { useUser } from '../../contexts/UserContext'; // Adjust the import path as necessary
 
 
 export default function CreateAccount() {

@@ -11,9 +11,9 @@ import {
 import Carousel from 'react-native-snap-carousel';
 import { useNavigation } from '@react-navigation/native'; 
 import { Ionicons } from '@expo/vector-icons';
-import { buddies } from '../data/optionSettings';
-import { useGlobalFonts } from '../styles/globalFonts';
-import { COLORS, IMAGES} from '../styles/globalStyles';
+import { buddies } from '../../data/optionSettings';
+import { useGlobalFonts } from '../../styles/globalFonts';
+import { COLORS, IMAGES} from '../../styles/globalStyles';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;

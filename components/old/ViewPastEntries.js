@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ImageBackground, ScrollView } from 'react-native';
-import { COLORS, IMAGES } from '../styles/globalStyles';
+import { COLORS, IMAGES } from '../../styles/globalStyles';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { useGlobalFonts } from '../styles/globalFonts';
-import { ExtractEntriesFromSpecificDayFirebase, testUser } from '../firebase/functions';
-import { useUser } from '../contexts/UserContext';
+import { useGlobalFonts } from '../../styles/globalFonts';
+import { ExtractEntriesFromSpecificDayFirebase, testUser } from '../../firebase/functions';
+import { useUser } from '../../contexts/UserContext';
 
 export default function ViewPastEntries() {
   const navigation = useNavigation();

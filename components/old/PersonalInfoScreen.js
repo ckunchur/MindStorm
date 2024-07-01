@@ -2,11 +2,11 @@ import { React, useState } from "react";
 import { View, StyleSheet, ImageBackground, Text, TextInput, TouchableOpacity, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { updatePersonalInfo } from "../firebase/functions";
-import { genders, ageGroups } from "../data/optionSettings";
-import { useGlobalFonts } from '../styles/globalFonts';
-import { COLORS, IMAGES } from '../styles/globalStyles';
-import { useUser } from '../contexts/UserContext';
+import { updatePersonalInfo } from "../../firebase/functions";
+import { genders, ageGroups } from "../../data/optionSettings";
+import { useGlobalFonts } from '../../styles/globalFonts';
+import { COLORS, IMAGES } from '../../styles/globalStyles';
+import { useUser } from '../../contexts/UserContext';
 const { width, height } = Dimensions.get('window');
 
 const Chip = ({ label, selected, onSelect }) => (

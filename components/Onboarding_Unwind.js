@@ -2,27 +2,27 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 
-const OnboardingScreen3 = ({ navigation }) => {
+const OnboardingScreen4 = ({ navigation }) => {
   const [about, setAbout] = useState('');
+
+
+  const handleContinue = () => {
+    navigation.navigate('OnboardingScreen3');
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>And finally, this is a space to tell us about yourself freely.</Text>
+      <Text style={styles.title}>Share your favorite ways to calm down and unwind.</Text>
       <TextInput
         style={styles.input}
-        placeholder="I'd love to get to know you better. Share anything that you feel is important for me to understand about you, your interests, and your goals. The more details you provide, the better I can support you."
+        placeholder = "This could be anything from reading a book, going for a walk, or listening to music. We want to know what helps you relax and destress!"
         value={about}
         onChangeText={setAbout}
         multiline={true}
         mode="outlined"
       />
-      <Button
-        mode="contained"
-        onPress={() => alert('Onboarding Complete!')}
-        style={styles.button}
-        contentStyle={styles.buttonContent}
-      >
-        Finish
+      <Button mode="contained" onPress={handleContinue} style={styles.button}>
+        Continue
       </Button>
     </View>
   );
@@ -44,14 +44,14 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   input: {
-    height: 200,
+    height: 120,
     borderColor: '#ccc',
     borderWidth: 1,
     borderRadius: 15,
     padding: 20,
     width: '90%',
     alignSelf: 'center',
-    marginBottom: 100, // Increased marginBottom for more space
+    marginBottom: 60, // Increased marginBottom for more space
     padding: 10,
     textAlign: 'left',
   },
@@ -67,9 +67,6 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  buttonContent: {
-    height: 50,
-  },
 });
 
-export default OnboardingScreen3;
+export default OnboardingScreen4;
