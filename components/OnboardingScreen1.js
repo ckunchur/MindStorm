@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, ScrollView, ImageBackground } from 'react-native';
 import { Checkbox, Button, Modal, Portal, Provider as PaperProvider } from 'react-native-paper';
+import { IMAGES } from '../styles/globalStyles'; // Adjust the path as necessary
 
 const OnboardingScreen1 = ({ navigation }) => {
   const [hobbies, setHobbies] = useState('');
@@ -29,7 +30,7 @@ const OnboardingScreen1 = ({ navigation }) => {
 
   return (
     <PaperProvider>
-      <View style={styles.container}>
+      <ImageBackground source={IMAGES.gradientbg} style={styles.background}>
         <ScrollView contentContainerStyle={styles.content}>
           {/* Header for hobbies */}
           <Text style={styles.header}>How would you describe your mental state lately?</Text>
@@ -94,12 +95,16 @@ const OnboardingScreen1 = ({ navigation }) => {
             </Button>
           </Modal>
         </Portal>
-      </View>
+      </ImageBackground>
     </PaperProvider>
   );
 };
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    resizeMode: 'cover',
+  },
   container: {
     flex: 1,
     backgroundColor: 'white',

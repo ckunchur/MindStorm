@@ -1,42 +1,48 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import {ChatScreen} from './ChatScreen';
+import { IMAGES } from '../styles/globalStyles'; // Adjust the path as necessary
 
-const OnboardingScreen3 = ({ navigation }) => {
+const OnboardingScreen3 = ({ setOnboardingComplete }) => {
   const [about, setAbout] = useState('');
+  const navigation = useNavigation();
 
-  const handleContinue = () => {
-    console.log('hello')
-    alert('Onboarding Complete!');
-    navigation.navigate('ChatScreen');
+  const handleFinish = () => {
+    setOnboardingComplete(true);
+    navigation.navigate('MainTabs', { screen: 'Journal' }); // Navigate to the Journal tab
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>And finally, this is a space to tell us about yourself freely.</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Share anything that you feel is important for your coach to understand about you: your interests, your favorite ways to unwind, and your goals. The more details you provide, the more effective the support will be."
-        value={about}
-        onChangeText={setAbout}
-        multiline={true}
-        mode="outlined"
-      />
-      <Button mode="contained" onPress={handleContinue} style={styles.button}>
-        Finish
-      </Button>
-    </View>
+    <ImageBackground source={IMAGES.gradientbg} style={styles.background}>
+      <View style={styles.container}>
+        <Text style={styles.title}>And finally, this is a space to tell us about yourself freely.</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Share anything that you feel is important for your coach to understand about you: your interests, your favorite ways to unwind, and your goals. The more details you provide, the more effective the support will be."
+          value={about}
+          onChangeText={setAbout}
+          multiline={true}
+          mode="outlined"
+        />
+        <Button mode="contained" onPress={handleFinish} style={styles.button}>
+          Finish
+        </Button>
+      </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    resizeMode: 'cover',
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: 'white',
+    backgroundColor: 'transparent', // Ensure the background color is transparent to show the image
   },
   title: {
     fontSize: 18,

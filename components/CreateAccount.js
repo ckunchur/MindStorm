@@ -1,11 +1,11 @@
-import { React, useState } from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, ImageBackground, Text, TextInput, Alert, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { signUpUser } from "../firebase/functions";
 import { COLORS, IMAGES } from "../styles/globalStyles";
 import { useUser } from '../contexts/UserContext'; // Adjust the import path as necessary
-
+import OnboardingScreen1 from './OnboardingScreen1'; // Import OnboardingScreen1
 
 export default function CreateAccount() {
   const navigation = useNavigation();
@@ -14,6 +14,8 @@ export default function CreateAccount() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const { setUserId } = useUser();
+
+  // version WITHOUT error handling
 
   const handleContinue = async () => {
     if (name === "" || email === "" || password === "" || confirmPassword === "") {
@@ -24,23 +26,38 @@ export default function CreateAccount() {
       Alert.alert("Error", "Passwords do not match. Please make sure your passwords match.");
       return;
     }
-    try {
-      await signUpUser(name, email, password, setUserId);
-      Alert.alert("Sign Up Successful", "Your account has been created successfully.", [
-        { text: "OK", onPress: () => navigation.navigate('ChooseGoals') }
-      ]);
-    } catch (error) {
-      console.error("Signup Error:", error);
-      let errorMessage = "An error occurred. Please try again later.";
-
-      if (error.code === 'auth/email-already-in-use') {
-        errorMessage = "This email is already in use. Please use a different email.";
-      } else if (error.code) {
-        errorMessage = error.message; // generic error message from Firebase
-      }
-      Alert.alert("Sign Up Failed", errorMessage);
-    }
+    
+    // await signUpUser(name, email, password, setUserId);
+    navigation.navigate('OnboardingScreen1'); // Navigate to OnboardingScreen1
   };
+
+  // version WITH error handling
+  // const handleContinue = async () => {
+  //   if (name === "" || email === "" || password === "" || confirmPassword === "") {
+  //     Alert.alert("Error", "All fields must be filled.");
+  //     return;
+  //   }
+  //   if (password !== confirmPassword) {
+  //     Alert.alert("Error", "Passwords do not match. Please make sure your passwords match.");
+  //     return;
+  //   }
+  //   try {
+  //     await signUpUser(name, email, password, setUserId);
+  //     Alert.alert("Sign Up Successful", "Your account has been created successfully.", [
+  //       { text: "OK", onPress: () => navigation.navigate('OnboardingScreen1') } // Navigate to OnboardingScreen1
+  //     ]);
+  //   } catch (error) {
+  //     console.error("Signup Error:", error);
+  //     let errorMessage = "An error occurred. Please try again later.";
+
+  //     if (error.code === 'auth/email-already-in-use') {
+  //       errorMessage = "This email is already in use. Please use a different email.";
+  //     } else if (error.code) {
+  //       errorMessage = error.message; // generic error message from Firebase
+  //     }
+  //     Alert.alert("Sign Up Failed", errorMessage);
+  //   }
+  // };
 
   return (
     <View style={styles.fullScreenContainer}>

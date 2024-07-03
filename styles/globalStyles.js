@@ -23,4 +23,4 @@ export const COLORS = {
 
     // gradientbg: require('../assets/pink-blue-gradient-background.png'),
 
-  };
+  }

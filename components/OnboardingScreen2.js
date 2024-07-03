@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground } from 'react-native';
 import { Chip, Button } from 'react-native-paper';
+import { IMAGES } from '../styles/globalStyles'; // Adjust the path as necessary
 
 const OnboardingScreen2 = ({ navigation }) => {
   const [selectedChips, setSelectedChips] = useState([]);
@@ -34,32 +35,38 @@ const OnboardingScreen2 = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.question}>Select your goals.  </Text>
-      <View style={styles.chipContainer}>
-        {options.map((option) => (
-          <Chip
-            key={option}
-            mode="outlined"
-            selected={selectedChips.includes(option)}
-            onPress={() => toggleChip(option)}
-            style={styles.chip}
-          >
-            {option}
-          </Chip>
-        ))}
+    <ImageBackground source={IMAGES.gradientbg} style={styles.background}>
+      <View style={styles.container}>
+        <Text style={styles.question}>Select your goals.</Text>
+        <View style={styles.chipContainer}>
+          {options.map((option) => (
+            <Chip
+              key={option}
+              mode="outlined"
+              selected={selectedChips.includes(option)}
+              onPress={() => toggleChip(option)}
+              style={styles.chip}
+            >
+              {option}
+            </Chip>
+          ))}
+        </View>
+        <Button mode="contained" onPress={handleContinue} style={styles.button}>
+          Continue
+        </Button>
       </View>
-      <Button mode="contained" onPress={handleContinue} style={styles.button}>
-        Continue
-      </Button>
-    </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    resizeMode: 'cover',
+  },
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: 'transparent', // Ensure the background color is transparent to show the image
     padding: 20,
     justifyContent: 'center',
   },
@@ -69,7 +76,7 @@ const styles = StyleSheet.create({
     marginRight: 20,
     fontWeight: 'bold',
     textAlign: 'left',
-    marginBottom: 10
+    marginBottom: 10,
   },
   chipContainer: {
     marginTop: 20,
@@ -77,7 +84,7 @@ const styles = StyleSheet.create({
     marginRight: 20,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'left',
+    justifyContent: 'flex-start',
     marginBottom: 20,
   },
   chip: {

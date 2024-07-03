@@ -1,8 +1,7 @@
-// import React, { useState } from 'react';
-import React, { useState, useEffect, createContext, useContext } from 'react';
-import { StyleSheet, SafeAreaView, Platform, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet } from 'react-native';
 import 'react-native-gesture-handler';
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 import ChooseGoalsScreen from './components/ChooseGoals';
@@ -26,10 +25,13 @@ import { COLORS } from './styles/globalStyles';
 import { UserProvider } from './contexts/UserContext'; // Adjust the path as needed
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { db, auth } from './firebaseConfig';
+import OnboardingUnwind from './components/Onboarding_Unwind';
+import OnboardingLastScreen from './components/OnboardingLastScreen';
+import OnboardingScreen1 from './components/OnboardingScreen1';
+import OnboardingScreen2 from './components/OnboardingScreen2';
 
 LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
-LogBox.ignoreAllLogs();//Ignore all log notifications
-
+LogBox.ignoreAllLogs(); // Ignore all log notifications
 
 const Tab = createBottomTabNavigator();
 const OnboardingStack = createStackNavigator();
@@ -44,8 +46,6 @@ function DataStackNavigator() {
     <DataStack.Navigator initialRouteName="DataScreen" screenOptions={{ headerShown: false }}>
       <DataStack.Screen name="DataScreen" component={DataScreen} />
       <DataStack.Screen name="ViewPastEntries" component={ViewPastEntries} />
-      {/* <DataStack.Screen name="LandingScreen" component={NewLandingScreen} /> */}
-
     </DataStack.Navigator>
   );
 }
@@ -85,11 +85,10 @@ function IslandStackNavigator() {
 function AffirmationsStackNavigator() {
   return (
     <AffirmationsStack.Navigator initialRouteName="Affirmations" screenOptions={{ headerShown: false }}>
-      <JournalStack.Screen name="Affirmations" component={Affirmations} />
+      <AffirmationsStack.Screen name="Affirmations" component={Affirmations} />
     </AffirmationsStack.Navigator>
   );
 }
-
 
 function OnboardingStackNavigator({ setOnboardingComplete }) {
   return (
@@ -102,6 +101,12 @@ function OnboardingStackNavigator({ setOnboardingComplete }) {
         {(props) => <LogInScreen {...props} setOnboardingComplete={setOnboardingComplete} />}
       </OnboardingStack.Screen>
       <OnboardingStack.Screen name="CreateAccount" component={CreateAccountScreen} />
+      <OnboardingStack.Screen name="OnboardingScreen4" component={OnboardingUnwind} />
+      <OnboardingStack.Screen name="OnboardingScreen3">
+        {(props) => <OnboardingLastScreen {...props} setOnboardingComplete={setOnboardingComplete} />}
+      </OnboardingStack.Screen>
+      <OnboardingStack.Screen name="OnboardingScreen1" component={OnboardingScreen1} />
+      <OnboardingStack.Screen name="OnboardingScreen2" component={OnboardingScreen2} />
       <OnboardingStack.Screen name="ChooseGoals" component={ChooseGoalsScreen} />
       <OnboardingStack.Screen name="PersonalInfo">
         {(props) => <PersonalInfoScreen {...props} setOnboardingComplete={setOnboardingComplete} />}
@@ -110,8 +115,56 @@ function OnboardingStackNavigator({ setOnboardingComplete }) {
   );
 }
 
+function MainTabs() {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, size }) => {
+          let iconName;
+          if (route.name === 'Chat') {
+            iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
+          } else if (route.name === 'Journal') {
+            iconName = focused ? 'journal' : 'journal-outline';
+          } else if (route.name === 'Insights') {
+            iconName = focused ? 'bar-chart' : 'bar-chart-outline';
+          } else if (route.name === 'EmotionIsland') {
+            iconName = focused ? 'leaf' : 'leaf-outline';
+          } else if (route.name === 'Affirmations') {
+            iconName = focused ? 'barbell' : 'barbell-outline';
+          }
+          return <Ionicons name={iconName} size={32} color={COLORS.mindstormLightGrey} />;
+        },
+      })}
+      tabBarOptions={{
+        showLabel: false,
+        style: {
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          elevation: 0,
+          backgroundColor: '#ffffff',
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          height: 60,
+          shadowOpacity: 0.05,
+          shadowRadius: 10,
+          shadowColor: '#000',
+          shadowOffset: { height: -5, width: 0 },
+        },
+      }}
+    >
+      <Tab.Screen name="Journal" component={JournalStackNavigator} options={{ headerShown: false }} />
+      <Tab.Screen name="Chat" component={ChatStackNavigator} options={{ headerShown: false }} />
+      <Tab.Screen name="Insights" component={DataStackNavigator} options={{ headerShown: false }} />
+      <Tab.Screen name="EmotionIsland" component={IslandStackNavigator} options={{ headerShown: false }} />
+      <Tab.Screen name="Affirmations" component={AffirmationsStackNavigator} options={{ headerShown: false }} />
+    </Tab.Navigator>
+  );
+}
+
 export default function App() {
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(null);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // set default to false to debug onboarding, change to null later
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
@@ -122,56 +175,9 @@ export default function App() {
 
   const renderContent = () => {
     if (isUserLoggedIn === null) {
-      return null; 
+      return null;
     } else if (isUserLoggedIn) {
-      return (
-        <Tab.Navigator
-          screenOptions={({ route }) => ({
-            tabBarIcon: ({ focused, size }) => {
-              let iconName;
-              if (route.name === 'Chat') {
-                iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
-              } else if (route.name === 'Journal') {
-                iconName = focused ? 'journal' : 'journal-outline';
-              } else if (route.name === 'Insights') {
-                iconName = focused ? 'bar-chart' : 'bar-chart-outline';
-              }
-              else if (route.name === 'EmotionIsland') {
-                iconName = focused ? 'leaf' : 'leaf-outline';
-              }
-              else if (route.name === 'Affirmations') {
-                iconName = focused ? 'barbell' : 'barbell-outline';
-              }
-              return <Ionicons name={iconName} size={32} color={COLORS.mindstormLightGrey} />;
-            },
-          })}
-          tabBarOptions={{
-            showLabel: false,
-            style: {
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              elevation: 0,
-              backgroundColor: '#ffffff',
-              borderTopLeftRadius: 20,
-              borderTopRightRadius: 20,
-              height: 60,
-              shadowOpacity: 0.05,
-              shadowRadius: 10,
-              shadowColor: '#000',
-              shadowOffset: { height: -5, width: 0 },
-            },
-          }}
-        >
-          <Tab.Screen name="Journal" component={JournalStackNavigator} options={{ headerShown: false }} />
-          <Tab.Screen name="Chat" component={ChatStackNavigator} options={{ headerShown: false }} />
-          <Tab.Screen name="Insights" component={DataStackNavigator} options={{ headerShown: false }} />
-          <Tab.Screen name="EmotionIsland" component={IslandStackNavigator} options={{ headerShown: false }} />
-          <Tab.Screen name="Affirmations" component={AffirmationsStackNavigator} options={{ headerShown: false }} />
-
-        </Tab.Navigator>
-      );
+      return <MainTabs />;
     } else {
       // Onboarding flow for users who are not logged in
       return <OnboardingStackNavigator setOnboardingComplete={setIsUserLoggedIn} />;
