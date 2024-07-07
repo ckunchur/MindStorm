@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
 import { Chip, Button } from 'react-native-paper';
-import { IMAGES } from '../styles/globalStyles'; // Adjust the path as necessary
+import { IMAGES, COLORS } from '../styles/globalStyles'; // Adjust the path as necessary
+import { Ionicons } from '@expo/vector-icons';
 
 const OnboardingScreen2 = ({ navigation }) => {
   const [selectedChips, setSelectedChips] = useState([]);
@@ -36,6 +37,9 @@ const OnboardingScreen2 = ({ navigation }) => {
 
   return (
     <ImageBackground source={IMAGES.gradientbg} style={styles.background}>
+     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                <Ionicons name="arrow-back-circle-outline" color={COLORS.mindstormLightBlue} size={48} />
+      </TouchableOpacity>
       <View style={styles.container}>
         <Text style={styles.question}>Select your goals.</Text>
         <View style={styles.chipContainer}>
@@ -46,12 +50,13 @@ const OnboardingScreen2 = ({ navigation }) => {
               selected={selectedChips.includes(option)}
               onPress={() => toggleChip(option)}
               style={styles.chip}
+              
             >
               {option}
             </Chip>
           ))}
         </View>
-        <Button mode="contained" onPress={handleContinue} style={styles.button}>
+        <Button mode="contained" onPress={handleContinue} style={styles.button} theme={{ colors: { primary: COLORS.mindstormBlue } }} >
           Continue
         </Button>
       </View>
@@ -60,6 +65,12 @@ const OnboardingScreen2 = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  backButton: {
+    position: 'absolute',
+    top: 60,
+    left: 20,
+    zIndex: 10, // Ensure the back button is above the chat bubbles
+  },
   background: {
     flex: 1,
     resizeMode: 'cover',

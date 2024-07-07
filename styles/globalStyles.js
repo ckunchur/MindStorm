@@ -19,6 +19,7 @@ export const COLORS = {
 
   export const IMAGES = {
     gradientbg: require('../assets/gradient4.png'),
+    gradient2bg: require('../assets/gradient-5.png'),
     islandbg: require('../assets/island-background.png'),
 
     // gradientbg: require('../assets/pink-blue-gradient-background.png'),

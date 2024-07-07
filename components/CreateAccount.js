@@ -62,11 +62,11 @@ export default function CreateAccount() {
   return (
     <View style={styles.fullScreenContainer}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Ionicons name="arrow-back-circle-outline" color={COLORS.secondarytextcolor} size={48} />
+        <Ionicons name="arrow-back-circle-outline" color={COLORS.mindstormLightBlue} size={48} />
       </TouchableOpacity>
       <ImageBackground
         resizeMode="cover"
-        source={IMAGES.gradientbg}
+        source={IMAGES.gradient2bg}
         style={styles.fullScreen}
       >
         <Text style={styles.title}>Create Account</Text>
@@ -146,18 +146,18 @@ const styles = StyleSheet.create({
     marginTop: 72,
   },
   subheaderText: {
-    color: COLORS.secondarytextcolor,
+    color: COLORS.mindstormLightBlue,
     fontSize: 16,
     fontFamily: "Inter, sans-serif",
     marginBottom: 50,
   },
   inputSubheader: {
-    color: COLORS.secondarytextcolor,
+    color: COLORS.mindstormLightBlue,
     fontSize: 16,
     fontFamily: "Inter, sans-serif",
   },
   inputHeader: {
-    color: COLORS.secondarytextcolor,
+    color: COLORS.mindstormLightBlue,
     fontWeight: 'bold',
     fontSize: 18,
     fontFamily: "Inter, sans-serif",
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
   },
   paginationActive: {
     borderRadius: 100,
-    backgroundColor: "#FF90D3",
+    backgroundColor: COLORS.mindstormBlue,
     height: 8,
     width: 8,
   },
@@ -193,25 +193,22 @@ const styles = StyleSheet.create({
     width: 8,
   },
   continueButton: {
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 48,
-    backgroundColor: "#FFF",
-    position: "relative",
-    width: "100%",
-    maxWidth: 327,
-    color: "#4A9BB4",
-    textAlign: "center",
-    marginTop: 96,
-    padding: 18,
-    fontSize: 16,
-    fontWeight: "700",
-    fontFamily: "Inter, sans-serif",
-    borderColor: COLORS.mindstormLightBlue,
-    borderWidth: 1,
+    alignItems: 'center',
+    marginTop: 30, 
+    height: 50,
+    width: '90%',
+    alignSelf: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.mindstormBlue,
+    borderRadius: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   continueButtonText: {
-    color: COLORS.mindstormLightBlue,
-    fontWeight: 'bold'
+    color: 'white',
+    // fontWeight: 'bold'
   },
 });

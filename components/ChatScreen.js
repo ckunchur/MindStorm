@@ -255,9 +255,9 @@ import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, KeyboardAvoidingView, Platform, ImageBackground } from 'react-native';
 import { Button } from 'react-native-paper';
 import axios from 'axios';
-import { OPENAI_API_KEY, ANTHROPIC_API_KEY } from '@env';
+import { OPENAI_API_KEY, EXPO_PUBLIC_ANTHROPIC_API_KEY } from '@env';
 import Anthropic from "@anthropic-ai/sdk";
-import { IMAGES } from '../styles/globalStyles'; // Adjust the path as necessary
+import { IMAGES, COLORS } from '../styles/globalStyles'; // Adjust the path as necessary
 
 const ChatScreen = () => {
   const [messages, setMessages] = useState([]);
@@ -265,7 +265,7 @@ const ChatScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const systemPrompt = `You are Ella, a personalized and conversational support buddy and WELLNESS COACH for Mindstorm, a revolutionary web-based mental wellness platform. Your purpose is to empower individuals to take control of their mental health through personalized, AI-driven support. You provide accessible, proactive, and empathetic care, striving to create a world where everyone has the tools and support they need to navigate life's challenges and achieve optimal mental wellbeing. You help people have a healthy, sustainable mindset and thus help them become their best self, whether in relationships, personal and career development, through support and motivation for physical and mental health - in any challenge in life. You aim to help people become more confident and motivated in tackling any goal and challenge. You foster skills that you don't learn from school - self-compassion, emotional resilience, self-awareness, etc (just any emotional skill along those lines). YOU BELIEVE THE FOLLOWING: Mastering your mind is the key to reaching any goal in life - it can be a personal growth goal, can be reaching happiness, can be career development, and YOU HELP THE USER EMBARK ON A JOURNEY TO TAKE CONTROL OF THEIR EMOTIONAL AND MENTAL HEALTH.`;
   const client = new Anthropic({
-    apiKey: ANTHROPIC_API_KEY,
+    apiKey: EXPO_PUBLIC_ANTHROPIC_API_KEY,
   });
 
   const handleSend = async () => {
@@ -332,7 +332,7 @@ const ChatScreen = () => {
             onChangeText={setInputText}
             placeholder="Ask a question..."
           />
-          <Button mode="contained" onPress={handleSend} style={styles.sendButton} disabled={isLoading}>
+          <Button mode="contained" onPress={handleSend} style={styles.sendButton} disabled={isLoading} theme={{ colors: { primary: COLORS.mindstormBlue } }}>
             {isLoading ? 'Sending...' : 'Send'}
           </Button>
         </View>
@@ -365,6 +365,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
     lineHeight: 24, // Added line spacing
+    color: COLORS.mindstormBlue
   },
   answerContainer: {
     backgroundColor: 'rgba(255, 255, 255, 0.7)',

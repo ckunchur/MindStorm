@@ -101,16 +101,17 @@ function OnboardingStackNavigator({ setOnboardingComplete }) {
         {(props) => <LogInScreen {...props} setOnboardingComplete={setOnboardingComplete} />}
       </OnboardingStack.Screen>
       <OnboardingStack.Screen name="CreateAccount" component={CreateAccountScreen} />
+      <OnboardingStack.Screen name="OnboardingScreen1" component={OnboardingScreen1} />
+      <OnboardingStack.Screen name="OnboardingScreen2" component={OnboardingScreen2} />
       <OnboardingStack.Screen name="OnboardingScreen4" component={OnboardingUnwind} />
       <OnboardingStack.Screen name="OnboardingScreen3">
         {(props) => <OnboardingLastScreen {...props} setOnboardingComplete={setOnboardingComplete} />}
       </OnboardingStack.Screen>
-      <OnboardingStack.Screen name="OnboardingScreen1" component={OnboardingScreen1} />
-      <OnboardingStack.Screen name="OnboardingScreen2" component={OnboardingScreen2} />
-      <OnboardingStack.Screen name="ChooseGoals" component={ChooseGoalsScreen} />
+      
+      {/*  <OnboardingStack.Screen name="ChooseGoals" component={ChooseGoalsScreen} />
       <OnboardingStack.Screen name="PersonalInfo">
         {(props) => <PersonalInfoScreen {...props} setOnboardingComplete={setOnboardingComplete} />}
-      </OnboardingStack.Screen>
+      </OnboardingStack.Screen> */}
     </OnboardingStack.Navigator>
   );
 }
@@ -123,11 +124,13 @@ function MainTabs() {
           let iconName;
           if (route.name === 'Chat') {
             iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
-          } else if (route.name === 'Journal') {
-            iconName = focused ? 'journal' : 'journal-outline';
-          } else if (route.name === 'Insights') {
-            iconName = focused ? 'bar-chart' : 'bar-chart-outline';
-          } else if (route.name === 'EmotionIsland') {
+          } 
+          // else if (route.name === 'Journal') {
+          //   iconName = focused ? 'journal' : 'journal-outline';
+          // } else if (route.name === 'Insights') {
+          //   iconName = focused ? 'bar-chart' : 'bar-chart-outline';
+          // } 
+          else if (route.name === 'EmotionIsland') {
             iconName = focused ? 'leaf' : 'leaf-outline';
           } else if (route.name === 'Affirmations') {
             iconName = focused ? 'barbell' : 'barbell-outline';
@@ -154,9 +157,9 @@ function MainTabs() {
         },
       }}
     >
-      <Tab.Screen name="Journal" component={JournalStackNavigator} options={{ headerShown: false }} />
+      {/* <Tab.Screen name="Journal" component={JournalStackNavigator} options={{ headerShown: false }} /> */}
       <Tab.Screen name="Chat" component={ChatStackNavigator} options={{ headerShown: false }} />
-      <Tab.Screen name="Insights" component={DataStackNavigator} options={{ headerShown: false }} />
+      {/* <Tab.Screen name="Insights" component={DataStackNavigator} options={{ headerShown: false }} /> */}
       <Tab.Screen name="EmotionIsland" component={IslandStackNavigator} options={{ headerShown: false }} />
       <Tab.Screen name="Affirmations" component={AffirmationsStackNavigator} options={{ headerShown: false }} />
     </Tab.Navigator>
@@ -174,14 +177,11 @@ export default function App() {
   }, []);
 
   const renderContent = () => {
-    if (isUserLoggedIn === null) {
-      return null;
-    } else if (isUserLoggedIn) {
-      return <MainTabs />;
+    if (!isUserLoggedIn) {
+      return <OnboardingStackNavigator setOnboardingComplete={false} />;
     } else {
-      // Onboarding flow for users who are not logged in
-      return <OnboardingStackNavigator setOnboardingComplete={setIsUserLoggedIn} />;
-    }
+      return <MainTabs />;
+    } 
   };
 
   return (

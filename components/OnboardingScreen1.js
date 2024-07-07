@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, ImageBackground } from 'react-native';
+import { View, Text, TextInput, StyleSheet, ScrollView, ImageBackground, TouchableOpacity } from 'react-native';
 import { Checkbox, Button, Modal, Portal, Provider as PaperProvider } from 'react-native-paper';
-import { IMAGES } from '../styles/globalStyles'; // Adjust the path as necessary
+import { IMAGES, COLORS } from '../styles/globalStyles'; // Adjust the path as necessary
+import { Ionicons } from '@expo/vector-icons';
 
 const OnboardingScreen1 = ({ navigation }) => {
   const [hobbies, setHobbies] = useState('');
@@ -31,6 +32,9 @@ const OnboardingScreen1 = ({ navigation }) => {
   return (
     <PaperProvider>
       <ImageBackground source={IMAGES.gradientbg} style={styles.background}>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                <Ionicons name="arrow-back-circle-outline" color={COLORS.mindstormLightBlue} size={48} />
+      </TouchableOpacity>
         <ScrollView contentContainerStyle={styles.content}>
           {/* Header for hobbies */}
           <Text style={styles.header}>How would you describe your mental state lately?</Text>
@@ -48,7 +52,7 @@ const OnboardingScreen1 = ({ navigation }) => {
           {/* Header for stressors */}
           <Text style={styles.header}>What are your main stressors/sources of unhappiness?</Text>
           {/* Touchable for opening the checklist modal */}
-          <Button mode="outlined" onPress={() => setIsModalVisible(true)} style={styles.dropdown}>
+          <Button mode="outlined" onPress={() => setIsModalVisible(true)} style={styles.dropdown} theme={{ colors: { primary: COLORS.mindstormBlue } }} >
             Please select (multiple if needed)
           </Button>
 
@@ -70,7 +74,7 @@ const OnboardingScreen1 = ({ navigation }) => {
 
           {/* Next button */}
           <View style={styles.buttonContainer}>
-            <Button mode="contained" onPress={() => navigation.navigate('OnboardingScreen2')} style={styles.button}>
+            <Button mode="contained" onPress={() => navigation.navigate('OnboardingScreen2')} style={styles.button} theme={{ colors: { primary: COLORS.mindstormBlue } }} >
               Continue
             </Button>
           </View>
@@ -90,7 +94,7 @@ const OnboardingScreen1 = ({ navigation }) => {
                 />
               ))}
             </ScrollView>
-            <Button mode="contained" onPress={() => setIsModalVisible(false)} style={styles.modalButton}>
+            <Button mode="contained" onPress={() => setIsModalVisible(false)} style={styles.modalButton} theme={{ colors: { primary: COLORS.mindstormBlue } }}>
               Done
             </Button>
           </Modal>
@@ -101,6 +105,12 @@ const OnboardingScreen1 = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  backButton: {
+    position: 'absolute',
+    top: 60,
+    left: 20,
+    zIndex: 10, // Ensure the back button is above the chat bubbles
+  },
   background: {
     flex: 1,
     resizeMode: 'cover',
@@ -111,7 +121,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
-    paddingTop: 150, // Added paddingTop to move content down
+    paddingTop: 120, // Added paddingTop to move content down
   },
   header: {
     fontSize: 18,

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import { IMAGES } from '../styles/globalStyles'; // Adjust the path as necessary
+import { IMAGES, COLORS } from '../styles/globalStyles'; // Adjust the path as necessary
+import { Ionicons } from '@expo/vector-icons';
 
 const OnboardingScreen3 = ({ setOnboardingComplete }) => {
   const [about, setAbout] = useState('');
@@ -10,11 +11,14 @@ const OnboardingScreen3 = ({ setOnboardingComplete }) => {
 
   const handleFinish = () => {
     setOnboardingComplete(true);
-    navigation.navigate('MainTabs', { screen: 'Journal' }); // Navigate to the Journal tab
+    // navigation.navigate('MainTabs', { screen: 'Journal' }); // Navigate to the Journal tab
   };
 
   return (
     <ImageBackground source={IMAGES.gradientbg} style={styles.background}>
+       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Ionicons name="arrow-back-circle-outline" color={COLORS.mindstormLightBlue} size={48} />
+      </TouchableOpacity>
       <View style={styles.container}>
         <Text style={styles.title}>And finally, this is a space to tell us about yourself freely.</Text>
         <TextInput
@@ -24,8 +28,9 @@ const OnboardingScreen3 = ({ setOnboardingComplete }) => {
           onChangeText={setAbout}
           multiline={true}
           mode="outlined"
+          theme={{ colors: { primary: COLORS.mindstormBlue } }} 
         />
-        <Button mode="contained" onPress={handleFinish} style={styles.button}>
+        <Button mode="contained" onPress={handleFinish} style={styles.button} theme={{ colors: { primary: COLORS.mindstormBlue } }} >
           Finish
         </Button>
       </View>
@@ -34,6 +39,12 @@ const OnboardingScreen3 = ({ setOnboardingComplete }) => {
 };
 
 const styles = StyleSheet.create({
+  backButton: {
+    position: 'absolute',
+    top: 60,
+    left: 20,
+    zIndex: 10, // Ensure the back button is above the chat bubbles
+  },
   background: {
     flex: 1,
     resizeMode: 'cover',

@@ -58,7 +58,7 @@ export default function EmotionIsland({ navigation }) {
     return (
         <View style={styles.fullScreenContainer}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                <Ionicons name="arrow-back-circle-outline" color={COLORS.secondarytextcolor} size={48} />
+                <Ionicons name="arrow-back-circle-outline" color={COLORS.mindstormLightBlue} size={48} />
             </TouchableOpacity>
             <ImageBackground
                 resizeMode="cover"

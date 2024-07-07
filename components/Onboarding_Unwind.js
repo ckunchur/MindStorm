@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
-import { IMAGES } from '../styles/globalStyles'; // Adjust the path as necessary
+import { IMAGES, COLORS } from '../styles/globalStyles'; // Adjust the path as necessary
+import { Ionicons } from '@expo/vector-icons';
 
 const OnboardingScreen4 = ({ navigation }) => {
   const [about, setAbout] = useState('');
@@ -12,7 +13,9 @@ const OnboardingScreen4 = ({ navigation }) => {
 
   return (
     <ImageBackground source={IMAGES.gradientbg} style={styles.background}>
-      <View style={styles.container}>
+       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Ionicons name="arrow-back-circle-outline" color={COLORS.mindstormLightBlue} size={48} />
+      </TouchableOpacity><View style={styles.container}>
         <Text style={styles.title}>Share your favorite ways to calm down and unwind.</Text>
         <TextInput
           style={styles.input}
@@ -21,8 +24,9 @@ const OnboardingScreen4 = ({ navigation }) => {
           onChangeText={setAbout}
           multiline={true}
           mode="outlined"
+          theme={{ colors: { primary: COLORS.mindstormBlue } }} 
         />
-        <Button mode="contained" onPress={handleContinue} style={styles.button}>
+        <Button mode="contained" onPress={handleContinue} style={styles.button}  theme={{ colors: { primary: COLORS.mindstormBlue } }} >
           Continue
         </Button>
       </View>
@@ -31,6 +35,12 @@ const OnboardingScreen4 = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  backButton: {
+    position: 'absolute',
+    top: 60,
+    left: 20,
+    zIndex: 10, // Ensure the back button is above the chat bubbles
+  },
   background: {
     flex: 1,
     resizeMode: 'cover',

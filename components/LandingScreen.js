@@ -53,10 +53,10 @@ return (
   >
     <View style={styles.container}>
       <WelcomeTitle title="Welcome to MindStorm" style={styles.blueTitle} />
-      <WelcomeMessage message="Learn how to find the calm in your storm" style={styles.greyMessage} />
+      <WelcomeMessage message="Learn how to find the calm in your storm" style={styles.secondaryMessage} />
       <Image
         resizeMode="contain"
-        source={require('../assets/buddy-group.png')}
+        source={require('../assets/wave-logo.png')}
         style={styles.welcomeImage}
       />
       <TouchableOpacity style={styles.getStartButton} onPress={() => navigation.navigate('CreateAccount')}>
@@ -96,16 +96,16 @@ blueTitle: {
   fontSize: width * 0.09,
   fontFamily: "Inter-Medium",
 },
-greyMessage: {
-  color: COLORS.secondarytextcolor,
+secondaryMessage: {
+  color: COLORS.mindstormLightBlue,
   marginTop: '8%',
   fontSize: width * 0.04,
   fontFamily: "Inter-Regular",
 },
 welcomeImage: {
-  marginTop:-40,
-  maxWidth: '90%',
-  maxHeight: '60%',
+  maxWidth: '100%',
+  // maxHeight: '60%',
+  margin: '20%',
   aspectRatio: 1,
 },
 titleText: {
@@ -115,24 +115,40 @@ messageText: {
   width: '80%',
   textAlign: "center",
 },
+// getStartButton: {
+//   justifyContent: "center",
+//   alignItems: "center",
+//   borderRadius: 48,
+//   backgroundColor: 'white',
+//   alignSelf: "stretch",
+//   marginTop:0,
+//   paddingVertical: '8%',
+//   paddingHorizontal: '15%',
+//   borderColor: COLORS.mindstormLightBlue,
+//   borderWidth: 1,
+
+// },
 getStartButton: {
-  justifyContent: "center",
-  alignItems: "center",
-  borderRadius: 48,
-  backgroundColor: 'white',
-  alignSelf: "stretch",
-  marginTop:0,
-  paddingVertical: '8%',
-  paddingHorizontal: '15%',
-  borderColor: COLORS.mindstormLightBlue,
-  borderWidth: 1,
+  alignItems: 'center',
+  marginTop: 30, 
+  height: 50,
+  width: '90%',
+  alignSelf: 'center',
+  justifyContent: 'center',
+  backgroundColor: COLORS.mindstormBlue,
+  borderRadius: 15,
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.25,
+  shadowRadius: 3.84,
+  elevation: 5,
 },
 getStartButtonText: {
-  color: COLORS.mindstormLightBlue,
-  fontWeight: 'bold',
-  fontFamily: "Inter-Medium",
-
+  color: 'white',
+  // fontWeight: 'bold',
+  fontFamily: "Inter",
 },
+
 loginOption: {
   marginTop: '6%',
   display: 'flex',
