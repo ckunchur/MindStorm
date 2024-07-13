@@ -31,6 +31,7 @@ import OnboardingLastScreen from './components/OnboardingLastScreen';
 import OnboardingScreen1 from './components/OnboardingScreen1';
 import OnboardingScreen2 from './components/OnboardingScreen2';
 import Dashboard from './components/Dashboard'; // Import the Dashboard component
+import EditGoalScreen from './components/EditGoals'; // Import the EditGoalScreen component
 
 LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
 LogBox.ignoreAllLogs(); // Ignore all log notifications
@@ -42,6 +43,7 @@ const JournalStack = createStackNavigator();
 const DataStack = createStackNavigator();
 const IslandStack = createStackNavigator();
 const AffirmationsStack = createStackNavigator();
+const MainStack = createStackNavigator(); // Add this line
 
 function DataStackNavigator() {
   return (
@@ -55,7 +57,7 @@ function DataStackNavigator() {
 // Stack Navigator for the Chat tab
 function ChatStackNavigator() {
   return (
-    <ChatStack.Navigator initialRouteName="ChooseYourBuddy" screenOptions={{ headerShown: false }}>
+    <ChatStack.Navigator initialRouteName="ChatScreen" screenOptions={{ headerShown: false }}>
       <ChatStack.Screen name="ChooseYourBuddy" component={ChooseYourBuddy} />
       <ChatStack.Screen name="CustomizeScreen" component={CustomizeScreen} />
       <ChatStack.Screen name="ChatScreen" component={ChatScreen} />
@@ -128,7 +130,7 @@ function MainTabs() {
           } else if (route.name === 'Affirmations') {
             iconName = focused ? 'barbell' : 'barbell-outline';
           }
-          return <Ionicons name={iconName} size={32} color={COLORS.mindstormLightGrey} />;
+          return <Ionicons name={iconName} size={32} color={"black"} />;
         },
       })}
       tabBarOptions={{
@@ -158,6 +160,15 @@ function MainTabs() {
   );
 }
 
+function MainStackNavigator() { // Add this function
+  return (
+    <MainStack.Navigator>
+      <MainStack.Screen name="MainTabs" component={MainTabs} options={{ headerShown: false }} />
+      <MainStack.Screen name="EditGoalScreen" component={EditGoalScreen} options={{ headerShown: false }} />
+    </MainStack.Navigator>
+  );
+}
+
 export default function App() {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(null); // Change to null to indicate loading state
 
@@ -174,7 +185,7 @@ export default function App() {
     } else if (!isUserLoggedIn) {
       return <OnboardingStackNavigator setOnboardingComplete={() => setIsUserLoggedIn(true)} />;
     } else {
-      return <MainTabs />;
+      return <MainStackNavigator />; // Use MainStackNavigator
     }
   };
 

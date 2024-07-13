@@ -7,10 +7,10 @@ import {ChatScreen} from './ChatScreen'; // Import the ChatScreen component
 import profileImage from '../assets/profilepic.png'; // Adjust the path to your profile image
 
 const Dashboard = ({ navigation }) => {
-  const [userName, setUserName] = useState("John Doe");
+  const [userName, setUserName] = useState("Caitlin");
   const [profilePicture, setProfilePicture] = useState("https://via.placeholder.com/150");
   const [goals, setGoals] = useState([
-    { title: "Meditate Daily", progress: 0.7 },
+    { title: "Work on mindstorm", progress: 0.7 },
     { title: "Read 20 Books", progress: 0.4 },
     { title: "Exercise Regularly", progress: 0.6 }
   ]);
@@ -39,8 +39,8 @@ const Dashboard = ({ navigation }) => {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
         <View>
-          <Text style={styles.greetingText}>Hello, {userName}</Text>
-          <Text style={styles.subGreetingText}>Welcome back!</Text>
+          <Text style={styles.greetingText}>Hello, {userName}! 👋</Text>
+          <Text style={styles.subGreetingText}>Let's conquer your day.</Text>
         </View>
         <Avatar.Image size={48} source={profileImage} style={styles.profilePicture} />
       </View>
@@ -64,7 +64,7 @@ const Dashboard = ({ navigation }) => {
       </View>
       <View style={styles.goalsHeaderContainer}>
         <Text style={styles.sectionTitle}>Current Goals</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('EditGoalScreen')}>
           <Text style={styles.editLink}>edit</Text>
         </TouchableOpacity>
       </View>
@@ -83,9 +83,9 @@ const Dashboard = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    marginTop: 150,
+    marginTop: 100,
     marginLeft: 20,
-    marginRight: 20,
+  
   },
   header: {
     flexDirection: 'row',
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
   },
   profilePicture: {
     marginLeft: 50,
-    marginRight: 10,
+    marginRight: 30,
   },
   checkInContainer: {
     marginTop: 10,
@@ -122,6 +122,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
+    marginRight: 20,
   },
   checkInTextContainer: {
     flexDirection: 'row',
@@ -152,10 +153,11 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   goalsHeaderContainer: {
+    marginRight: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 24,
+    marginTop: 10,
     marginBottom: 8,
   },
   sectionTitle: {
@@ -198,7 +200,7 @@ const styles = StyleSheet.create({
   },
   updateButtonGradient: {
     borderRadius: 24,
-    padding: 5,
+    padding: 2,
     marginTop: 10, // Added top margin to create space from the progress bar
   },
   updateButton: {
@@ -210,6 +212,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   coachMessageContainer: {
+    marginRight: 20,
     marginTop: 10,
     backgroundColor: '#fefefe',
     paddingVertical: 20,
