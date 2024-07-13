@@ -4,6 +4,7 @@ import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
+import { Provider as PaperProvider } from 'react-native-paper';
 import ChooseGoalsScreen from './components/ChooseGoals';
 import NewLandingScreen from './components/LandingScreen';
 import JournalScreen from './components/JournalScreen';
@@ -29,6 +30,7 @@ import OnboardingUnwind from './components/Onboarding_Unwind';
 import OnboardingLastScreen from './components/OnboardingLastScreen';
 import OnboardingScreen1 from './components/OnboardingScreen1';
 import OnboardingScreen2 from './components/OnboardingScreen2';
+import Dashboard from './components/Dashboard'; // Import the Dashboard component
 
 LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
 LogBox.ignoreAllLogs(); // Ignore all log notifications
@@ -107,11 +109,6 @@ function OnboardingStackNavigator({ setOnboardingComplete }) {
       <OnboardingStack.Screen name="OnboardingScreen3">
         {(props) => <OnboardingLastScreen {...props} setOnboardingComplete={setOnboardingComplete} />}
       </OnboardingStack.Screen>
-      
-      {/*  <OnboardingStack.Screen name="ChooseGoals" component={ChooseGoalsScreen} />
-      <OnboardingStack.Screen name="PersonalInfo">
-        {(props) => <PersonalInfoScreen {...props} setOnboardingComplete={setOnboardingComplete} />}
-      </OnboardingStack.Screen> */}
     </OnboardingStack.Navigator>
   );
 }
@@ -124,13 +121,9 @@ function MainTabs() {
           let iconName;
           if (route.name === 'Chat') {
             iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
-          } 
-          // else if (route.name === 'Journal') {
-          //   iconName = focused ? 'journal' : 'journal-outline';
-          // } else if (route.name === 'Insights') {
-          //   iconName = focused ? 'bar-chart' : 'bar-chart-outline';
-          // } 
-          else if (route.name === 'EmotionIsland') {
+          } else if (route.name === 'Dashboard') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'EmotionIsland') {
             iconName = focused ? 'leaf' : 'leaf-outline';
           } else if (route.name === 'Affirmations') {
             iconName = focused ? 'barbell' : 'barbell-outline';
@@ -157,9 +150,8 @@ function MainTabs() {
         },
       }}
     >
-      {/* <Tab.Screen name="Journal" component={JournalStackNavigator} options={{ headerShown: false }} /> */}
+      <Tab.Screen name="Dashboard" component={Dashboard} options={{ headerShown: false }} />
       <Tab.Screen name="Chat" component={ChatStackNavigator} options={{ headerShown: false }} />
-      {/* <Tab.Screen name="Insights" component={DataStackNavigator} options={{ headerShown: false }} /> */}
       <Tab.Screen name="EmotionIsland" component={IslandStackNavigator} options={{ headerShown: false }} />
       <Tab.Screen name="Affirmations" component={AffirmationsStackNavigator} options={{ headerShown: false }} />
     </Tab.Navigator>
@@ -167,7 +159,7 @@ function MainTabs() {
 }
 
 export default function App() {
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // set default to false to debug onboarding, change to null later
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(null); // Change to null to indicate loading state
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
@@ -177,18 +169,22 @@ export default function App() {
   }, []);
 
   const renderContent = () => {
-    if (!isUserLoggedIn) {
-      return <OnboardingStackNavigator setOnboardingComplete={false} />;
+    if (isUserLoggedIn === null) {
+      return null; // Add a loading spinner or screen here if needed
+    } else if (!isUserLoggedIn) {
+      return <OnboardingStackNavigator setOnboardingComplete={() => setIsUserLoggedIn(true)} />;
     } else {
       return <MainTabs />;
-    } 
+    }
   };
 
   return (
     <UserProvider>
-      <NavigationContainer>
-        {renderContent()}
-      </NavigationContainer>
+      <PaperProvider>
+        <NavigationContainer>
+          {renderContent()}
+        </NavigationContainer>
+      </PaperProvider>
     </UserProvider>
   );
 }
